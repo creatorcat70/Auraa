@@ -1,48 +1,48 @@
-# Tide Proxy - Terms of Service
+# Auraa Proxy - Terms of Service
 
 **Last Updated: [June 12th, 2025]**
 
-Welcome to **Tide**. By accessing or using Tide (“the Service”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, do not use the Service.
+Welcome to **Auraa**. By accessing or using Tide (“the Service”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, do not use the Service.
 
 ---
 
 ## 1. Purpose
 
-Tide is a free-to-use web proxy designed to help users access content through a secure and minimal interface. While the Service may help bypass network restrictions (e.g., school or public Wi-Fi filters), you use it at your own risk and discretion.
+Auraa is a free-to-use web proxy designed to help users access content through a secure and minimal interface. While the Service may help bypass network restrictions (e.g., school or public Wi-Fi filters), you use it at your own risk and discretion.
 
 ---
 
 ## 2. Acceptable Use
 
-You agree **not to use** Tide to:
+You agree **not to use** Auraa to:
 
 - Access or distribute illegal, harmful, or malicious content.
 - Harass, threaten, or impersonate individuals or groups.
-- Interfere with the stability or security of Tide or other systems.
+- Interfere with the stability or security of Auraa or other systems.
 - Engage in automated scraping, excessive load, or abuse of the Service.
 
-By using Tide, you are responsible for any content you access and the actions you take.
+By using Auraa, you are responsible for any content you access and the actions you take.
 
 ---
 
 ## 3. No Guarantees
 
-- Tide is provided **“as is”**, with no guarantees regarding uptime, speed, or availability.
+- Auraa is provided **“as is”**, with no guarantees regarding uptime, speed, or availability.
 - The developers are not responsible for any issues caused by your use of the Service.
 
 ---
 
 ## 4. Privacy
 
-- Tide does **not log personal browsing data**, but may track usage statistics to monitor abuse and improve performance.
+- Auraa does **not log personal browsing data**, but may track usage statistics to monitor abuse and improve performance.
 - It is your responsibility to protect your own privacy while using the Service. Do not enter sensitive information like passwords, personal data, or banking credentials.
 
 ---
 
 ## 5. Liability
 
-- You use Tide at your own risk.
-- The creators of Tide are **not liable** for any damages or consequences resulting from use or misuse of the Service.
+- You use Auraa at your own risk.
+- The creators of Auraa are **not liable** for any damages or consequences resulting from use or misuse of the Service.
 
 ---
 
@@ -55,6 +55,6 @@ By using Tide, you are responsible for any content you access and the actions yo
 
 ## 7. Contact
 
-For questions, concerns, or takedown requests, please contact the Tide administration team.
+For questions, concerns, or takedown requests, please contact the Auraa administration team.
 
 ---
