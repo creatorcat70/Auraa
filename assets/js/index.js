@@ -99,5 +99,5 @@
         if (url.hostname.includes('.')) return url.toString();
       } catch {}
     }
-    return `https://duckduckgo.com/search?q=${encodeURIComponent(query)}&source=web`;
+    return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
   }
