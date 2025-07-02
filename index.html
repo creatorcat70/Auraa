@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title> Auraa </title>
+  <title>Auraa</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
@@ -12,7 +12,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #001f3f, #000000);
+      background: linear-gradient(135deg, #2a003f, #000000);
       color: #fff;
       font-family: 'Poppins', sans-serif;
       height: 100vh;
@@ -31,19 +31,19 @@
     .title {
       font-size: 4rem;
       font-weight: 700;
-      text-shadow: 0 0 10px #ff4136, 0 0 20px #0074D9, 0 0 30px #ffffff;
+      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #ffffff;
     }
 
     @keyframes flickerBackground {
-      0%, 100% { background: linear-gradient(135deg, #001f3f, #000000); }
-      10% { background: linear-gradient(135deg, #003366, #111111); }
-      20% { background: linear-gradient(135deg, #0074D9, #000); }
-      25% { background: linear-gradient(135deg, #ff4136, #000022); }
-      30%, 90% { background: linear-gradient(135deg, #001f3f, #000000); }
+      0%, 100% { background: linear-gradient(135deg, #2a003f, #000000); }
+      10% { background: linear-gradient(135deg, #3c096c, #111111); }
+      20% { background: linear-gradient(135deg, #7b2cbf, #000); }
+      25% { background: linear-gradient(135deg, #9d4edd, #1a0033); }
+      30%, 90% { background: linear-gradient(135deg, #2a003f, #000000); }
     }
 
     .dot {
-      color: #ff4136;
+      color: #9d4edd;
     }
 
     .sidebar {
@@ -51,11 +51,11 @@
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(25, 25, 25, 0.9);
+      background: rgba(35, 0, 55, 0.9);
       padding: 10px;
       width: 60px;
       border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0, 116, 217, 0.9);
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -65,22 +65,21 @@
       background: transparent;
       border: none;
       font-size: 2rem;
-      color: #ffffff;
+      color: #000;
       margin: 10px 0;
       cursor: pointer;
       transition: 0.3s;
-      text-shadow: 0 0 6px #0074D9;
     }
 
     .sidebar button:hover {
-      color: #ffdc00;
+      color: #e0aaff;
     }
 
     .sidebar-info {
       margin-top: 10px;
       font-size: 1rem;
       color: white;
-      text-shadow: 0 0 5px #0074D9;
+      text-shadow: 0 0 5px #c77dff;
     }
 
     input[type="text"] {
@@ -88,17 +87,17 @@
       width: 300px;
       border: none;
       border-radius: 25px;
-      background: rgba(25, 25, 25, 0.9);
+      background: rgba(50, 0, 80, 0.9);
       color: white;
       font-size: 1rem;
       outline: none;
       transition: 0.3s;
-      box-shadow: 0 0 8px rgba(0, 116, 217, 0.4);
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.4);
     }
 
     input[type="text"]:focus {
-      background: rgba(35, 35, 35, 0.95);
-      box-shadow: 0 0 12px rgba(255, 65, 54, 0.9);
+      background: rgba(70, 0, 100, 0.95);
+      box-shadow: 0 0 12px rgba(233, 145, 255, 0.9);
     }
 
     button {
@@ -107,7 +106,7 @@
       font-size: 1rem;
       border: none;
       border-radius: 25px;
-      background: #0074D9;
+      background: #7b2cbf;
       color: white;
       cursor: pointer;
       transition: 0.3s;
@@ -115,7 +114,7 @@
     }
 
     button:hover {
-      background: #ff4136;
+      background: #9d4edd;
     }
 
     .footer {
@@ -124,7 +123,7 @@
       right: 15px;
       font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.8);
-      text-shadow: 0 0 5px #0074D9;
+      text-shadow: 0 0 5px #c77dff;
     }
 
     @keyframes wave {
@@ -148,7 +147,7 @@
       justify-content: center;
       align-items: center;
       font-size: 1.5rem;
-      background: linear-gradient(135deg, #001f3f, #000000);
+      background: linear-gradient(135deg, #2a003f, #000000);
       z-index: 999;
     }
   </style>
@@ -158,7 +157,7 @@
     <div id="loader" class="loader">Loading...</div>
 
     <div class="container" id="content" style="display: none;">
-      <h1 class="title">Tide<span class="dot">.</span></h1>
+      <h1 class="title">Auraa<span class="dot">.</span></h1>
 
       <form id="searchForm">
         <input type="text" id="urlInput" placeholder="Surf the Web..." autocomplete="off" />
@@ -180,7 +179,7 @@
       </div>
     </div>
 
-    <div class="footer">Auraa | Original site made by Mizzery </div>
+    <div class="footer">Auraa | Original site made by Mizzery</div>
   </div>
 
   <script src="/active/uv/uv.bundle.js" defer></script>
