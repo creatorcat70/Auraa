@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auraa Settings</title>
+  <link rel="icon" type="image/png" href="icon.png" id="dynamicFavicon" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 40px;
+      background: linear-gradient(135deg, #2a003f, #000000);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      animation: flickerBackground 6s infinite ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    @keyframes flickerBackground {
+      0%, 100% { background: linear-gradient(135deg, #2a003f, #000000); }
+      10% { background: linear-gradient(135deg, #3c096c, #111111); }
+      20% { background: linear-gradient(135deg, #7b2cbf, #000); }
+      25% { background: linear-gradient(135deg, #9d4edd, #1a0033); }
+      30%, 90% { background: linear-gradient(135deg, #2a003f, #000000); }
+    }
+
+    .title {
+      font-size: 4rem;
+      font-weight: 700;
+      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .dot {
+      color: #9d4edd;
+    }
+
+    label {
+      font-size: 1.2rem;
+      margin-top: 30px;
+      display: block;
+    }
+
+    select, button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      border-radius: 25px;
+      border: none;
+      font-size: 1rem;
+      background: #7b2cbf;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 8px #9d4edd;
+      transition: 0.3s ease;
+      outline: none;
+      min-width: 250px;
+    }
+
+    select:hover, button:hover {
+      background: #9d4edd;
+    }
+
+    .footer {
+      margin-top: auto;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: 0 0 5px #c77dff;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">Auraa<span class="dot"> Settings.</span></h1>
+
+  <label for="cloakSelect">Cloak tab as:</label>
+  <select id="cloakSelect">
+    <option value="default">Default - Auraa</option>
+    <option value="https://www.khanacademy.org/favicon.ico|Khan Academy">Khan Academy</option>
+    <option value="https://www.google.com/favicon.ico|Google Classroom">Google Classroom</option>
+    <option value="https://www.wikipedia.org/static/favicon/wikipedia.ico|Wikipedia</option>
+    <option value="https://www.edmodo.com/favicon.ico|Edmodo</option>
+    <option value="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6/svgs/solid/book.svg|Scholarly</option>
+  </select>
+
+  <br />
+  <button onclick="applyCloak()">Apply</button>
+
+  <p class="footer">Auraa Settings | Made by @thefakesydney</p>
+
+  <script>
+    function applyCloak() {
+      const selected = document.getElementById("cloakSelect").value;
+      if (selected === "default") {
+        document.title = "Auraa Settings";
+        document.getElementById("dynamicFavicon").href = "icon.png";
+        return;
+      }
+
+      const [iconUrl, siteTitle] = selected.split("|");
+      document.title = siteTitle;
+
+      const favicon = document.getElementById("dynamicFavicon");
+      favicon.href = iconUrl;
+    }
+
+    // Confirm before closing or refreshing tab
+    window.onbeforeunload = function () {
+      return "Are you sure you want to leave this page?";
+    };
+  </script>
+</body>
+</html>
 
