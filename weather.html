@@ -75,8 +75,6 @@
     <div id="locationName"></div>
   </div>
   <div id="message">Waiting for location permission...</div>
-  <p>please allow location permissions for this module to work</p>
-  <p>We do not monitor your location and store it anywhere.</p>
   <button id="retryBtn" style="display:none;">Retry</button>
   <div class="forecast">
     <h2>7-Day Forecast</h2>
@@ -92,6 +90,7 @@
     const messageEl = document.getElementById('message');
     const retryBtn = document.getElementById('retryBtn');
     const forecastDaysEl = document.getElementById('forecastDays');
+
     const weatherCodes = {
       0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
       45: "Fog", 48: "Rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
@@ -103,6 +102,7 @@
       82: "Heavy rain showers", 85: "Light snow showers", 86: "Heavy snow showers",
       95: "Thunderstorm", 96: "Thunderstorm with slight hail", 99: "Thunderstorm with heavy hail"
     };
+
     function getIconForCode(code, isNight) {
       if ([0,1].includes(code)) return isNight ? '🌙' : '☀️';
       if ([2,3].includes(code)) return '⛅';
@@ -113,9 +113,11 @@
       if ([95,96,99].includes(code)) return '⛈️';
       return '❓';
     }
+
     function celsiusToFahrenheit(c) {
       return (c * 9 / 5) + 32;
     }
+
     function getTimeMessage(hour) {
       if (hour === 0) return "It's midnight!";
       if (hour >= 1 && hour <= 4) return `It's ${hour} AM...`;
@@ -126,6 +128,7 @@
       if (hour >= 21 && hour <= 23) return "Good night!";
       return "";
     }
+
     function fetchWeather(lat, lon) {
       messageEl.textContent = 'Fetching weather data...';
       locationNameEl.textContent = '';
@@ -175,6 +178,7 @@
           retryBtn.style.display = 'inline-block';
         });
     }
+
     function requestLocation() {
       if (!navigator.geolocation) {
         messageEl.textContent = 'Geolocation not supported.';
@@ -184,13 +188,13 @@
       navigator.geolocation.getCurrentPosition(
         pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
         err => {
-          alert("You must enable location permissions for this module to work. We do not track, sell, or monitor your location; it is only used for determining weather.");
-          messageEl.textContent = 'Location error: ' + err.message;
+          messageEl.textContent = 'Please allow location access. We do not use your location or store it anywhere and respect your privacy.';
           retryBtn.style.display = 'inline-block';
         },
         { timeout: 15000 }
       );
     }
+
     retryBtn.addEventListener('click', () => {
       weatherIcon.textContent = '';
       temperatureEl.textContent = '';
@@ -202,6 +206,7 @@
       forecastDaysEl.innerHTML = '';
       requestLocation();
     });
+
     window.onload = requestLocation;
   </script>
 </body>
