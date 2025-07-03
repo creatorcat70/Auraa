@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Auraa AI</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
@@ -58,7 +58,6 @@
       color: #ff4136;
     }
 
-    
     .sidebar {
       position: fixed;
       left: 10px;
@@ -106,7 +105,6 @@
       text-shadow: 0 0 5px #0074D9;
     }
 
-
     .ai-container {
       width: 100%;
       flex-grow: 1;
@@ -115,7 +113,7 @@
       height: 100%;
       position: relative;
     }
-    
+
     .chat-container {
       flex-grow: 1;
       overflow-y: auto;
@@ -123,30 +121,30 @@
       border-radius: 15px;
       padding: 20px;
       margin-bottom: 15px;
-      box-shadow: 
+      box-shadow:
         0 0 10px rgba(0, 116, 217, 0.5),
         0 0 20px rgba(0, 116, 217, 0.3);
       min-height: 200px;
       border: 1px solid rgba(0, 116, 217, 0.2);
     }
-    
+
     .message {
       display: flex;
       margin-bottom: 15px;
       max-width: 80%;
       position: relative;
     }
-    
+
     .message.user {
       margin-left: auto;
       justify-content: flex-end;
     }
-    
+
     .message.ai {
       margin-right: auto;
       justify-content: flex-start;
     }
-    
+
     .bubble {
       padding: 12px 16px;
       border-radius: 12px;
@@ -155,20 +153,20 @@
       position: relative;
       word-wrap: break-word;
     }
-    
+
     .user .bubble {
       background-color: rgba(0, 116, 217, 0.3);
       border-bottom-right-radius: 4px;
       border: 1px solid rgba(0, 116, 217, 0.3);
       box-shadow: 0 0 8px rgba(0, 116, 217, 0.3);
     }
-    
+
     .ai .bubble {
       background-color: rgba(255, 65, 54, 0.3);
       border-bottom-left-radius: 4px;
       border: 1px solid rgba(255, 65, 54, 0.2);
     }
-    
+
     .bubble pre {
       background-color: rgba(0, 0, 0, 0.3);
       border-radius: 8px;
@@ -179,7 +177,7 @@
       margin: 8px 0;
       border: 1px solid rgba(0, 116, 217, 0.2);
     }
-    
+
     .bubble code {
       font-family: 'JetBrains Mono', monospace;
       background-color: rgba(0, 0, 0, 0.3);
@@ -188,7 +186,7 @@
       font-size: 0.85rem;
       border: 1px solid rgba(0, 116, 217, 0.2);
     }
-    
+
     .input-container {
       padding: 5px;
       position: relative;
@@ -197,11 +195,11 @@
       border-radius: 12px;
       border: 1px solid rgba(0, 116, 217, 0.3);
       min-height: 70px;
-      box-shadow: 
+      box-shadow:
         0 0 10px rgba(0, 116, 217, 0.5),
         0 0 20px rgba(0, 116, 217, 0.3);
     }
-    
+
     .input-container textarea {
       width: 100%;
       background-color: transparent;
@@ -216,12 +214,11 @@
       max-height: 200px;
       outline: none;
     }
-    
-   
+
     .input-container textarea:focus {
       box-shadow: none;
     }
-    
+
     .input-container button {
       position: absolute;
       right: 8px;
@@ -239,19 +236,19 @@
       transition: 0.3s;
       box-shadow: 0 0 8px rgba(0, 116, 217, 0.5);
     }
-    
+
     .input-container button:hover {
       background: #ff4136;
       transform: translateY(-2px);
     }
-    
+
     .input-container button:disabled {
       background: #2d3748;
       cursor: not-allowed;
       opacity: 0.7;
       box-shadow: none;
     }
-    
+
     .typing-indicator {
       display: flex;
       padding: 12px 16px;
@@ -262,7 +259,7 @@
       border-bottom-left-radius: 4px;
       border: 1px solid rgba(255, 65, 54, 0.2);
     }
-    
+
     .typing-dot {
       width: 8px;
       height: 8px;
@@ -271,19 +268,19 @@
       margin: 0 2px;
       animation: typingAnimation 1.4s infinite ease-in-out;
     }
-    
+
     .typing-dot:nth-child(1) {
       animation-delay: 0s;
     }
-    
+
     .typing-dot:nth-child(2) {
       animation-delay: 0.2s;
     }
-    
+
     .typing-dot:nth-child(3) {
       animation-delay: 0.4s;
     }
-    
+
     @keyframes typingAnimation {
       0%, 60%, 100% {
         transform: translateY(0);
@@ -292,7 +289,7 @@
         transform: translateY(-5px);
       }
     }
-    
+
     .terms-notice {
       font-size: 0.8rem;
       margin-top: 5px;
@@ -301,36 +298,36 @@
       padding: 0 10px;
       text-shadow: 0 0 5px rgba(0, 116, 217, 0.5);
     }
-    
+
     .terms-notice a {
       color: #ffdc00;
       text-decoration: none;
       transition: 0.2s;
     }
-    
+
     .terms-notice a:hover {
       text-shadow: 0 0 5px #ffdc00;
     }
-    
+
     .message-actions {
       display: none;
       gap: 5px;
       margin-top: 5px;
       justify-content: flex-end;
     }
-    
+
     .user .message-actions {
       justify-content: flex-end;
     }
-    
+
     .ai .message-actions {
       justify-content: flex-start;
     }
-    
+
     .message:hover .message-actions {
       display: flex;
     }
-    
+
     .action-btn {
       width: 30px;
       height: 30px;
@@ -345,7 +342,7 @@
       transition: all 0.2s ease;
       box-shadow: 0 0 5px rgba(0, 116, 217, 0.3);
     }
-    
+
     .action-btn:hover {
       background-color: rgba(0, 116, 217, 0.3);
       transform: scale(1.1);
@@ -358,19 +355,19 @@
         height: calc(100vh - 100px);
         margin: 10px auto;
       }
-      
+
       .title {
         font-size: 2.5rem;
       }
-      
+
       .sidebar {
         display: none;
       }
-      
+
       .input-container {
         min-height: 60px;
       }
-      
+
       .message {
         max-width: 90%;
       }
@@ -378,7 +375,6 @@
   </style>
 </head>
 <body>
-  
   <div class="sidebar">
     <button onclick="window.location.href='index.html';">🏠</button>
     <button onclick="window.location.href='games.html';">🎮</button>
@@ -391,9 +387,7 @@
     </div>
   </div>
   <div class="container">
-    <h9 class="title">Auraa AI</h9>
-
-    
+    <h1 class="title">Auraa AI</h1>
     <div class="ai-container">
       <div class="chat-container" id="chat-box">
         <div class="message ai">
@@ -405,7 +399,6 @@
           </div>
         </div>
       </div>
-      
       <div class="input-container">
         <textarea id="user-input" placeholder="Message Auraa AI..." autocomplete="off" rows="1"></textarea>
         <button id="send-btn">
@@ -417,20 +410,16 @@
       </div>
     </div>
   </div>
-
   <div class="footer">Auraa AI | By MK</div>
 
   <script>
-   
-    const API_KEY = "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";
-    const MODEL = "llama3-8b-8192";
-    
+    const API_KEY = "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";
+    const MODEL = "llama-3.3-70b-versatile";
 
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send-btn");
-    
-   
+
     navigator.getBattery().then(battery => {
       function updateBattery() {
         document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
@@ -446,30 +435,23 @@
     setInterval(updateTime, 1000);
     updateTime();
 
- 
     function renderMarkdown(text) {
- 
-      text = text.replace(/```([\s\S]*?)```/g, function(match, code) {
-        return `<pre><code>${DOMPurify.sanitize(code.replace(/</g, "&lt;").replace(/>/g, "&gt;"))}</code></pre>`;
+      text = text.replace(/```([\s\S]*?)```/g, function(_, code) {
+        return `<pre><code>${DOMPurify.sanitize(code)}</code></pre>`;
       });
 
-    
-      text = text.replace(/`(.*?)`/g, function(match, code) {
-        return `<code>${DOMPurify.sanitize(code.replace(/</g, "&lt;").replace(/>/g, "&gt;"))}</code>`;
+      text = text.replace(/`(.*?)`/g, function(_, code) {
+        return `<code>${DOMPurify.sanitize(code)}</code>`;
       });
 
-  
-      text = text
-        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.*?)\*/g, "<em>$1</em>");
+      text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                 .replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-   
       text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
       return DOMPurify.sanitize(text);
     }
 
-  
     function displayMessage(text, sender, isHTML = false) {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", sender);
@@ -484,78 +466,73 @@
       }
 
       messageDiv.appendChild(bubbleDiv);
-      chatBox.appendChild(messageDiv);
 
-    
-      const actionsDiv = document.createElement('div');
-      actionsDiv.className = 'message-actions';
-      
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'action-btn copy-btn';
-      copyBtn.title = 'Copy';
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "message-actions";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "action-btn copy-btn";
+      copyBtn.title = "Copy";
       copyBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
-      copyBtn.addEventListener('click', () => copyToClipboard(bubbleDiv));
+      copyBtn.addEventListener("click", () => copyToClipboard(bubbleDiv));
       actionsDiv.appendChild(copyBtn);
-      
+
       messageDiv.appendChild(actionsDiv);
 
+      chatBox.appendChild(messageDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
+
       return messageDiv;
     }
 
- 
     function displayTypingIndicator() {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", "ai");
-      
+
       const typingDiv = document.createElement("div");
       typingDiv.classList.add("typing-indicator");
-      
+
       for (let i = 0; i < 3; i++) {
         const dot = document.createElement("div");
         dot.classList.add("typing-dot");
         typingDiv.appendChild(dot);
       }
-      
+
       messageDiv.appendChild(typingDiv);
       chatBox.appendChild(messageDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
-      
+
       return messageDiv;
     }
 
-   
     function copyToClipboard(element) {
       const text = element.textContent || element.innerText;
       navigator.clipboard.writeText(text).then(() => {
-        const copyBtns = document.querySelectorAll('.copy-btn');
+        const copyBtns = document.querySelectorAll(".copy-btn");
         copyBtns.forEach(btn => {
           btn.innerHTML = '<i class="bi bi-clipboard"></i>';
-          btn.style.color = '';
+          btn.style.color = "";
         });
-        
-        const currentBtn = element.parentElement.querySelector('.copy-btn');
+
+        const currentBtn = element.parentElement.querySelector(".copy-btn");
         if (currentBtn) {
           currentBtn.innerHTML = '<i class="bi bi-check"></i>';
-          currentBtn.style.color = '#4ade80';
+          currentBtn.style.color = "#4ade80";
           setTimeout(() => {
             currentBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
-            currentBtn.style.color = '';
+            currentBtn.style.color = "";
           }, 2000);
         }
       });
     }
 
-
     async function sendMessage() {
       const userMessage = userInput.value.trim();
       if (!userMessage) return;
 
-
       displayMessage(userMessage, "user");
       userInput.value = "";
       sendButton.disabled = true;
-
 
       const loadingMessage = displayTypingIndicator();
 
@@ -581,19 +558,15 @@
         const data = await response.json();
         let aiMessage = data.choices?.[0]?.message?.content || "Sorry, I couldn't understand that.";
 
- 
         chatBox.removeChild(loadingMessage);
         displayMessage(renderMarkdown(aiMessage), "ai", true);
-        
       } catch (error) {
-        console.error("Error:", error);
         chatBox.removeChild(loadingMessage);
         displayMessage("Error communicating with AI. Please try again.", "ai");
       } finally {
         sendButton.disabled = false;
       }
     }
-
 
     sendButton.addEventListener("click", sendMessage);
 
@@ -602,22 +575,20 @@
         event.preventDefault();
         sendMessage();
       }
-      
 
       if (event.key === "Enter" || event.key === "Backspace") {
-        userInput.style.height = 'auto';
-        userInput.style.height = (userInput.scrollHeight) + 'px';
+        userInput.style.height = "auto";
+        userInput.style.height = (userInput.scrollHeight) + "px";
       }
     });
 
     userInput.addEventListener("input", () => {
-      userInput.style.height = 'auto';
-      userInput.style.height = (userInput.scrollHeight) + 'px';
+      userInput.style.height = "auto";
+      userInput.style.height = (userInput.scrollHeight) + "px";
     });
 
- 
-    userInput.style.height = 'auto';
-    userInput.style.height = (userInput.scrollHeight) + 'px';
+    userInput.style.height = "auto";
+    userInput.style.height = (userInput.scrollHeight) + "px";
   </script>
 </body>
 </html>
