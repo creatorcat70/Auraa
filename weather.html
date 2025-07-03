@@ -73,6 +73,7 @@
     <div id="windSpeed"></div>
     <div id="description"></div>
     <div id="locationName"></div>
+    <button id="unitToggle">Switch to Celsius</button>
   </div>
   <div id="message">Waiting for location permission...</div>
   <button id="retryBtn" style="display:none;">Retry</button>
@@ -90,6 +91,11 @@
     const messageEl = document.getElementById('message');
     const retryBtn = document.getElementById('retryBtn');
     const forecastDaysEl = document.getElementById('forecastDays');
+    const unitToggle = document.getElementById('unitToggle');
+
+    let isFahrenheit = true;
+    let currentWeather = {};
+    let forecastData = [];
 
     const weatherCodes = {
       0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
@@ -114,7 +120,7 @@
       return '❓';
     }
 
-    function celsiusToFahrenheit(c) {
+    function cToF(c) {
       return (c * 9 / 5) + 32;
     }
 
@@ -129,54 +135,77 @@
       return "";
     }
 
+    function renderWeather() {
+      const temp = isFahrenheit ? `${cToF(currentWeather.temp).toFixed(1)}°F` : `${currentWeather.temp.toFixed(1)}°C`;
+      const feels = isFahrenheit ? `${cToF(currentWeather.temp).toFixed(1)}°F` : `${currentWeather.temp.toFixed(1)}°C`;
+      temperatureEl.textContent = `🌡️ ${temp}`;
+      feelsLikeEl.textContent = `Feels like: ${feels}`;
+      windSpeedEl.textContent = `Wind: ${currentWeather.wind} m/s`;
+      descriptionEl.textContent = currentWeather.description;
+      weatherIcon.textContent = currentWeather.icon;
+
+      forecastDaysEl.innerHTML = '';
+      forecastData.forEach(day => {
+        const min = isFahrenheit ? `${cToF(day.min).toFixed(1)}°F` : `${day.min.toFixed(1)}°C`;
+        const max = isFahrenheit ? `${cToF(day.max).toFixed(1)}°F` : `${day.max.toFixed(1)}°C`;
+        forecastDaysEl.innerHTML += `<div class="day">${day.label}: ${day.icon} ${min} - ${max}</div>`;
+      });
+
+      unitToggle.textContent = isFahrenheit ? 'Switch to Celsius' : 'Switch to Fahrenheit';
+    }
+
+    unitToggle.addEventListener('click', () => {
+      isFahrenheit = !isFahrenheit;
+      renderWeather();
+    });
+
     function fetchWeather(lat, lon) {
       messageEl.textContent = 'Fetching weather data...';
       locationNameEl.textContent = '';
       forecastDaysEl.innerHTML = '';
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&wind_speed_unit=ms`;
-      fetch(weatherUrl)
-        .then(res => res.json())
-        .then(data => {
-          const current = data.current_weather;
-          const daily = data.daily;
-          if (!current || typeof current.temperature !== "number") throw new Error("Missing temperature data");
-          const celsius = current.temperature;
-          const fahrenheit = celsiusToFahrenheit(celsius).toFixed(1);
-          const wind = typeof current.windspeed === "number" ? current.windspeed.toFixed(1) : "?";
-          const currentTime = new Date(current.time);
-          const hour = currentTime.getHours();
-          const isNight = hour >= 19 || hour < 6;
-          weatherIcon.textContent = getIconForCode(current.weathercode, isNight);
-          temperatureEl.textContent = `🌡️ ${celsius.toFixed(1)}°C / ${fahrenheit}°F`;
-          feelsLikeEl.textContent = `Feels like: ${celsius.toFixed(1)}°C (approx)`;
-          windSpeedEl.textContent = `Wind: ${wind} m/s`;
-          descriptionEl.textContent = getTimeMessage(hour);
-          messageEl.textContent = 'Fetching location name...';
-          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-            .then(resp => resp.json())
-            .then(locData => {
-              const name = locData.address.city || locData.address.town || locData.address.village || locData.address.state || locData.address.country || 'Unknown';
-              locationNameEl.textContent = `📍 ${name}`;
-              messageEl.textContent = 'Weather updated!';
-            }).catch(() => {
-              locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
-              messageEl.textContent = 'Weather updated (location name unavailable)';
-            });
-          for (let i = 0; i < 7; i++) {
-            const date = daily.time[i];
-            const max = daily.temperature_2m_max[i];
-            const min = daily.temperature_2m_min[i];
-            const code = daily.weathercode[i];
-            const icon = getIconForCode(code, false);
-            const label = i === 0 ? "Today" : new Date(date).toLocaleDateString(undefined, { weekday: 'short' });
-            forecastDaysEl.innerHTML += `<div class="day">${label}: ${icon} ${min.toFixed(1)}°C - ${max.toFixed(1)}°C</div>`;
-          }
-          retryBtn.style.display = 'none';
-        })
-        .catch(err => {
-          messageEl.textContent = 'Error: ' + err.message;
-          retryBtn.style.display = 'inline-block';
-        });
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&wind_speed_unit=ms`;
+      fetch(url).then(res => res.json()).then(data => {
+        const current = data.current_weather;
+        const daily = data.daily;
+        const celsius = current.temperature;
+        const wind = current.windspeed.toFixed(1);
+        const hour = new Date(current.time).getHours();
+        const isNight = hour >= 19 || hour < 6;
+
+        currentWeather = {
+          temp: celsius,
+          wind: wind,
+          icon: getIconForCode(current.weathercode, isNight),
+          description: getTimeMessage(hour)
+        };
+
+        forecastData = [];
+        for (let i = 0; i < 7; i++) {
+          forecastData.push({
+            label: i === 0 ? "Today" : new Date(daily.time[i]).toLocaleDateString(undefined, { weekday: 'short' }),
+            min: daily.temperature_2m_min[i],
+            max: daily.temperature_2m_max[i],
+            icon: getIconForCode(daily.weathercode[i], false)
+          });
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+          .then(res => res.json()).then(loc => {
+            const name = loc.address.city || loc.address.town || loc.address.village || loc.address.state || loc.address.country || 'Unknown';
+            locationNameEl.textContent = `📍 ${name}`;
+            messageEl.textContent = 'Weather updated!';
+            renderWeather();
+          }).catch(() => {
+            locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+            messageEl.textContent = 'Weather updated (location name unavailable)';
+            renderWeather();
+          });
+
+        retryBtn.style.display = 'none';
+      }).catch(err => {
+        messageEl.textContent = 'Error: ' + err.message;
+        retryBtn.style.display = 'inline-block';
+      });
     }
 
     function requestLocation() {
@@ -188,7 +217,7 @@
       navigator.geolocation.getCurrentPosition(
         pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
         err => {
-          messageEl.textContent = 'Please allow location access. We do not use your location or store it anywhere and respect your privacy.';
+          messageEl.textContent = 'Please allow location access. We do not use or store your location and respect your privacy.';
           retryBtn.style.display = 'inline-block';
         },
         { timeout: 15000 }
