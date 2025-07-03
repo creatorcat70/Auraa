@@ -22,12 +22,12 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // Read settings
-  if (enabled === 'false') {
-  return; // Only stop if explicitly disabled
-}
+  const enabled = localStorage.getItem('auraaParticlesEnabled');
+  if (enabled === 'false') return;
 
-  const flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10) || 100;
+  let flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10);
+  if (isNaN(flakesCount)) flakesCount = 15;
+  flakesCount = Math.min(flakesCount, 100);
 
   const flakes = [];
   for (let i = 0; i < flakesCount; i++) {
