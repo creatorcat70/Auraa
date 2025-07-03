@@ -23,11 +23,9 @@
   window.addEventListener('resize', resize);
 
   // Read settings
-  const enabled = localStorage.getItem('auraaParticlesEnabled');
-  if (enabled !== 'false') {
-    // Disabled, so don't animate particles
-    return;
-  }
+  if (enabled === 'false') {
+  return; // Only stop if explicitly disabled
+}
 
   const flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10) || 100;
 
