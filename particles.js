@@ -24,7 +24,7 @@
 
   // Read settings
   const enabled = localStorage.getItem('auraaParticlesEnabled');
-  if (enabled !== 'true') {
+  if (enabled !== 'false') {
     // Disabled, so don't animate particles
     return;
   }
