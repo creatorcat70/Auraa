@@ -42,14 +42,10 @@
       transition: background 0.3s;
       position: relative;
       font-size: 1rem;
-      max-width: 200px;
     }
     #tabBar button.tab.active {
       background: #7b2cbf;
       box-shadow: 0 -2px 5px #9d4edd;
-    }
-    #tabBar button.tab:hover {
-      background: rgba(123, 44, 191, 0.5);
     }
     #tabBar button.tab .closeBtn {
       font-size: 0.8rem;
@@ -57,13 +53,9 @@
       color: #ccc;
       cursor: pointer;
       user-select: none;
-      padding: 2px 4px;
-      border-radius: 3px;
-      transition: all 0.3s;
     }
     #tabBar button.tab:hover .closeBtn {
       color: white;
-      background: rgba(255, 255, 255, 0.2);
     }
     #tabBar button#addTabBtn {
       font-size: 1.4rem;
@@ -74,13 +66,6 @@
       cursor: pointer;
       user-select: none;
       margin-left: auto;
-      padding: 5px 10px;
-      border-radius: 5px;
-      transition: all 0.3s;
-    }
-    #tabBar button#addTabBtn:hover {
-      background: rgba(157, 78, 221, 0.2);
-      color: #c77dff;
     }
     #iframeContainer {
       flex-grow: 1;
@@ -125,7 +110,6 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
-      color: white;
     }
     #goBtn:hover {
       background: #9d4edd;
@@ -178,60 +162,6 @@
       font-size: 1.3rem;
       line-height: 1;
     }
-    .tab-title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      flex-grow: 1;
-    }
-    .new-tab-page {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      background: linear-gradient(135deg, #1a0033, #000000);
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    .new-tab-page h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 20px #9d4edd;
-    }
-    .new-tab-page p {
-      font-size: 1.2rem;
-      opacity: 0.8;
-      margin-bottom: 30px;
-    }
-    .quick-links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      max-width: 600px;
-      width: 100%;
-    }
-    .quick-link {
-      background: rgba(123, 44, 191, 0.3);
-      padding: 20px;
-      border-radius: 10px;
-      text-decoration: none;
-      color: white;
-      transition: all 0.3s;
-      border: 2px solid transparent;
-    }
-    .quick-link:hover {
-      background: rgba(123, 44, 191, 0.5);
-      border-color: #9d4edd;
-      color: white;
-      text-decoration: none;
-    }
-    .quick-link i {
-      font-size: 2rem;
-      margin-bottom: 10px;
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -258,245 +188,9 @@
   </div>
   <div id="iframeContainer"></div>
 
-  <script>
-    let tabCounter = 0;
-    let tabs = {};
-    let activeTabId = null;
-
-    // Initialize with first tab
-    window.addEventListener('DOMContentLoaded', function() {
-      createNewTab();
-      updateTime();
-      setInterval(updateTime, 1000);
-    });
-
-    function createNewTab() {
-      tabCounter++;
-      const tabId = `tab-${tabCounter}`;
-      
-      // Create tab button
-      const tabButton = document.createElement('button');
-      tabButton.className = 'tab';
-      tabButton.dataset.tabId = tabId;
-      tabButton.innerHTML = `
-        <span class="tab-title">New Tab</span>
-        <span class="closeBtn" onclick="closeTab('${tabId}', event)">×</span>
-      `;
-      
-      // Create iframe
-      const iframe = document.createElement('iframe');
-      iframe.className = 'tabIframe';
-      iframe.dataset.tabId = tabId;
-      iframe.srcdoc = `
-        <div class="new-tab-page">
-          <h1>Welcome to Auraa</h1>
-          <p>Your next-generation browser experience</p>
-          <div class="quick-links">
-            <a href="#" class="quick-link" onclick="parent.loadUrl('https://google.com')">
-              <i class="bi bi-search"></i>
-              Google
-            </a>
-            <a href="#" class="quick-link" onclick="parent.loadUrl('https://youtube.com')">
-              <i class="bi bi-play-circle"></i>
-              YouTube
-            </a>
-            <a href="#" class="quick-link" onclick="parent.loadUrl('https://github.com')">
-              <i class="bi bi-github"></i>
-              GitHub
-            </a>
-            <a href="#" class="quick-link" onclick="parent.loadUrl('https://reddit.com')">
-              <i class="bi bi-reddit"></i>
-              Reddit
-            </a>
-          </div>
-        </div>
-        <style>
-          body { margin: 0; font-family: 'Poppins', sans-serif; }
-          .new-tab-page {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #1a0033, #000000);
-            color: white;
-            text-align: center;
-            padding: 20px;
-          }
-          .new-tab-page h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px #9d4edd;
-          }
-          .new-tab-page p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-bottom: 30px;
-          }
-          .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            max-width: 600px;
-            width: 100%;
-          }
-          .quick-link {
-            background: rgba(123, 44, 191, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            cursor: pointer;
-          }
-          .quick-link:hover {
-            background: rgba(123, 44, 191, 0.5);
-            border-color: #9d4edd;
-            color: white;
-            text-decoration: none;
-          }
-          .quick-link i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            display: block;
-          }
-        </style>
-      `;
-      
-      // Store tab data
-      tabs[tabId] = {
-        button: tabButton,
-        iframe: iframe,
-        url: '',
-        title: 'New Tab'
-      };
-      
-      // Add event listener to tab button
-      tabButton.addEventListener('click', function() {
-        switchToTab(tabId);
-      });
-      
-      // Insert tab button before the + button
-      const addTabBtn = document.getElementById('addTabBtn');
-      addTabBtn.parentNode.insertBefore(tabButton, addTabBtn);
-      
-      // Add iframe to container
-      document.getElementById('iframeContainer').appendChild(iframe);
-      
-      // Switch to new tab
-      switchToTab(tabId);
-      
-      return tabId;
-    }
-
-    function switchToTab(tabId) {
-      // Remove active class from all tabs and iframes
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tabIframe').forEach(iframe => iframe.classList.remove('active'));
-      
-      // Add active class to selected tab and iframe
-      if (tabs[tabId]) {
-        tabs[tabId].button.classList.add('active');
-        tabs[tabId].iframe.classList.add('active');
-        activeTabId = tabId;
-        
-        // Update URL input
-        document.getElementById('urlInput').value = tabs[tabId].url;
-      }
-    }
-
-    function closeTab(tabId, event) {
-      event.stopPropagation();
-      
-      if (Object.keys(tabs).length === 1) {
-        // If it's the last tab, create a new one before closing
-        createNewTab();
-      }
-      
-      // Remove tab elements
-      tabs[tabId].button.remove();
-      tabs[tabId].iframe.remove();
-      delete tabs[tabId];
-      
-      // If we closed the active tab, switch to another tab
-      if (activeTabId === tabId) {
-        const remainingTabs = Object.keys(tabs);
-        if (remainingTabs.length > 0) {
-          switchToTab(remainingTabs[0]);
-        }
-      }
-    }
-
-    function loadUrl(url) {
-      if (!activeTabId) return;
-      
-      // Simple URL validation and formatting
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        if (url.includes('.') && !url.includes(' ')) {
-          url = 'https://' + url;
-        } else {
-          url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
-        }
-      }
-      
-      tabs[activeTabId].url = url;
-      tabs[activeTabId].iframe.src = url;
-      
-      // Update tab title (simplified)
-      const domain = url.replace(/^https?:\/\//, '').split('/')[0];
-      tabs[activeTabId].title = domain;
-      tabs[activeTabId].button.querySelector('.tab-title').textContent = domain;
-      
-      // Update URL input
-      document.getElementById('urlInput').value = url;
-    }
-
-    function updateTime() {
-      const now = new Date();
-      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      document.getElementById('time').textContent = time;
-    }
-
-    // Event listeners
-    document.getElementById('addTabBtn').addEventListener('click', createNewTab);
-    
-    document.getElementById('goBtn').addEventListener('click', function() {
-      const url = document.getElementById('urlInput').value.trim();
-      if (url) {
-        loadUrl(url);
-      }
-    });
-    
-    document.getElementById('urlInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        const url = this.value.trim();
-        if (url) {
-          loadUrl(url);
-        }
-      }
-    });
-
-    // Sidebar functionality
-    document.getElementById('homeBtn').addEventListener('click', function() {
-      loadUrl('https://www.google.com');
-    });
-    
-    document.getElementById('gamesBtn').addEventListener('click', function() {
-      loadUrl('https://www.coolmathgames.com');
-    });
-    
-    document.getElementById('moviesBtn').addEventListener('click', function() {
-      loadUrl('https://www.netflix.com');
-    });
-    
-    document.getElementById('chatBtn').addEventListener('click', function() {
-      loadUrl('https://www.discord.com');
-    });
-    
-    document.getElementById('weatherBtn').addEventListener('click', function() {
-      loadUrl('https://www.weather.com');
-    });
-  </script>
+  <script src="/active/uv/uv.bundle.js" defer></script>
+  <script src="/active/uv/uv.config.js" defer></script>
+  <script src="/assets/js/register.js" defer></script>
+  <script src="/assets/js/index.js" defer></script>
 </body>
 </html>
