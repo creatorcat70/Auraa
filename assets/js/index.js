@@ -1,6 +1,17 @@
 function runStealthMode() {
-  const title = "Google";
-  const icon = "https://www.google.com/favicon.ico";
+  // Get cloak setting from localStorage or default
+  const cloak = localStorage.getItem("auraaCloak") || "default";
+  let title = "Auraa";
+  let icon = "icon.png";
+
+  if (cloak !== "default") {
+    const parts = cloak.split("|");
+    if (parts.length === 2) {
+      icon = parts[0];
+      title = parts[1];
+    }
+  }
+
   const src = window.location.href;
 
   const popup = window.open("about:blank", "_blank");
@@ -36,7 +47,10 @@ function runStealthMode() {
   `);
   popup.document.close();
 
-  localStorage.setItem("stealthModeEnabled", "false");
+  // Correctly enable stealth mode in localStorage
+  localStorage.setItem("stealthModeEnabled", "true");
+
+  // Redirect main window to a neutral site after opening popup
   window.location.href = "https://www.google.com";
 }
 
@@ -54,36 +68,48 @@ function generateSearchUrl(query) {
 }
 
 window.onload = function () {
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("content").style.display = "block";
+  // Hide loader, show content if they exist
+  const loaderEl = document.getElementById("loader");
+  const contentEl = document.getElementById("content");
+  if (loaderEl) loaderEl.style.display = "none";
+  if (contentEl) contentEl.style.display = "block";
 
-  navigator.getBattery?.().then(battery => {
-    function updateBattery() {
-      document.getElementById("battery").textContent = `Battery: ${Math.round(battery.level * 100)}% ⚡`;
-    }
-    updateBattery();
-    battery.addEventListener("levelchange", updateBattery);
-  });
+  // Battery info (if supported and element exists)
+  if (navigator.getBattery) {
+    navigator.getBattery().then(battery => {
+      function updateBattery() {
+        const batteryEl = document.getElementById("battery");
+        if (batteryEl) batteryEl.textContent = `Battery: ${Math.round(battery.level * 100)}% ⚡`;
+      }
+      updateBattery();
+      battery.addEventListener("levelchange", updateBattery);
+    });
+  }
 
+  // Clock
   function updateTime() {
     const now = new Date();
-    document.getElementById("time").textContent = "Time: " + now.toLocaleTimeString();
+    const timeEl = document.getElementById("time");
+    if (timeEl) timeEl.textContent = "Time: " + now.toLocaleTimeString();
   }
   setInterval(updateTime, 1000);
   updateTime();
 
+  // Setup stealth checkbox
   const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
   const checkbox = document.getElementById("blankMode");
-  checkbox.checked = stealth;
+  if (checkbox) {
+    checkbox.checked = stealth;
+    if (stealth) runStealthMode();
 
-  if (stealth) runStealthMode();
+    checkbox.addEventListener("change", function () {
+      const isChecked = checkbox.checked;
+      localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
+      if (isChecked) runStealthMode();
+    });
+  }
 
-  checkbox.addEventListener("change", function () {
-    const isChecked = checkbox.checked;
-    localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
-    if (isChecked) runStealthMode();
-  });
-
+  // Random message
   const messages = [
     "Sydney was here",
     "bebby was here",
@@ -91,20 +117,24 @@ window.onload = function () {
     "aura level 10000"
   ];
   const randomIndex = Math.floor(Math.random() * messages.length);
-  document.getElementById("randomMessage").textContent = messages[randomIndex];
+  const msgEl = document.getElementById("randomMessage");
+  if (msgEl) msgEl.textContent = messages[randomIndex];
 
-  // 🔥 WEATHER BASED ON LOCATION (Open-Meteo)
+  // Weather based on location (Open-Meteo)
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
 
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`)
         .then(res => res.json())
         .then(data => {
           const current = data.current_weather;
+          if (!current) throw new Error("No weather data");
+
           const temp = current.temperature;
           const code = current.weathercode;
+
           const icon = getWeatherEmoji(code);
           const desc = getWeatherDescription(code);
 
@@ -127,13 +157,13 @@ window.onload = function () {
   }
 
   function getWeatherEmoji(code) {
-    if ([0,1].includes(code)) return '☀️';
-    if ([2,3].includes(code)) return '⛅';
-    if ([45,48].includes(code)) return '🌫️';
-    if ([51,53,55,56,57].includes(code)) return '🌧️';
-    if ([61,63,65,66,67,80,81,82].includes(code)) return '🌦️';
-    if ([71,73,75,77,85,86].includes(code)) return '❄️';
-    if ([95,96,99].includes(code)) return '⛈️';
+    if ([0, 1].includes(code)) return '☀️';
+    if ([2, 3].includes(code)) return '⛅';
+    if ([45, 48].includes(code)) return '🌫️';
+    if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌦️';
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
+    if ([95, 96, 99].includes(code)) return '⛈️';
     return '❓';
   }
 
@@ -172,40 +202,48 @@ window.onload = function () {
   }
 };
 
-// Optional game loader
+// Optional game loader (if your page has links and iframe)
 document.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
     const gameName = link.textContent;
     console.log("Loading " + gameName + "...");
-    document.getElementById("loader").style.display = "block";
-    document.getElementById("content").style.display = "none";
+    const loader = document.getElementById("loader");
+    const content = document.getElementById("content");
+    if (loader) loader.style.display = "block";
+    if (content) content.style.display = "none";
 
     const iframe = document.getElementById("gameFrame");
     if (iframe) {
       iframe.onload = function () {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("content").style.display = "block";
+        if (loader) loader.style.display = "none";
+        if (content) content.style.display = "block";
       };
     }
   });
 });
 
-// Proxy search
-document.getElementById("searchForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const query = document.getElementById("urlInput").value.trim();
-  if (!query) return;
+// Proxy search handling
+const searchForm = document.getElementById("searchForm");
+if (searchForm) {
+  searchForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const query = document.getElementById("urlInput").value.trim();
+    if (!query) return;
 
-  if (typeof __uv$config === "undefined") {
-    alert("Ultraviolet proxy not loaded.");
-    return;
-  }
+    if (typeof __uv$config === "undefined") {
+      alert("Ultraviolet proxy not loaded.");
+      return;
+    }
 
-  const rawUrl = generateSearchUrl(query);
-  const encoded = __uv$config.encodeUrl(rawUrl);
-  const proxyUrl = __uv$config.prefix + encoded;
+    const rawUrl = generateSearchUrl(query);
+    const encoded = __uv$config.encodeUrl(rawUrl);
+    const proxyUrl = __uv$config.prefix + encoded;
 
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("content").style.display = "none";
-  window.location.href = proxyUrl;
-});
+    const loader = document.getElementById("loader");
+    const content = document.getElementById("content");
+    if (loader) loader.style.display = "block";
+    if (content) content.style.display = "none";
+
+    window.location.href = proxyUrl;
+  });
+}
