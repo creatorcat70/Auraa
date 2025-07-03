@@ -87,8 +87,8 @@
   </div>
 
   <div id="message">Waiting for location permission...</div>
-  <p> please allow location permissions for this module to work</p>
-  <p> We do not moniter your location and store it anywhere. </p>
+  <p>please allow location permissions for this module to work</p>
+  <p>We do not monitor your location and store it anywhere.</p>
   <button id="retryBtn" style="display:none;">Retry</button>
 
   <div class="forecast">
@@ -164,7 +164,7 @@
 
           const celsius = current.temperature;
           const fahrenheit = celsiusToFahrenheit(celsius).toFixed(1);
-          const wind = current.windspeed?.toFixed?.(1) || "?";
+          const wind = typeof current.windspeed === "number" ? current.windspeed.toFixed(1) : "?";
           const currentTime = new Date(current.time);
           const hour = currentTime.getHours();
           const isNight = hour >= 19 || hour < 6;
@@ -187,7 +187,6 @@
               messageEl.textContent = 'Weather updated (location name unavailable)';
             });
 
-          // Forecast
           for (let i = 0; i < 7; i++) {
             const date = daily.time[i];
             const max = daily.temperature_2m_max[i];
