@@ -96,8 +96,9 @@
     99: "Thunderstorm with heavy hail"
   };
 
-  function getIconForCode(code) {
-    if ([0,1].includes(code)) return '☀️';       
+  // Returns the icon for weather code, but at night shows moon for clear sky or mainly clear
+  function getIconForCode(code, isNight) {
+    if ([0,1].includes(code)) return isNight ? '🌙' : '☀️';       
     if ([2,3].includes(code)) return '⛅';       
     if ([45,48].includes(code)) return '🌫️';   
     if ([51,53,55,56,57].includes(code)) return '🌧️'; 
@@ -107,21 +108,24 @@
     return '❓';
   }
 
-  // Convert Celsius to Fahrenheit
   function celsiusToFahrenheit(c) {
     return (c * 9/5) + 32;
   }
 
-  // Determine if it is night based on user's local time at their location (using timezone offset from geolocation API)
-  // We approximate night as between 7 PM and 6 AM local time
-  function isNight(date) {
-    const hour = date.getHours();
-    return (hour >= 19 || hour < 6);
+  function getTimeMessage(hour) {
+    if (hour === 0) return "It's midnight!";
+    if (hour >= 1 && hour <= 4) return `It's ${hour} AM...`;
+    if (hour >= 5 && hour <= 11) return "Good morning!";
+    if (hour === 12) return "It's noon!";
+    if (hour >= 13 && hour <= 16) return "Good afternoon!";
+    if (hour >= 17 && hour <= 20) return "Good evening!";
+    if (hour >= 21 && hour <= 23) return "Good night!";
+    return "";
   }
 
   function fetchWeather(lat, lon) {
     messageEl.textContent = 'Fetching weather data...';
-    locationNameEl.textContent = ''; // Clear previous location
+    locationNameEl.textContent = '';
     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
 
     fetch(weatherUrl)
@@ -136,20 +140,20 @@
         const celsius = current.temperature.toFixed(1);
         const fahrenheit = celsiusToFahrenheit(current.temperature).toFixed(1);
 
-        // Determine if it's night based on current time in user's timezone (auto timezone from API)
-        // data.current_weather.time is in ISO string format like "2023-07-03T13:00"
         const currentTime = new Date(current.time);
-        const night = isNight(currentTime);
+        const hour = currentTime.getHours();
+        const isNight = (hour >= 19 || hour < 6);
 
-        const dayNightIcon = night ? '🌙' : '☀️';
+        // Large icon changes to moon at night for clear sky or mainly clear, else normal icon
+        weatherIcon.textContent = getIconForCode(current.weathercode, isNight);
 
-        temperatureEl.textContent = `${dayNightIcon} ${celsius}°C / ${fahrenheit}°F`;
-        descriptionEl.textContent = weatherCodes[current.weathercode] || 'Unknown weather';
-        weatherIcon.textContent = getIconForCode(current.weathercode);
+        // The small icon next to temperature always sun, no moon
+        temperatureEl.textContent = `☀️ ${celsius}°C / ${fahrenheit}°F`;
+
+        descriptionEl.textContent = getTimeMessage(hour);
 
         messageEl.textContent = 'Fetching location name...';
 
-        // Reverse geocode to get human-readable location name
         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
           .then(resp => {
             if (!resp.ok) throw new Error('Failed to get location name');
