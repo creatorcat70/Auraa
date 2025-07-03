@@ -92,9 +92,9 @@
     <option value="default">Default - Auraa</option>
     <option value="https://www.khanacademy.org/favicon.ico|Khan Academy">Khan Academy</option>
     <option value="https://www.google.com/favicon.ico|Google Classroom">Google Classroom</option>
-    <option value="https://www.wikipedia.org/static/favicon/wikipedia.ico|Wikipedia</option>
+    <option value="https://www.wikipedia.org/static/favicon/wikipedia.ico|Wikipedia">Wikipedia</option>
     <option value="https://www.edmodo.com/favicon.ico|Edmodo</option>
-    <option value="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6/svgs/solid/book.svg|Scholarly</option>
+    <option value="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6/svgs/solid/book.svg|Scholarly">Scholarly</option>
   </select>
 
   <label for="particleCountInput" style="margin-top:40px;">Number of falling particles:</label>
@@ -113,10 +113,11 @@
 
   <button id="saveBtn" style="margin-top:40px;">Save Settings</button>
 
+  <button onclick="window.location.href='index.html'" style="margin-top:20px;">Back to Homepage</button>
+
   <p class="footer">Auraa Settings | Made by @thefakesydney</p>
 
   <script>
-    // Load saved settings or defaults
     const cloakSelect = document.getElementById('cloakSelect');
     const particleCountInput = document.getElementById('particleCountInput');
     const particleToggle = document.getElementById('particleToggle');
@@ -145,7 +146,6 @@
 
     loadSettings();
 
-    // Also apply favicon and title preview on cloak select change
     cloakSelect.addEventListener('change', () => {
       if (cloakSelect.value === 'default') {
         document.title = "Auraa Settings";
