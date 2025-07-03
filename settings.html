@@ -74,6 +74,11 @@
       background: #9d4edd;
     }
 
+    input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
     .footer {
       margin-top: auto;
       font-size: 0.9rem;
@@ -129,14 +134,14 @@
       let count = localStorage.getItem('auraaParticleCount');
       if (count === null) {
         count = '100';
-        localStorage.setItem('auraaParticleCount', count); // ✅ default value
+        localStorage.setItem('auraaParticleCount', count);
       }
       particleCountInput.value = count;
 
       let enabled = localStorage.getItem('auraaParticlesEnabled');
       if (enabled === null) {
         enabled = 'true';
-        localStorage.setItem('auraaParticlesEnabled', enabled); // ✅ default value
+        localStorage.setItem('auraaParticlesEnabled', enabled);
       }
       particleToggle.checked = enabled === 'true';
     }
@@ -163,6 +168,94 @@
 
     loadSettings();
   </script>
+
+  <!-- Particle logic + live toggle -->
+  <script>
+    let animationFrameId = null;
+
+    function createParticles() {
+      if (document.getElementById('snowCanvas')) return;
+
+      const canvas = document.createElement('canvas');
+      canvas.id = 'snowCanvas';
+      Object.assign(canvas.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: '0'
+      });
+      document.body.prepend(canvas);
+
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10) || 100;
+      const flakes = Array.from({ length: flakesCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.5 + 0.5,
+        speedY: Math.random() * 0.5 + 0.2,
+        speedX: (Math.random() - 0.5) * 0.2
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        flakes.forEach(flake => {
+          ctx.moveTo(flake.x, flake.y);
+          ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        });
+        ctx.fill();
+
+        flakes.forEach(flake => {
+          flake.y += flake.speedY;
+          flake.x += flake.speedX;
+
+          if (flake.y > height) {
+            flake.y = 0;
+            flake.x = Math.random() * width;
+          }
+          if (flake.x > width) flake.x = 0;
+          if (flake.x < 0) flake.x = width;
+        });
+
+        animationFrameId = requestAnimationFrame(draw);
+      }
+
+      draw();
+    }
+
+    function removeParticles() {
+      const canvas = document.getElementById('snowCanvas');
+      if (canvas) canvas.remove();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+
+    particleToggle.addEventListener('change', () => {
+      const enabled = particleToggle.checked;
+      localStorage.setItem('auraaParticlesEnabled', enabled);
+      if (enabled) {
+        createParticles();
+      } else {
+        removeParticles();
+      }
+    });
+
+    // On page load
+    if (particleToggle.checked) {
+      createParticles();
+    }
+  </script>
 </body>
 </html>
-
