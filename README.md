@@ -1,5 +1,5 @@
 # Aura V1
-Forked from (Tide)[https://github.com/xXmizzeryXx/Tide] which is made by Mizzery.
+Forked from [Tide](https://github.com/xXmizzeryXx/Tide) which is made by Mizzery.
 Unlimited aura with this one
 
 # Disclaimer
@@ -8,4 +8,4 @@ The consequences can be - Let's just say, pretty bad.
 
 ---
 
-# Officially Part of the (Elusion)[https://dsc.gg/elusiongoat] family!
+# Officially Part of the [Elusion](https://dsc.gg/elusiongoat) family!
