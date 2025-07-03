@@ -36,6 +36,10 @@ function runStealthMode() {
   `);
   popup.document.close();
 
+  // Prevent repeated cloaking
+  localStorage.setItem("stealthModeEnabled", "false");
+
+  // Redirect current tab to Google
   window.location.href = "https://www.google.com";
 }
 
