@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather | Auraa (Free)</title>
+  <link rel="icon" href="icon.png" type="image/png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2a003f, #000000);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.2em;
+      text-shadow: 0 0 10px #9d4edd;
+    }
+
+    #weatherIcon {
+      width: 100px;
+      height: 100px;
+      margin: 1em auto;
+    }
+
+    #temperature {
+      font-size: 2.5rem;
+      margin: 0.2em 0;
+    }
+
+    #description {
+      font-size: 1.5rem;
+      margin-bottom: 1em;
+      text-transform: capitalize;
+    }
+
+    #location {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 2em;
+      color: #c77dff;
+      text-shadow: 0 0 5px #c77dff;
+    }
+
+    #errorMsg {
+      color: #ff5555;
+      margin-top: 1em;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 10px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: #7b2cbf;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+      user-select: none;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #9d4edd;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Current Weather</h1>
+  <div id="weatherContent">
+    <img id="weatherIcon" src="" alt="Weather Icon" style="display:none;" />
+    <div id="temperature"></div>
+    <div id="description"></div>
+    <div id="location"></div>
+  </div>
+  <div id="errorMsg"></div>
+
+  <button onclick="window.location.href='index.html'">Back to Home</button>
+
+  <script>
+    const weatherIcon = document.getElementById('weatherIcon');
+    const temperatureEl = document.getElementById('temperature');
+    const descriptionEl = document.getElementById('description');
+    const locationEl = document.getElementById('location');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Weather codes and descriptions from Open-Meteo docs
+    const weatherCodes = {
+      0: "Clear sky",
+      1: "Mainly clear",
+      2: "Partly cloudy",
+      3: "Overcast",
+      45: "Fog",
+      48: "Depositing rime fog",
+      51: "Light drizzle",
+      53: "Moderate drizzle",
+      55: "Dense drizzle",
+      56: "Light freezing drizzle",
+      57: "Dense freezing drizzle",
+      61: "Slight rain",
+      63: "Moderate rain",
+      65: "Heavy rain",
+      66: "Light freezing rain",
+      67: "Heavy freezing rain",
+      71: "Slight snow fall",
+      73: "Moderate snow fall",
+      75: "Heavy snow fall",
+      77: "Snow grains",
+      80: "Slight rain showers",
+      81: "Moderate rain showers",
+      82: "Violent rain showers",
+      85: "Slight snow showers",
+      86: "Heavy snow showers",
+      95: "Thunderstorm",
+      96: "Thunderstorm with slight hail",
+      99: "Thunderstorm with heavy hail"
+    };
+
+    function getIconForCode(code) {
+      // Simplified mapping for icons, using OpenWeatherMap icons
+      if ([0,1].includes(code)) return '☀️';       // Clear/sunny
+      if ([2,3].includes(code)) return '⛅';       // Cloudy
+      if ([45,48].includes(code)) return '🌫️';   // Fog
+      if ([51,53,55,56,57].includes(code)) return '🌧️'; // Drizzle
+      if ([61,63,65,66,67,80,81,82].includes(code)) return '🌦️'; // Rain
+      if ([71,73,75,77,85,86].includes(code)) return '❄️'; // Snow
+      if ([95,96,99].includes(code)) return '⛈️'; // Thunderstorm
+      return '❓';
+    }
+
+    function fetchWeather(lat, lon) {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch weather data');
+          return response.json();
+        })
+        .then(data => {
+          const current = data.current_weather;
+          if (!current) throw new Error('No current weather data');
+
+          const tempC = current.temperature.toFixed(1);
+          const weatherCode = current.weathercode;
+          const desc = weatherCodes[weatherCode] || "Unknown weather";
+
+          temperatureEl.textContent = `${tempC}°C`;
+          descriptionEl.textContent = desc;
+          weatherIcon.textContent = getIconForCode(weatherCode);
+          weatherIcon.style.fontSize = '6rem';
+          weatherIcon.style.display = 'block';
+          locationEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+          errorMsg.textContent = '';
+        })
+        .catch(err => {
+          errorMsg.textContent = 'Error loading weather data.';
+          console.error(err);
+        });
+    }
+
+    function init() {
+      if (!navigator.geolocation) {
+        errorMsg.textContent = 'Geolocation is not supported by your browser.';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          fetchWeather(position.coords.latitude, position.coords.longitude);
+        },
+        error => {
+          errorMsg.textContent = 'Unable to retrieve your location. Please allow location access.';
+          console.error(error);
+        },
+        {timeout: 10000}
+      );
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
