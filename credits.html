@@ -3,9 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tide Credits</title>
+  <title>Credits</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2a003f, #000000);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #9d4edd, #7b2cbf, #c77dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .dot {
+      color: #9d4edd;
+    }
+
     .button-link {
       display: inline-block;
       margin: 10px;
@@ -45,11 +75,51 @@
       content: "• ";
       color: #ffcc70;
     }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 30px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: #7b2cbf;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      animation: wave 3s infinite;
+    }
+
+    button:hover {
+      background: #9d4edd;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0 5px #c77dff;
+    }
+
+    @keyframes wave {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      padding: 40px 20px;
+      max-width: 800px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">Credits<span class="dot">.</span></h1>
+    <h1 class="gradient-text">Credits<span class="dot">.</span></h1>
 
     <p class="credits-text">
       Tide was built with care and creativity.<br>
@@ -57,14 +127,14 @@
     </p>
 
     <div class="contributors">
-      <h2>Contributors</h2>
+      <h2 class="gradient-text">Contributors</h2>
       <ul>
-        <li><strong>xXmizzeryXx</strong> – Ownership and for Coding the original website - tide</li>
+        <li><strong>xXmizzeryXx</strong> – Ownership and for coding the original website - Tide</li>
         <li><strong>Me, thefakesydney, for creating Auraa</strong></li>
         <li>SEA SALT (PyroTF2) – Research and Development</li>
         <li>EdwardAI – GitHub repository for select game integrations</li>
         <li><strong>l4uy (')</strong> – UV Static Integration, Inspiration</li>
-        <li>Raldi (robloxdev_lucy) for Link Creation</li>
+        <li>Raldi (robloxdev_lucy) – Link Creation</li>
         <li>Tide Supporters and Partners – For continued feedback and motivation</li>
         <li>All Tide testers that graciously helped with this project</li>
       </ul>
@@ -76,10 +146,10 @@
 
     <br><br>
     <button onclick="window.location.href='index.html'">Back to Tide</button>
-  </div>
 
-  <div class="footer">
-    &copy; 2025 Tide | By Mizzery
+    <div class="footer">
+      &copy; 2025 Tide | By Mizzery
+    </div>
   </div>
 </body>
 </html>
