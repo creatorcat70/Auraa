@@ -1,239 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Weather | Auraa (Debug)</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #2a003f;
-    color: white;
-    text-align: center;
-    padding: 2rem;
-  }
-  #weatherIcon {
-    font-size: 6rem;
-    margin: 1rem 0;
-  }
-  #message {
-    margin-top: 1rem;
-    font-weight: bold;
-    color: #f0a;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 20px;
-    background: #7b2cbf;
-    color: white;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-  button:hover {
-    background: #9d4edd;
-  }
-  #temperature {
-    font-size: 2rem;
-    margin: 0.5rem 0;
-  }
-  #locationName {
-    margin-top: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather | Auraa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #2a003f;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    #weatherIcon {
+      font-size: 6rem;
+      margin: 1rem 0;
+    }
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #f0a;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 20px;
+      background: #7b2cbf;
+      color: white;
+      cursor: pointer;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    button:hover {
+      background: #9d4edd;
+    }
+    #temperature, #feelsLike, #wind {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+    #locationName {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .top-bar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    .top-bar button {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+    #forecast {
+      margin-top: 2rem;
+    }
+    .forecast-day {
+      display: inline-block;
+      background: #3a005f;
+      border-radius: 12px;
+      margin: 0.5rem;
+      padding: 1rem;
+      width: 120px;
+    }
+    .forecast-day h4 {
+      margin: 0.3rem 0;
+      font-size: 1rem;
+    }
+    .forecast-day span {
+      font-size: 2rem;
+    }
+  </style>
 </head>
 <body>
-<h1>Current Weather</h1>
-<div id="weatherContent">
-  <div id="weatherIcon"></div>
-  <div id="temperature"></div>
-  <div id="description"></div>
-  <div id="locationName"></div>
-  <div id="weathertext"></div>
-</div>
-<div id="message">Waiting for location permission...</div>
-<button id="retryBtn" style="display:none;">Retry</button>
+  <div class="top-bar">
+    <button onclick="window.location.href='index.html'">← Back to Homepage</button>
+  </div>
 
-<script>
-  const weatherIcon = document.getElementById('weatherIcon');
-  const temperatureEl = document.getElementById('temperature');
-  const descriptionEl = document.getElementById('description');
-  const locationNameEl = document.getElementById('locationName');
-  const messageEl = document.getElementById('message');
-  const retryBtn = document.getElementById('retryBtn');
+  <h1>Current Weather</h1>
+  <div id="weatherContent">
+    <div id="weatherIcon"></div>
+    <div id="temperature"></div>
+    <div id="feelsLike"></div>
+    <div id="wind"></div>
+    <div id="description"></div>
+    <div id="locationName"></div>
+  </div>
+  <div id="message">Waiting for location permission...</div>
+  <button id="retryBtn" style="display:none;">Retry</button>
 
-  const weatherCodes = {
-    0: "Clear sky",
-    1: "Mainly clear",
-    2: "Partly cloudy",
-    3: "Overcast",
-    45: "Fog",
-    48: "Depositing rime fog",
-    51: "Light drizzle",
-    53: "Moderate drizzle",
-    55: "Dense drizzle",
-    56: "Light freezing drizzle",
-    57: "Dense freezing drizzle",
-    61: "Slight rain",
-    63: "Moderate rain",
-    65: "Heavy rain",
-    66: "Light freezing rain",
-    67: "Heavy freezing rain",
-    71: "Slight snow fall",
-    73: "Moderate snow fall",
-    75: "Heavy snow fall",
-    77: "Snow grains",
-    80: "Slight rain showers",
-    81: "Moderate rain showers",
-    82: "Violent rain showers",
-    85: "Slight snow showers",
-    86: "Heavy snow showers",
-    95: "Thunderstorm",
-    96: "Thunderstorm with slight hail",
-    99: "Thunderstorm with heavy hail"
-  };
+  <div id="forecast">
+    <h2>7-Day Forecast</h2>
+    <div id="forecastDays"></div>
+  </div>
 
-  // Returns the icon for weather code, but at night shows moon for clear sky or mainly clear
-  function getIconForCode(code, isNight) {
-    if ([0,1].includes(code)) return isNight ? '🌙' : '☀️';       
-    if ([2,3].includes(code)) return '⛅';       
-    if ([45,48].includes(code)) return '🌫️';   
-    if ([51,53,55,56,57].includes(code)) return '🌧️'; 
-    if ([61,63,65,66,67,80,81,82].includes(code)) return '🌦️'; 
-    if ([71,73,75,77,85,86].includes(code)) return '❄️'; 
-    if ([95,96,99].includes(code)) return '⛈️'; 
-    return '❓';
-  }
+  <script>
+    const weatherIcon = document.getElementById('weatherIcon');
+    const temperatureEl = document.getElementById('temperature');
+    const feelsLikeEl = document.getElementById('feelsLike');
+    const windEl = document.getElementById('wind');
+    const descriptionEl = document.getElementById('description');
+    const locationNameEl = document.getElementById('locationName');
+    const messageEl = document.getElementById('message');
+    const retryBtn = document.getElementById('retryBtn');
+    const forecastDaysEl = document.getElementById('forecastDays');
 
-  function celsiusToFahrenheit(c) {
-    return (c * 9/5) + 32;
-  }
+    const weatherCodes = {
+      0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+      45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
+      55: "Dense drizzle", 56: "Light freezing drizzle", 57: "Dense freezing drizzle",
+      61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
+      66: "Light freezing rain", 67: "Heavy freezing rain",
+      71: "Slight snow fall", 73: "Moderate snow fall", 75: "Heavy snow fall",
+      77: "Snow grains", 80: "Slight rain showers", 81: "Moderate rain showers",
+      82: "Violent rain showers", 85: "Slight snow showers", 86: "Heavy snow showers",
+      95: "Thunderstorm", 96: "Thunderstorm with slight hail", 99: "Thunderstorm with heavy hail"
+    };
 
-  function getTimeMessage(hour) {
-    if (hour === 0) return "It's midnight!";
-    if (hour >= 1 && hour <= 4) return `It's ${hour} AM...`;
-    if (hour >= 5 && hour <= 11) return "Good morning!";
-    if (hour === 12) return "It's noon!";
-    if (hour >= 13 && hour <= 16) return "Good afternoon!";
-    if (hour >= 17 && hour <= 20) return "Good evening!";
-    if (hour >= 21 && hour <= 23) return "Good night!";
-    return "";
-  }
-
-  function fetchWeather(lat, lon) {
-    messageEl.textContent = 'Fetching weather data...';
-    locationNameEl.textContent = '';
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
-
-    fetch(weatherUrl)
-      .then(response => {
-        if (!response.ok) throw new Error('Weather fetch failed: ' + response.status);
-        return response.json();
-      })
-      .then(data => {
-        if (!data.current_weather) throw new Error('No current weather data received');
-        const current = data.current_weather;
-
-        const celsius = current.temperature.toFixed(1);
-        const fahrenheit = celsiusToFahrenheit(current.temperature).toFixed(1);
-
-        const currentTime = new Date(current.time);
-        const hour = currentTime.getHours();
-        const isNight = (hour >= 19 || hour < 6);
-
-        // Large icon changes to moon at night for clear sky or mainly clear, else normal icon
-        weatherIcon.textContent = getIconForCode(current.weathercode, isNight);
-
-        // The small icon next to temperature always sun, no moon
-        temperatureEl.textContent = `☀️ ${celsius}°C / ${fahrenheit}°F`;
-
-        descriptionEl.textContent = getTimeMessage(hour);
-
-        messageEl.textContent = 'Fetching location name...';
-
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-          .then(resp => {
-            if (!resp.ok) throw new Error('Failed to get location name');
-            return resp.json();
-          })
-          .then(locData => {
-            let displayName = locData.address.city 
-              || locData.address.town 
-              || locData.address.village 
-              || locData.address.county 
-              || locData.address.state 
-              || locData.address.country 
-              || 'Unknown location';
-
-            locationNameEl.textContent = `Location: ${displayName}`;
-            messageEl.textContent = 'Weather updated successfully!';
-          })
-          .catch(() => {
-            locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
-            messageEl.textContent = 'Weather updated (location name not available)';
-          });
-
-        retryBtn.style.display = 'none';
-      })
-      .catch(err => {
-        messageEl.textContent = 'Error fetching weather data: ' + err.message;
-        retryBtn.style.display = 'inline-block';
-        console.error(err);
-      });
-  }
-
-  function requestLocation() {
-    if (!navigator.geolocation) {
-      messageEl.textContent = 'Geolocation is not supported by your browser.';
-      retryBtn.style.display = 'none';
-      return;
+    function getIconForCode(code, isNight) {
+      if ([0, 1].includes(code)) return isNight ? '🌙' : '☀️';
+      if ([2, 3].includes(code)) return '⛅';
+      if ([45, 48].includes(code)) return '🌫️';
+      if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
+      if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌦️';
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
+      if ([95, 96, 99].includes(code)) return '⛈️';
+      return '❓';
     }
 
-    messageEl.textContent = 'Requesting location permission...';
-    retryBtn.style.display = 'none';
+    function celsiusToFahrenheit(c) {
+      return (c * 9 / 5) + 32;
+    }
 
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        fetchWeather(lat, lon);
-      },
-      error => {
-        let errorMsg = '';
-        switch(error.code) {
-          case error.PERMISSION_DENIED:
-            errorMsg = 'Permission denied. Please allow location access.';
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMsg = 'Position unavailable.';
-            break;
-          case error.TIMEOUT:
-            errorMsg = 'Location request timed out.';
-            break;
-          default:
-            errorMsg = 'An unknown error occurred.';
-        }
-        messageEl.textContent = errorMsg;
-        retryBtn.style.display = 'inline-block';
-        console.error(error);
-      },
-      {timeout: 15000}
-    );
-  }
+    function getTimeMessage(hour) {
+      if (hour === 0) return "It's midnight!";
+      if (hour <= 4) return `It's ${hour} AM...`;
+      if (hour <= 11) return "Good morning!";
+      if (hour === 12) return "It's noon!";
+      if (hour <= 16) return "Good afternoon!";
+      if (hour <= 20) return "Good evening!";
+      return "Good night!";
+    }
 
-  retryBtn.addEventListener('click', () => {
-    temperatureEl.textContent = '';
-    descriptionEl.textContent = '';
-    weatherIcon.textContent = '';
-    locationNameEl.textContent = '';
-    messageEl.textContent = '';
-    requestLocation();
-  });
+    function fetchWeather(lat, lon) {
+      messageEl.textContent = 'Fetching weather data...';
+      locationNameEl.textContent = '';
 
-  window.onload = requestLocation;
-</script>
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=apparent_temperature,windspeed_10m&timezone=auto`;
+
+      fetch(weatherUrl)
+        .then(response => {
+          if (!response.ok) throw new Error('Weather fetch failed');
+          return response.json();
+        })
+        .then(data => {
+          const current = data.current_weather;
+          const hourIndex = data.hourly.time.findIndex(t => t === current.time);
+          const feelsLike = data.hourly.apparent_temperature[hourIndex];
+          const windSpeed = current.windspeed;
+
+          const celsius = current.temperature.toFixed(1);
+          const fahrenheit = celsiusToFahrenheit(current.temperature).toFixed(1);
+          const feelsC = feelsLike.toFixed(1);
+          const feelsF = celsiusToFahrenheit(feelsLike).toFixed(1);
+
+          const currentTime = new Date(current.time);
+          const hour = currentTime.getHours();
+          const isNight = hour >= 19 || hour < 6;
+
+          weatherIcon.textContent = getIconForCode(current.weathercode, isNight);
+          temperatureEl.textContent = `Temperature: ${celsius}°C / ${fahrenheit}°F`;
+          feelsLikeEl.textContent = `Feels like: ${feelsC}°C / ${feelsF}°F`;
+          windEl.textContent = `Wind Speed: ${windSpeed} km/h`;
+          descriptionEl.textContent = getTimeMessage(hour);
+          retryBtn.style.display = 'none';
+
+          // Location reverse geocoding
+          messageEl.textContent = 'Fetching location name...';
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            .then(resp => resp.ok ? resp.json() : Promise.reject())
+            .then(locData => {
+              const name = locData.address.city || locData.address.town || locData.address.village ||
+                locData.address.county || locData.address.state || locData.address.country || 'Unknown';
+              locationNameEl.textContent = `Location: ${name}`;
+              messageEl.textContent = 'Weather updated!';
+            })
+            .catch(() => {
+              locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+              messageEl.textContent = 'Weather updated (location name unavailable)';
+            });
+
+          // 7-day forecast
+          forecastDaysEl.innerHTML = '';
+          for (let i = 0; i < 7; i++) {
+            const date = new Date(data.daily.time[i]);
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+            const icon = getIconForCode(data.daily.weathercode[i], false);
+            const max = data.daily.temperature_2m_max[i].toFixed(0);
+            const min = data.daily.temperature_2m_min[i].toFixed(0);
+
+            forecastDaysEl.innerHTML += `
+              <div class="forecast-day">
+                <h4>${dayName}</h4>
+                <span>${icon}</span>
+                <h4>${min}° / ${max}°C</h4>
+              </div>
+            `;
+          }
+        })
+        .catch(err => {
+          messageEl.textContent = 'Error: ' + err.message;
+          retryBtn.style.display = 'inline-block';
+        });
+    }
+
+    function requestLocation() {
+      if (!navigator.geolocation) {
+        messageEl.textContent = 'Geolocation not supported.';
+        return;
+      }
+
+      messageEl.textContent = 'Requesting location...';
+      navigator.geolocation.getCurrentPosition(
+        pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+        err => {
+          messageEl.textContent = 'Location error: ' + err.message;
+          retryBtn.style.display = 'inline-block';
+        },
+        { timeout: 15000 }
+      );
+    }
+
+    retryBtn.addEventListener('click', () => {
+      temperatureEl.textContent = '';
+      feelsLikeEl.textContent = '';
+      windEl.textContent = '';
+      descriptionEl.textContent = '';
+      weatherIcon.textContent = '';
+      locationNameEl.textContent = '';
+      forecastDaysEl.innerHTML = '';
+      messageEl.textContent = '';
+      requestLocation();
+    });
+
+    window.onload = requestLocation;
+  </script>
 </body>
 </html>
