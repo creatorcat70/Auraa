@@ -7,6 +7,7 @@
   <link rel="icon" type="image/x-icon" href="icon.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     body {
       margin: 0; padding: 0;
       background: linear-gradient(135deg, #2a003f, #000000);
@@ -40,6 +41,7 @@
       gap: 6px;
       transition: background 0.3s;
       position: relative;
+      font-size: 1rem;
     }
     #tabBar button.tab.active {
       background: #7b2cbf;
@@ -145,6 +147,21 @@
       color: white;
       text-shadow: 0 0 5px #c77dff;
     }
+    .auraa-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+    }
+    .auraa-title .dot {
+      color: #9d4edd;
+      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #ffffff;
+      font-size: 1.3rem;
+      line-height: 1;
+    }
   </style>
 </head>
 <body>
@@ -208,16 +225,24 @@
       return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
     }
 
-    function createTab(url) {
+    function createTab(url, isHome = false) {
       tabCounter++;
       const id = 'tab-' + tabCounter;
       const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
 
       const tabButton = document.createElement('button');
       tabButton.className = 'tab';
-      tabButton.textContent = url.length > 30 ? url.slice(0, 27) + '...' : url;
       tabButton.id = id;
       tabButton.title = url;
+
+      if (isHome) {
+        const auraaTitle = document.createElement('span');
+        auraaTitle.className = 'auraa-title';
+        auraaTitle.innerHTML = 'Auraa<span class="dot">.</span>';
+        tabButton.appendChild(auraaTitle);
+      } else {
+        tabButton.textContent = url.length > 30 ? url.slice(0, 27) + '...' : url;
+      }
 
       const closeBtn = document.createElement('span');
       closeBtn.className = 'closeBtn';
@@ -233,7 +258,7 @@
 
       iframeContainer.appendChild(iframe);
 
-      tabs.push({id, url, tabButton, iframe});
+      tabs.push({id, url, tabButton, iframe, isHome});
 
       tabButton.addEventListener('click', (e) => {
         if (e.target === closeBtn) {
@@ -294,11 +319,23 @@
         const tab = tabs.find(t => t.id === activeTabId);
         if (!tab) return;
         tab.url = generateSearchUrl(query);
-        tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'closeBtn';
-        closeBtn.innerHTML = '&times;';
-        tab.tabButton.appendChild(closeBtn);
+        if (tab.isHome) {
+          tab.tabButton.textContent = '';
+          const auraaTitle = document.createElement('span');
+          auraaTitle.className = 'auraa-title';
+          auraaTitle.innerHTML = 'Auraa<span class="dot">.</span>';
+          tab.tabButton.appendChild(auraaTitle);
+          const closeBtn = document.createElement('span');
+          closeBtn.className = 'closeBtn';
+          closeBtn.innerHTML = '&times;';
+          tab.tabButton.appendChild(closeBtn);
+        } else {
+          tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
+          const closeBtn = document.createElement('span');
+          closeBtn.className = 'closeBtn';
+          closeBtn.innerHTML = '&times;';
+          tab.tabButton.appendChild(closeBtn);
+        }
         tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
       }
     });
@@ -310,11 +347,11 @@
       }
     });
 
-    function openSidebarTab(url) {
-      createTab(url);
+    function openSidebarTab(url, isHome = false) {
+      createTab(url, isHome);
     }
 
-    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/index.html'));
+    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/index.html', true));
     gamesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/games.html'));
     moviesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/movies.html'));
     chatBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/tidechat.html'));
@@ -327,7 +364,7 @@
         alert("Ultraviolet proxy not loaded.");
         return;
       }
-      createTab('https://auraa.vercel.app/');
+      createTab('https://auraa.vercel.app/', true);
     };
 
     if (navigator.getBattery) {
