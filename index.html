@@ -168,6 +168,17 @@
       pointer-events: none;
       z-index: 1;
     }
+
+    /* Random message styling */
+    #randomMessage {
+      margin-top: 12px;
+      font-style: italic;
+      color: #c77dff;
+      font-weight: 500;
+      min-height: 1.5em;
+      user-select: none;
+      text-shadow: 0 0 5px #c77dff;
+    }
   </style>
 </head>
 <body>
@@ -182,9 +193,13 @@
 
       <form id="searchForm">
         <input type="text" id="urlInput" placeholder="Search for more Aura..." autocomplete="off" />
-        <div class="options">
+        <div class="options" style="margin-top: 10px;">
           <label><input type="checkbox" id="blankMode" /> Cloak (for more Aura)</label>
         </div>
+
+        <!-- Random message below cloak -->
+        <div id="randomMessage"></div>
+
         <button type="submit"> Start </button>
       </form>
     </div>
@@ -213,29 +228,121 @@
   <script src="/assets/js/index.js" defer></script>
 
   <script>
-    window.onload = function() {
+    // Cloak popup open + redirect with safeguard
+    function runStealthMode() {
+      const title = "Google";
+      const icon = "https://www.google.com/favicon.ico";
+      const src = window.location.href;
+
+      const popup = window.open("about:blank", "_blank");
+
+      if (!popup || popup.closed) {
+        alert("Popup blocked. Please allow popups for Cloaking to work.");
+        // Reset toggle
+        localStorage.setItem("stealthModeEnabled", "false");
+        document.getElementById("blankMode").checked = false;
+        return;
+      }
+
+      popup.document.write(`
+        <html>
+          <head>
+            <title>${title}</title>
+            <link rel="icon" href="${icon}">
+            <style>
+              html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+              }
+              iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+              }
+            </style>
+          </head>
+          <body>
+            <iframe src="${src}"></iframe>
+          </body>
+        </html>
+      `);
+      popup.document.close();
+
+      // Prevent infinite reload loop
+      localStorage.setItem("stealthModeEnabled", "false");
+
+      // Redirect this tab away
+      window.location.href = "https://www.google.com";
+    }
+
+    // URL generation for search or direct URL
+    function generateSearchUrl(query) {
+      try {
+        const url = new URL(query);
+        return url.toString();
+      } catch {
+        try {
+          const url = new URL(`https://${query}`);
+          if (url.hostname.includes('.')) return url.toString();
+        } catch {}
+      }
+      return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
+    }
+
+    window.onload = function () {
       setTimeout(() => {
         document.getElementById("loader").style.display = 'none';
         document.getElementById("content").style.display = 'block';
       }, 1500);
 
-      navigator.getBattery().then(battery => {
-        function updateBattery() {
-          document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
-        }
-        updateBattery();
-        battery.addEventListener("levelchange", updateBattery);
-      });
+      // Battery indicator
+      if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+          function updateBattery() {
+            document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
+          }
+          updateBattery();
+          battery.addEventListener("levelchange", updateBattery);
+        });
+      } else {
+        document.getElementById("battery").textContent = "Battery: N/A";
+      }
 
+      // Clock
       function updateTime() {
         const now = new Date();
         document.getElementById("time").textContent = now.toLocaleTimeString();
       }
       setInterval(updateTime, 1000);
       updateTime();
+
+      // Stealth mode toggle state & behavior
+      const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
+      const checkbox = document.getElementById("blankMode");
+      checkbox.checked = stealth;
+
+      if (stealth) runStealthMode();
+
+      checkbox.addEventListener("change", function () {
+        const isChecked = checkbox.checked;
+        localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
+        if (isChecked) runStealthMode();
+      });
+
+      // Random message below cloak toggle
+      const messages = [
+        "Sydney was here",
+        "bebby was here",
+        "Unlimited Aura.",
+        "aura level 10000"
+      ];
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      document.getElementById("randomMessage").textContent = messages[randomIndex];
     };
 
-    // Particle snowfall script
+    // Particle snowfall script (preserved as original)
     (function(){
       const canvas = document.getElementById('snowCanvas');
       const ctx = canvas.getContext('2d');
@@ -299,6 +406,28 @@
 
       draw();
     })();
+
+    // Search form submit with UV proxy integration
+    document.getElementById("searchForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const query = document.getElementById("urlInput").value.trim();
+      if (!query) return;
+
+      if (typeof __uv$config === "undefined") {
+        alert("Ultraviolet proxy not loaded.");
+        return;
+      }
+
+      const rawUrl = generateSearchUrl(query);
+      const encoded = __uv$config.encodeUrl(rawUrl);
+      const proxyUrl = __uv$config.prefix + encoded;
+
+      document.getElementById("loader").style.display = "flex";
+      document.getElementById("content").style.display = "none";
+
+      window.location.href = proxyUrl;
+    });
   </script>
 </body>
 </html>
