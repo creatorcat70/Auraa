@@ -7,42 +7,110 @@
   <link rel="icon" type="image/x-icon" href="icon.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: linear-gradient(135deg, #2a003f, #000000);
       color: #fff;
       font-family: 'Poppins', sans-serif;
       height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       overflow: hidden;
-      animation: flickerBackground 6s infinite ease-in-out;
+    }
+    #tabBar {
+      display: flex;
+      background: rgba(35,0,55,0.9);
+      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      padding: 0 10px;
+      user-select: none;
+      height: 40px;
+      align-items: center;
+      gap: 5px;
+    }
+    #tabBar button.tab {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s;
       position: relative;
-      z-index: 0;
     }
-    .container {
-      text-align: center;
-      animation: fadeIn 2s ease forwards;
-      position: relative;
-      z-index: 10;
+    #tabBar button.tab.active {
+      background: #7b2cbf;
+      box-shadow: 0 -2px 5px #9d4edd;
     }
-    .title {
-      font-size: 4rem;
-      font-weight: 700;
-      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #ffffff;
+    #tabBar button.tab .closeBtn {
+      font-size: 0.8rem;
+      margin-left: 6px;
+      color: #ccc;
+      cursor: pointer;
+      user-select: none;
     }
-    @keyframes flickerBackground {
-      0%, 100% { background: linear-gradient(135deg, #2a003f, #000000); }
-      10% { background: linear-gradient(135deg, #3c096c, #111111); }
-      20% { background: linear-gradient(135deg, #7b2cbf, #000); }
-      25% { background: linear-gradient(135deg, #9d4edd, #1a0033); }
-      30%, 90% { background: linear-gradient(135deg, #2a003f, #000000); }
+    #tabBar button.tab:hover .closeBtn {
+      color: white;
     }
-    .dot {
+    #tabBar button#addTabBtn {
+      font-size: 1.4rem;
+      font-weight: bold;
+      background: transparent;
+      border: none;
       color: #9d4edd;
+      cursor: pointer;
+      user-select: none;
+      margin-left: auto;
+    }
+    #iframeContainer {
+      flex-grow: 1;
+      position: relative;
+    }
+    iframe.tabIframe {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border: none;
+      background: white;
+      display: none;
+      border-radius: 0 0 10px 10px;
+      box-shadow: inset 0 0 20px #7b2cbf88;
+    }
+    iframe.tabIframe.active {
+      display: block;
+    }
+    #searchContainer {
+      padding: 10px;
+      background: rgba(50, 0, 80, 0.9);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: white;
+    }
+    #urlInput {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: #2a003f;
+      color: white;
+      box-shadow: 0 0 8px #9d4edd88;
+    }
+    #goBtn {
+      padding: 8px 20px;
+      background: #7b2cbf;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    #goBtn:hover {
+      background: #9d4edd;
     }
     .sidebar {
       position: fixed;
@@ -77,149 +145,31 @@
       color: white;
       text-shadow: 0 0 5px #c77dff;
     }
-    input[type="text"] {
-      padding: 12px;
-      width: 300px;
-      border: none;
-      border-radius: 25px;
-      background: rgba(50, 0, 80, 0.9);
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
-      box-shadow: 0 0 8px rgba(157, 78, 221, 0.4);
-    }
-    input[type="text"]:focus {
-      background: rgba(70, 0, 100, 0.95);
-      box-shadow: 0 0 12px rgba(233, 145, 255, 0.9);
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 30px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      background: #7b2cbf;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      animation: wave 3s infinite;
-    }
-    button:hover {
-      background: #9d4edd;
-    }
-    .footer {
-      position: fixed;
-      bottom: 10px;
-      right: 15px;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
-      text-shadow: 0 0 5px #c77dff;
-      z-index: 20;
-      user-select: none;
-    }
-    @keyframes wave {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-      100% { transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.5rem;
-      background: linear-gradient(135deg, #2a003f, #000000);
-      z-index: 999;
-    }
-    #snowCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 1;
-    }
-    #randomMessage {
-      margin-top: 12px;
-      font-style: italic;
-      color: #c77dff;
-      font-weight: 500;
-      min-height: 1.5em;
-      max-width: 90%;
-      word-wrap: break-word;
-      white-space: normal;
-      text-align: center;
-      text-shadow: 0 0 5px #c77dff;
-      user-select: none;
-    }
-    #newTabBtnContainer {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 50;
-    }
-    #newTabBtn {
-      font-size: 28px;
-      background: transparent;
-      border: none;
-      color: #9d4edd;
-      cursor: pointer;
-      transition: color 0.3s ease;
-      border-radius: 6px;
-      padding: 4px 10px;
-      user-select: none;
-    }
-    #newTabBtn:hover {
-      color: #e0aaff;
-      background: rgba(157, 78, 221, 0.2);
-    }
   </style>
 </head>
 <body>
-  <canvas id="snowCanvas"></canvas>
-
-  <div id="newTabBtnContainer">
-    <button id="newTabBtn" title="Open new tab">＋</button>
+  <div class="sidebar">
+    <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
+    <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
+    <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
+    <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
+    <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
+    <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
+    <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    <div class="sidebar-info">
+      <span id="battery">⚡</span>
+      <span id="time">⌚</span>
+    </div>
   </div>
 
-  <div id="mainContent">
-    <div id="loader" class="loader">Loading...</div>
-    <div class="container" id="content" style="display: none;">
-      <h1 class="title">Auraa<span class="dot">.</span></h1>
-      <form id="searchForm">
-        <input type="text" id="urlInput" placeholder="Search for more Aura..." autocomplete="off" />
-        <div class="options" style="margin-top: 10px;">
-          <label><input type="checkbox" id="blankMode" /> Cloaking (Click to Toggle)</label>
-        </div>
-        <div id="randomMessage"></div>
-        <button type="submit"> Start </button>
-      </form>
-    </div>
-    <div class="sidebar">
-      <button onclick="window.location.href='index.html';" title="Home"><i class="bi bi-house"></i></button>
-      <button onclick="window.location.href='games.html';"><i class="bi bi-joystick"></i></button>
-      <button onclick="window.location.href='movies.html';"><i class="bi bi-film"></i></button>
-      <button onclick="window.location.href='tidechat.html';"><i class="bi bi-chat-dots"></i></button>
-      <button onclick="window.location.href='credits.html';"><i class="bi bi-info-circle"></i></button>
-      <button onclick="window.location.href='settings.html';"><i class="bi bi-gear"></i></button>
-      <button onclick="window.location.href='weather.html';" title="Weather"><i class="bi bi-cloud-sun"></i></button>
-      <div class="sidebar-info">
-        <span id="battery">⚡</span>
-        <span id="time">⌚</span>
-      </div>
-    </div>
-    <div class="footer">Auraa | Made by @thefakesydney </div>
+  <div id="tabBar">
+    <button id="addTabBtn" title="New Tab">＋</button>
   </div>
+  <div id="searchContainer">
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
+    <button id="goBtn">Go</button>
+  </div>
+  <div id="iframeContainer"></div>
 
   <script src="/active/uv/uv.bundle.js" defer></script>
   <script src="/active/uv/uv.config.js" defer></script>
@@ -227,45 +177,23 @@
   <script src="/assets/js/index.js" defer></script>
 
   <script>
-    function runStealthMode() {
-      const title = "Google";
-      const icon = "https://www.google.com/favicon.ico";
-      const src = window.location.href;
-      const popup = window.open("about:blank", "_blank");
-      if (!popup || popup.closed) {
-        alert("Popup blocked. Please allow popups for Cloaking to work.");
-        localStorage.setItem("stealthModeEnabled", "false");
-        document.getElementById("blankMode").checked = false;
-        return;
-      }
-      popup.document.write(`
-        <html>
-          <head>
-            <title>${title}</title>
-            <link rel="icon" href="${icon}">
-            <style>
-              html, body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                overflow: hidden;
-              }
-              iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-              }
-            </style>
-          </head>
-          <body>
-            <iframe src="${src}"></iframe>
-          </body>
-        </html>
-      `);
-      popup.document.close();
-      localStorage.setItem("stealthModeEnabled", "false");
-      window.location.href = "https://www.google.com";
-    }
+    const tabBar = document.getElementById('tabBar');
+    const addTabBtn = document.getElementById('addTabBtn');
+    const iframeContainer = document.getElementById('iframeContainer');
+    const urlInput = document.getElementById('urlInput');
+    const goBtn = document.getElementById('goBtn');
+
+    const homeBtn = document.getElementById('homeBtn');
+    const gamesBtn = document.getElementById('gamesBtn');
+    const moviesBtn = document.getElementById('moviesBtn');
+    const chatBtn = document.getElementById('chatBtn');
+    const creditsBtn = document.getElementById('creditsBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const weatherBtn = document.getElementById('weatherBtn');
+
+    let tabs = [];
+    let activeTabId = null;
+    let tabCounter = 0;
 
     function generateSearchUrl(query) {
       try {
@@ -280,125 +208,146 @@
       return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
     }
 
-    window.onload = function () {
-      setTimeout(() => {
-        document.getElementById("loader").style.display = 'none';
-        document.getElementById("content").style.display = 'block';
-      }, 1500);
+    function createTab(url) {
+      tabCounter++;
+      const id = 'tab-' + tabCounter;
+      const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
 
-      if (navigator.getBattery) {
-        navigator.getBattery().then(battery => {
-          function updateBattery() {
-            document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
-          }
-          updateBattery();
-          battery.addEventListener("levelchange", updateBattery);
-        });
+      const tabButton = document.createElement('button');
+      tabButton.className = 'tab';
+      tabButton.textContent = url.length > 30 ? url.slice(0, 27) + '...' : url;
+      tabButton.id = id;
+      tabButton.title = url;
+
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'closeBtn';
+      closeBtn.innerHTML = '&times;';
+      tabButton.appendChild(closeBtn);
+
+      tabBar.insertBefore(tabButton, addTabBtn);
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'tabIframe';
+      iframe.id = 'iframe-' + id;
+      iframe.src = encodedUrl;
+
+      iframeContainer.appendChild(iframe);
+
+      tabs.push({id, url, tabButton, iframe});
+
+      tabButton.addEventListener('click', (e) => {
+        if (e.target === closeBtn) {
+          closeTab(id);
+        } else {
+          activateTab(id);
+        }
+      });
+
+      activateTab(id);
+    }
+
+    function activateTab(id) {
+      if (activeTabId === id) return;
+      tabs.forEach(tab => {
+        if (tab.id === id) {
+          tab.tabButton.classList.add('active');
+          tab.iframe.classList.add('active');
+          urlInput.value = tab.url;
+          activeTabId = id;
+        } else {
+          tab.tabButton.classList.remove('active');
+          tab.iframe.classList.remove('active');
+        }
+      });
+    }
+
+    function closeTab(id) {
+      const index = tabs.findIndex(tab => tab.id === id);
+      if (index === -1) return;
+
+      const tab = tabs[index];
+      tab.tabButton.remove();
+      tab.iframe.remove();
+
+      tabs.splice(index, 1);
+
+      if (tabs.length > 0) {
+        const newActiveIndex = index > 0 ? index - 1 : 0;
+        activateTab(tabs[newActiveIndex].id);
       } else {
-        document.getElementById("battery").textContent = "Battery: N/A";
+        activeTabId = null;
+        urlInput.value = '';
       }
+    }
 
-      function updateTime() {
-        const now = new Date();
-        document.getElementById("time").textContent = now.toLocaleTimeString();
-      }
-      setInterval(updateTime, 1000);
-      updateTime();
+    addTabBtn.addEventListener('click', () => {
+      const defaultUrl = 'https://auraa.vercel.app/';
+      createTab(defaultUrl);
+    });
 
-      const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
-      const checkbox = document.getElementById("blankMode");
-      checkbox.checked = stealth;
-      if (stealth) runStealthMode();
-      checkbox.addEventListener("change", function () {
-        const isChecked = checkbox.checked;
-        localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
-        if (isChecked) runStealthMode();
-      });
-
-      const messages = [
-        "Sydney was here",
-        "bebby was here",
-        "Unlimited Aura.",
-        "aura level 10000",
-        "If your teacher catches you, I was never here.",
-        "Advanced blob proxy.",
-        "Made using Tide",
-        "Tide creds go to Mizzery"
-      ];
-      const randomIndex = Math.floor(Math.random() * messages.length);
-      document.getElementById("randomMessage").textContent = messages[randomIndex];
-
-      document.getElementById('newTabBtn').addEventListener('click', () => {
-        window.open(window.location.href, '_blank');
-      });
-    };
-
-    (function(){
-      const canvas = document.getElementById('snowCanvas');
-      const ctx = canvas.getContext('2d');
-      let width, height;
-      function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-      const enabled = localStorage.getItem('auraaParticlesEnabled');
-      if (enabled !== 'true') return;
-      const flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10);
-      const count = Number.isInteger(flakesCount) && flakesCount >= 0 && flakesCount <= 300 ? flakesCount : 100;
-      const flakes = [];
-      for (let i = 0; i < count; i++) {
-        flakes.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.5 + 0.5,
-          speedY: Math.random() * 0.5 + 0.2,
-          speedX: (Math.random() - 0.5) * 0.2
-        });
-      }
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.beginPath();
-        flakes.forEach(flake => {
-          ctx.moveTo(flake.x, flake.y);
-          ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-        });
-        ctx.fill();
-        update();
-        requestAnimationFrame(draw);
-      }
-      function update() {
-        flakes.forEach(flake => {
-          flake.y += flake.speedY;
-          flake.x += flake.speedX;
-          if (flake.y > height) {
-            flake.y = 0;
-            flake.x = Math.random() * width;
-          }
-          if (flake.x > width) flake.x = 0;
-          if (flake.x < 0) flake.x = width;
-        });
-      }
-      draw();
-    })();
-
-    document.getElementById("searchForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const query = document.getElementById("urlInput").value.trim();
+    goBtn.addEventListener('click', () => {
+      const query = urlInput.value.trim();
       if (!query) return;
+      if (!activeTabId) {
+        createTab(generateSearchUrl(query));
+      } else {
+        const tab = tabs.find(t => t.id === activeTabId);
+        if (!tab) return;
+        tab.url = generateSearchUrl(query);
+        tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'closeBtn';
+        closeBtn.innerHTML = '&times;';
+        tab.tabButton.appendChild(closeBtn);
+        tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
+      }
+    });
+
+    urlInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        goBtn.click();
+      }
+    });
+
+    function openSidebarTab(url) {
+      createTab(url);
+    }
+
+    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/index.html'));
+    gamesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/games.html'));
+    moviesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/movies.html'));
+    chatBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/tidechat.html'));
+    creditsBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/credits.html'));
+    settingsBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/settings.html'));
+    weatherBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/weather.html'));
+
+    window.onload = () => {
       if (typeof __uv$config === "undefined") {
         alert("Ultraviolet proxy not loaded.");
         return;
       }
-      const rawUrl = generateSearchUrl(query);
-      const encoded = __uv$config.encodeUrl(rawUrl);
-      const proxyUrl = __uv$config.prefix + encoded;
-      document.getElementById("loader").style.display = "flex";
-      document.getElementById("content").style.display = "none";
-      window.location.href = proxyUrl;
-    });
+      createTab('https://auraa.vercel.app/');
+    };
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        function updateBattery() {
+          document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
+        }
+        updateBattery();
+        battery.addEventListener("levelchange", updateBattery);
+      });
+    } else {
+      document.getElementById("battery").textContent = "Battery: N/A";
+    }
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("time").textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 </body>
 </html>
