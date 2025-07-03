@@ -1,4 +1,7 @@
 function runStealthMode() {
+  // Clear flag immediately to avoid reload loop
+  localStorage.setItem("stealthModeEnabled", "false");
+
   // Get cloak setting from localStorage or default
   const cloak = localStorage.getItem("auraaCloak") || "default";
   let title = "Auraa";
@@ -47,10 +50,7 @@ function runStealthMode() {
   `);
   popup.document.close();
 
-  // Correctly enable stealth mode in localStorage
-  localStorage.setItem("stealthModeEnabled", "true");
-
-  // Redirect main window to a neutral site after opening popup
+  // Redirect main window to Google after opening popup
   window.location.href = "https://www.google.com";
 }
 
@@ -68,13 +68,11 @@ function generateSearchUrl(query) {
 }
 
 window.onload = function () {
-  // Hide loader, show content if they exist
   const loaderEl = document.getElementById("loader");
   const contentEl = document.getElementById("content");
   if (loaderEl) loaderEl.style.display = "none";
   if (contentEl) contentEl.style.display = "block";
 
-  // Battery info (if supported and element exists)
   if (navigator.getBattery) {
     navigator.getBattery().then(battery => {
       function updateBattery() {
@@ -86,7 +84,6 @@ window.onload = function () {
     });
   }
 
-  // Clock
   function updateTime() {
     const now = new Date();
     const timeEl = document.getElementById("time");
@@ -95,21 +92,39 @@ window.onload = function () {
   setInterval(updateTime, 1000);
   updateTime();
 
-  // Setup stealth checkbox
-  const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
   const checkbox = document.getElementById("blankMode");
   if (checkbox) {
-    checkbox.checked = stealth;
-    if (stealth) runStealthMode();
+    // Initialize checkbox state from localStorage
+    const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
+    checkbox.checked = stealthEnabled;
+
+    // Flag to track if stealth mode popup was already opened
+    let stealthModeOpened = JSON.parse(localStorage.getItem("stealthModeOpened")) || false;
+
+    // Only run stealth mode on load if previously toggled on AND not opened before
+    if (stealthEnabled && !stealthModeOpened) {
+      runStealthMode();
+      localStorage.setItem("stealthModeOpened", "true");
+    }
 
     checkbox.addEventListener("change", function () {
       const isChecked = checkbox.checked;
       localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
-      if (isChecked) runStealthMode();
+
+      if (isChecked) {
+        if (!stealthModeOpened) {
+          runStealthMode();
+          localStorage.setItem("stealthModeOpened", "true");
+          stealthModeOpened = true;
+        }
+      } else {
+        // User turned stealth off, clear the "opened" flag
+        localStorage.setItem("stealthModeOpened", "false");
+        stealthModeOpened = false;
+      }
     });
   }
 
-  // Random message
   const messages = [
     "Sydney was here",
     "bebby was here",
@@ -120,7 +135,6 @@ window.onload = function () {
   const msgEl = document.getElementById("randomMessage");
   if (msgEl) msgEl.textContent = messages[randomIndex];
 
-  // Weather based on location (Open-Meteo)
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = pos.coords.latitude;
@@ -202,7 +216,7 @@ window.onload = function () {
   }
 };
 
-// Optional game loader (if your page has links and iframe)
+// Optional game loader (if you have links and iframe)
 document.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
     const gameName = link.textContent;
@@ -247,3 +261,4 @@ if (searchForm) {
     window.location.href = proxyUrl;
   });
 }
+
