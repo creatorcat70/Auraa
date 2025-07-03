@@ -46,9 +46,13 @@
       font-size: 1.2rem;
       margin-top: 30px;
       display: block;
+      text-align: left;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    select, button {
+    select, input[type=number], button {
       margin-top: 15px;
       padding: 12px 25px;
       border-radius: 25px;
@@ -60,10 +64,13 @@
       box-shadow: 0 0 8px #9d4edd;
       transition: 0.3s ease;
       outline: none;
-      min-width: 250px;
+      width: 300px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    select:hover, button:hover {
+    select:hover, input[type=number]:hover, button:hover {
       background: #9d4edd;
     }
 
@@ -73,6 +80,7 @@
       color: rgba(255, 255, 255, 0.7);
       text-shadow: 0 0 5px #c77dff;
       padding-bottom: 20px;
+      user-select: none;
     }
   </style>
 </head>
@@ -89,32 +97,65 @@
     <option value="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6/svgs/solid/book.svg|Scholarly</option>
   </select>
 
-  <br />
-  <button onclick="applyCloak()">Apply</button>
+  <label for="particleCountInput" style="margin-top:40px;">Number of falling particles:</label>
+  <input
+    type="number"
+    id="particleCountInput"
+    min="0"
+    max="300"
+    step="1"
+    placeholder="Enter number (0-300)"
+  />
+
+  <label for="particleToggle" style="margin-top:40px;">
+    <input type="checkbox" id="particleToggle" /> Enable falling particles effect
+  </label>
+
+  <button id="saveBtn" style="margin-top:40px;">Save Settings</button>
 
   <p class="footer">Auraa Settings | Made by @thefakesydney</p>
 
   <script>
-    function applyCloak() {
-      const selected = document.getElementById("cloakSelect").value;
-      if (selected === "default") {
-        document.title = "Auraa Settings";
-        document.getElementById("dynamicFavicon").href = "icon.png";
-        return;
-      }
+    // Load saved settings or defaults
+    const cloakSelect = document.getElementById('cloakSelect');
+    const particleCountInput = document.getElementById('particleCountInput');
+    const particleToggle = document.getElementById('particleToggle');
+    const saveBtn = document.getElementById('saveBtn');
 
-      const [iconUrl, siteTitle] = selected.split("|");
-      document.title = siteTitle;
+    function loadSettings() {
+      const cloak = localStorage.getItem('auraaCloak') || 'default';
+      cloakSelect.value = cloak;
 
-      const favicon = document.getElementById("dynamicFavicon");
-      favicon.href = iconUrl;
+      const count = localStorage.getItem('auraaParticleCount') || '100';
+      particleCountInput.value = count;
+
+      const enabled = localStorage.getItem('auraaParticlesEnabled');
+      particleToggle.checked = enabled === null ? true : enabled === 'true';
     }
 
-    // Confirm before closing or refreshing tab
-    window.onbeforeunload = function () {
-      return "Are you sure you want to leave this page?";
-    };
+    function saveSettings() {
+      localStorage.setItem('auraaCloak', cloakSelect.value);
+      localStorage.setItem('auraaParticleCount', particleCountInput.value);
+      localStorage.setItem('auraaParticlesEnabled', particleToggle.checked);
+
+      alert('Settings saved! Changes will apply when you reload the main page.');
+    }
+
+    saveBtn.addEventListener('click', saveSettings);
+
+    loadSettings();
+
+    // Also apply favicon and title preview on cloak select change
+    cloakSelect.addEventListener('change', () => {
+      if (cloakSelect.value === 'default') {
+        document.title = "Auraa Settings";
+        document.getElementById('dynamicFavicon').href = "icon.png";
+        return;
+      }
+      const [iconUrl, siteTitle] = cloakSelect.value.split('|');
+      document.title = siteTitle;
+      document.getElementById('dynamicFavicon').href = iconUrl;
+    });
   </script>
 </body>
 </html>
-
