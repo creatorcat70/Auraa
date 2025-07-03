@@ -39,7 +39,7 @@ function runStealthMode() {
   // Prevent repeated cloaking
   localStorage.setItem("stealthModeEnabled", "false");
 
-  // Redirect current tab to Google
+  // Redirect this tab away
   window.location.href = "https://www.google.com";
 }
 
@@ -63,7 +63,7 @@ window.onload = function () {
   // Battery indicator
   navigator.getBattery?.().then(battery => {
     function updateBattery() {
-      document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
+      document.getElementById("battery").textContent = `Battery: ${Math.round(battery.level * 100)}% ⚡`;
     }
     updateBattery();
     battery.addEventListener("levelchange", updateBattery);
@@ -72,12 +72,12 @@ window.onload = function () {
   // Clock
   function updateTime() {
     const now = new Date();
-    document.getElementById("time").textContent = now.toLocaleTimeString();
+    document.getElementById("time").textContent = "Time: " + now.toLocaleTimeString();
   }
   setInterval(updateTime, 1000);
   updateTime();
 
-  // Stealth mode
+  // Stealth mode toggle
   const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
   const checkbox = document.getElementById("blankMode");
   checkbox.checked = stealth;
@@ -89,11 +89,21 @@ window.onload = function () {
     localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
     if (isChecked) runStealthMode();
   });
+
+  // Random message display
+  const messages = [
+    "Sydney was here",
+    "bebby was here",
+    "Unlimited Aura.",
+    "aura level 10000"
+  ];
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  document.getElementById("randomMessage").textContent = messages[randomIndex];
 };
 
-// Handle <a> clicks (for optional game loading logic)
-document.querySelectorAll('a').forEach(function (link) {
-  link.addEventListener('click', function () {
+// Optional <a> clicks for game loading (if any)
+document.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
     const gameName = link.textContent;
     console.log("Loading " + gameName + "...");
 
