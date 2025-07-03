@@ -1,216 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Auraa</title>
-<link rel="icon" type="image/x-icon" href="icon.png" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    background: linear-gradient(135deg, #2a003f, #000000);
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  #tabBar {
-    display: flex;
-    background: rgba(35,0,55,0.9);
-    box-shadow: 0 0 8px rgba(157,78,221,0.9);
-    padding: 0 8px;
-    height: 40px;
-    align-items: center;
-    user-select: none;
-    gap: 4px;
-  }
-  #tabBar button.tab {
-    background: transparent;
-    border: none;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0 12px;
-    cursor: pointer;
-    height: 30px;
-    border-radius: 5px 5px 0 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  #tabBar button.tab.active {
-    background: #7b2cbf;
-    box-shadow: 0 0 6px #9d4edd;
-  }
-  #tabBar button.tab .closeBtn {
-    font-size: 0.9rem;
-    margin-left: 4px;
-    cursor: pointer;
-    color: #f0a;
-  }
-  #tabBar button#addTabBtn {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: transparent;
-    color: #9d4edd;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 8px;
-    user-select: none;
-  }
-  #tabBar button#addTabBtn:hover {
-    color: #e0aaff;
-  }
-  #contentArea {
-    flex: 1;
-    background: rgba(20,0,50,0.9);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .tabContent {
-    display: none;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0; left: 0;
-    background: transparent;
-  }
-  .tabContent.active {
-    display: flex;
-    flex-direction: column;
-  }
-  #homeContent {
-    padding: 40px 20px 20px 20px;
-    text-align: center;
-    flex: 1;
-    overflow-y: auto;
-    user-select: none;
-  }
-  #homeContent h1.title {
-    font-size: 4rem;
-    font-weight: 700;
-    margin: 0;
-    user-select: none;
-    text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #fff;
-  }
-  #homeContent .dot {
-    color: #9d4edd;
-  }
-  #searchForm {
-    margin-top: 30px;
-    display: inline-block;
-  }
-  #searchForm input[type="text"] {
-    padding: 12px 18px;
-    width: 300px;
-    border-radius: 25px;
-    border: none;
-    background: rgba(50,0,80,0.9);
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    box-shadow: 0 0 8px rgba(157,78,221,0.4);
-    transition: background 0.3s, box-shadow 0.3s;
-  }
-  #searchForm input[type="text"]:focus {
-    background: rgba(70,0,100,0.95);
-    box-shadow: 0 0 12px rgba(233,145,255,0.9);
-  }
-  #searchForm label {
-    color: white;
-    font-size: 0.9rem;
-    display: block;
-    margin: 8px 0 0 0;
-    user-select: none;
-    cursor: pointer;
-  }
-  #searchForm label input[type="checkbox"] {
-    margin-right: 6px;
-    cursor: pointer;
-  }
-  #searchForm button {
-    margin-top: 15px;
-    padding: 10px 30px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 25px;
-    background: #7b2cbf;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-    animation: wave 3s infinite;
-  }
-  #searchForm button:hover {
-    background: #9d4edd;
-  }
-  #randomMessage {
-    margin-top: 12px;
-    font-style: italic;
-    color: #c77dff;
-    font-weight: 500;
-    min-height: 1.5em;
-    max-width: 90%;
-    word-wrap: break-word;
-    white-space: normal;
-    text-align: center;
-    text-shadow: 0 0 5px #c77dff;
-    user-select: none;
-  }
-  @keyframes wave {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0); }
-  }
-  iframe.proxyIframe {
-    flex: 1;
-    border: none;
-    width: 100%;
-    height: 100%;
-    background: white;
-  }
-  .sidebar {
-    position: fixed;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(35, 0, 55, 0.9);
-    padding: 10px;
-    width: 60px;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 20;
-  }
-  .sidebar button {
-    background: transparent;
-    border: none;
-    font-size: 2rem;
-    color: #fff;
-    margin: 10px 0;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  .sidebar button:hover {
-    color: #e0aaff;
-  }
-  .sidebar-info {
-    margin-top: 10px;
-    font-size: 1rem;
-    color: white;
-    text-shadow: 0 0 5px #c77dff;
-  }
-  #battery, #time {
-    user-select: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auraa</title>
+  <link rel="icon" type="image/x-icon" href="icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: linear-gradient(135deg, #2a003f, #000000);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #tabBar {
+      display: flex;
+      background: rgba(35, 0, 55, 0.9);
+      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      padding: 0 8px;
+      height: 40px;
+      align-items: center;
+      gap: 4px;
+      z-index: 100;
+    }
+    #tabBar button.tab {
+      background: transparent;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0 12px;
+      cursor: pointer;
+      height: 30px;
+      border-radius: 5px 5px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #tabBar button.tab.active {
+      background: #7b2cbf;
+      box-shadow: 0 0 6px #9d4edd;
+    }
+    #tabBar button.tab .closeBtn {
+      font-size: 0.9rem;
+      margin-left: 4px;
+      cursor: pointer;
+      color: #f0a;
+    }
+    #tabBar button#addTabBtn {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: transparent;
+      color: #9d4edd;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 8px;
+    }
+    #tabBar button#addTabBtn:hover {
+      color: #e0aaff;
+    }
+    #contentArea {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .tabContent {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .tabContent.active {
+      display: flex;
+      flex-direction: column;
+    }
+    iframe.proxyIframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+    #homeContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+      text-align: center;
+    }
+    #homeContent h1.title {
+      font-size: 4rem;
+      font-weight: 700;
+      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #fff;
+    }
+    #homeContent .dot {
+      color: #9d4edd;
+    }
+    #searchForm {
+      margin: 20px auto;
+      text-align: center;
+    }
+    #searchForm input[type="text"] {
+      padding: 12px 18px;
+      width: 300px;
+      border-radius: 25px;
+      border: none;
+      background: rgba(50,0,80,0.9);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 0 8px rgba(157,78,221,0.4);
+    }
+    #searchForm label {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    #searchForm button {
+      margin-top: 15px;
+      padding: 10px 30px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: #7b2cbf;
+      color: white;
+      cursor: pointer;
+      animation: wave 3s infinite;
+    }
+    #searchForm button:hover {
+      background: #9d4edd;
+    }
+    #randomMessage {
+      margin-top: 10px;
+      color: #c77dff;
+      font-style: italic;
+      font-weight: 500;
+      text-shadow: 0 0 5px #c77dff;
+    }
+    @keyframes wave {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+    .sidebar {
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(35, 0, 55, 0.9);
+      padding: 10px;
+      width: 60px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 200;
+    }
+    .sidebar button {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: #fff;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      color: #e0aaff;
+    }
+    .sidebar-info {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
@@ -222,223 +193,157 @@
   </div>
 
   <div id="contentArea">
-    <div class="tabContent active" data-tab="home" id="homeContent">
+    <div class="tabContent active" id="homeContent" data-tab="home">
       <h1 class="title">Auraa<span class="dot">.</span></h1>
-      <form id="searchForm">
-        <input type="text" id="urlInput" placeholder="Search for more Aura..." autocomplete="off" />
-        <label><input type="checkbox" id="blankMode" /> Cloaking (Click to Toggle)</label>
-        <div id="randomMessage"></div>
-        <button type="submit">Start</button>
-      </form>
     </div>
   </div>
 
+  <form id="searchForm">
+    <input type="text" id="urlInput" placeholder="Search for more Aura..." autocomplete="off" />
+    <label><input type="checkbox" id="blankMode" /> Cloaking (Click to Toggle)</label>
+    <div id="randomMessage"></div>
+    <button type="submit">Start</button>
+  </form>
+
   <div class="sidebar">
     <button title="Home" id="sidebarHomeBtn"><i class="bi bi-house"></i></button>
-    <button title="Games" data-url="https://example.com/games"><i class="bi bi-joystick"></i></button>
-    <button title="Movies" data-url="https://example.com/movies"><i class="bi bi-film"></i></button>
-    <button title="Chat" data-url="https://example.com/chat"><i class="bi bi-chat-dots"></i></button>
-    <button title="Credits" data-url="https://example.com/credits"><i class="bi bi-info-circle"></i></button>
-    <button title="Settings" data-url="https://example.com/settings"><i class="bi bi-gear"></i></button>
-    <button title="Weather" data-url="https://example.com/weather"><i class="bi bi-cloud-sun"></i></button>
+    <button title="Games" data-url="/games.html"><i class="bi bi-joystick"></i></button>
+    <button title="Movies" data-url="/movies.html"><i class="bi bi-film"></i></button>
+    <button title="Chat" data-url="/chat.html"><i class="bi bi-chat-dots"></i></button>
+    <button title="Credits" data-url="/credits.html"><i class="bi bi-info-circle"></i></button>
+    <button title="Settings" data-url="/settings.html"><i class="bi bi-gear"></i></button>
+    <button title="Weather" data-url="/weather.html"><i class="bi bi-cloud-sun"></i></button>
     <div class="sidebar-info">
       <span id="battery">⚡</span>
       <span id="time">⌚</span>
     </div>
   </div>
 
-<script src="/active/uv/uv.bundle.js" defer></script>
-<script src="/active/uv/uv.config.js" defer></script>
-<script>
-  const tabBar = document.getElementById('tabBar');
-  const contentArea = document.getElementById('contentArea');
-  const addTabBtn = document.getElementById('addTabBtn');
-  const homeTabBtn = tabBar.querySelector('button[data-tab="home"]');
-  const homeContent = document.getElementById('homeContent');
-  let tabCount = 1;
+  <script src="/active/uv/uv.bundle.js" defer></script>
+  <script src="/active/uv/uv.config.js" defer></script>
+  <script>
+    const tabBar = document.getElementById('tabBar');
+    const contentArea = document.getElementById('contentArea');
+    const homeTabBtn = tabBar.querySelector('button[data-tab="home"]');
+    const homeContent = document.getElementById('homeContent');
+    const addTabBtn = document.getElementById('addTabBtn');
 
-  function createTab(url, title) {
-    tabCount++;
-    const tabId = 'tab' + tabCount;
-    const tabBtn = document.createElement('button');
-    tabBtn.className = 'tab';
-    tabBtn.dataset.tab = tabId;
-    tabBtn.title = url;
-    tabBtn.innerHTML = `<span>${title}</span><span class="closeBtn">&times;</span>`;
-    tabBar.insertBefore(tabBtn, addTabBtn);
+    function sanitizeTabId(url) {
+      return 'tab-' + url.replace(/[^a-zA-Z0-9]/g, '');
+    }
 
-    const iframe = document.createElement('iframe');
-    iframe.className = 'proxyIframe tabContent';
-    iframe.dataset.tab = tabId;
-    iframe.src = url;
-    contentArea.appendChild(iframe);
-
-    activateTab(tabId);
-
-    tabBtn.querySelector('.closeBtn').addEventListener('click', e => {
-      e.stopPropagation();
-      closeTab(tabId);
-    });
-
-    tabBtn.addEventListener('click', () => activateTab(tabId));
-  }
-
-  function activateTab(tabId) {
-    [...tabBar.querySelectorAll('button.tab')].forEach(btn => btn.classList.remove('active'));
-    [...contentArea.querySelectorAll('.tabContent')].forEach(div => div.classList.remove('active'));
-    if (tabId === 'home') {
-      homeTabBtn.classList.add('active');
-      homeContent.classList.add('active');
-      document.getElementById('searchForm').style.display = 'inline-block';
-      document.getElementById('urlInput').value = '';
-    } else {
-      document.getElementById('searchForm').style.display = 'none';
+    function activateTab(tabId) {
+      [...tabBar.querySelectorAll('button.tab')].forEach(btn => btn.classList.remove('active'));
+      [...contentArea.querySelectorAll('.tabContent')].forEach(div => div.classList.remove('active'));
       const btn = tabBar.querySelector(`button[data-tab="${tabId}"]`);
-      const iframe = contentArea.querySelector(`iframe[data-tab="${tabId}"]`);
-      if (btn && iframe) {
+      const content = contentArea.querySelector(`.tabContent[data-tab="${tabId}"]`);
+      if (btn && content) {
         btn.classList.add('active');
-        iframe.classList.add('active');
+        content.classList.add('active');
       }
     }
-  }
 
-  function closeTab(tabId) {
-    const btn = tabBar.querySelector(`button[data-tab="${tabId}"]`);
-    const iframe = contentArea.querySelector(`iframe[data-tab="${tabId}"]`);
-    if (btn) btn.remove();
-    if (iframe) iframe.remove();
-    if (btn && btn.classList.contains('active')) activateTab('home');
-  }
+    function closeTab(tabId) {
+      const btn = tabBar.querySelector(`button[data-tab="${tabId}"]`);
+      const content = contentArea.querySelector(`.tabContent[data-tab="${tabId}"]`);
+      if (btn) btn.remove();
+      if (content) content.remove();
+      activateTab('home');
+    }
 
-  addTabBtn.addEventListener('click', () => createTab('https://startpage.com', 'New Tab'));
-  homeTabBtn.addEventListener('click', () => activateTab('home'));
-  document.querySelectorAll('.sidebar button[data-url]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.url;
-      const title = btn.title || url;
-      createTab(url, title);
+    function createTab(url, title) {
+      const tabId = sanitizeTabId(url);
+      if (tabBar.querySelector(`button[data-tab="${tabId}"]`)) {
+        activateTab(tabId);
+        return;
+      }
+
+      const tabBtn = document.createElement('button');
+      tabBtn.className = 'tab';
+      tabBtn.dataset.tab = tabId;
+      tabBtn.title = url;
+      tabBtn.innerHTML = `<span>${title}</span><span class="closeBtn">&times;</span>`;
+      tabBar.insertBefore(tabBtn, addTabBtn);
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'proxyIframe tabContent active';
+      iframe.dataset.tab = tabId;
+      iframe.src = url;
+      contentArea.appendChild(iframe);
+
+      activateTab(tabId);
+
+      tabBtn.querySelector('.closeBtn').addEventListener('click', e => {
+        e.stopPropagation();
+        closeTab(tabId);
+      });
+
+      tabBtn.addEventListener('click', () => activateTab(tabId));
+    }
+
+    addTabBtn.addEventListener('click', () => createTab('https://startpage.com', 'New Tab'));
+    homeTabBtn.addEventListener('click', () => activateTab('home'));
+
+    document.querySelectorAll('.sidebar button[data-url]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.dataset.url;
+        const title = btn.title;
+        createTab(url, title);
+      });
     });
-  });
-  document.getElementById('sidebarHomeBtn').addEventListener('click', () => activateTab('home'));
 
-  function runStealthMode() {
-    localStorage.setItem("stealthModeEnabled", "false");
-    const cloak = localStorage.getItem("auraaCloak") || "default";
-    let title = "Auraa";
-    let icon = "icon.png";
-    if (cloak !== "default") {
-      const parts = cloak.split("|");
-      if (parts.length === 2) {
-        icon = parts[0];
-        title = parts[1];
-      }
-    }
-    const src = window.location.href;
-    const popup = window.open("about:blank", "_blank");
-    if (!popup || popup.closed) {
-      alert("Popup blocked. Please allow popups for Cloaking to work.");
-      return;
-    }
-    popup.document.write(`
-      <html>
-        <head>
-          <title>${title}</title>
-          <link rel="icon" href="${icon}">
-          <style>
-            html, body {
-              margin: 0; padding: 0; height: 100%; overflow: hidden;
-            }
-            iframe {
-              width: 100%; height: 100%; border: none;
-            }
-          </style>
-        </head>
-        <body>
-          <iframe src="${src}"></iframe>
-        </body>
-      </html>
-    `);
-    popup.document.close();
-    window.location.href = "https://www.google.com";
-  }
+    document.getElementById('sidebarHomeBtn').addEventListener('click', () => activateTab('home'));
 
-  function generateSearchUrl(query) {
-    try {
-      const url = new URL(query);
-      return url.toString();
-    } catch {
-      try {
-        const url = new URL(`https://${query}`);
-        if (url.hostname.includes('.')) return url.toString();
-      } catch {}
-    }
-    return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
-  }
-
-  window.onload = function () {
-    const checkbox = document.getElementById("blankMode");
-    if (checkbox) {
+    window.onload = () => {
+      const checkbox = document.getElementById("blankMode");
       const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
       checkbox.checked = stealthEnabled;
-      let stealthModeOpened = JSON.parse(localStorage.getItem("stealthModeOpened")) || false;
-      if (stealthEnabled && !stealthModeOpened) {
-        runStealthMode();
-        localStorage.setItem("stealthModeOpened", "true");
-      }
+
       checkbox.addEventListener("change", function () {
         const isChecked = checkbox.checked;
         localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
         if (isChecked) {
-          if (!stealthModeOpened) {
-            runStealthMode();
-            localStorage.setItem("stealthModeOpened", "true");
-            stealthModeOpened = true;
+          const src = window.location.href;
+          const popup = window.open("about:blank", "_blank");
+          if (!popup || popup.closed) {
+            alert("Popup blocked. Please allow popups for cloaking.");
+            return;
           }
-        } else {
-          localStorage.setItem("stealthModeOpened", "false");
-          stealthModeOpened = false;
+          const cloak = localStorage.getItem("auraaCloak") || "icon.png|Auraa";
+          const [icon, title] = cloak.split("|");
+          popup.document.write(`
+            <html><head><title>${title}</title><link rel="icon" href="${icon}"></head>
+            <body style="margin:0"><iframe src="${src}" style="width:100%;height:100%;border:none;"></iframe></body></html>
+          `);
+          popup.document.close();
+          window.location.href = "https://www.google.com";
         }
       });
-    }
-    const messages = [
-      "Sydney was here",
-      "bebby was here",
-      "Unlimited Aura.",
-      "aura level 10000",
-      "If your teacher catches you, I was never here.",
-      "Advanced blob proxy.",
-      "Made using Tide",
-      "Tide creds go to Mizzery"
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    const msgEl = document.getElementById("randomMessage");
-    if (msgEl) msgEl.textContent = messages[randomIndex];
 
-    if (navigator.getBattery) {
-      navigator.getBattery().then(battery => {
-        function updateBattery() {
-          const batteryEl = document.getElementById("battery");
-          if (batteryEl) batteryEl.textContent = `${Math.round(battery.level * 100)}% ⚡`;
-        }
-        updateBattery();
-        battery.addEventListener("levelchange", updateBattery);
-      });
-    } else {
-      const batteryEl = document.getElementById("battery");
-      if (batteryEl) batteryEl.textContent = "⚡ N/A";
-    }
+      const messages = [
+        "Sydney was here", "bebby was here", "Unlimited Aura.",
+        "aura level 10000", "If your teacher catches you, I was never here.",
+        "Advanced blob proxy.", "Made using Tide", "Tide creds go to Mizzery"
+      ];
+      document.getElementById("randomMessage").textContent =
+        messages[Math.floor(Math.random() * messages.length)];
 
-    function updateTime() {
-      const now = new Date();
-      const timeEl = document.getElementById("time");
-      if (timeEl) timeEl.textContent = now.toLocaleTimeString();
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
+      if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+          function updateBattery() {
+            document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
+          }
+          updateBattery();
+          battery.addEventListener("levelchange", updateBattery);
+        });
+      }
 
-    const searchForm = document.getElementById("searchForm");
-    if (searchForm) {
-      searchForm.addEventListener("submit", function (e) {
+      setInterval(() => {
+        document.getElementById("time").textContent = new Date().toLocaleTimeString();
+      }, 1000);
+
+      const searchForm = document.getElementById("searchForm");
+      searchForm.addEventListener("submit", e => {
         e.preventDefault();
         const query = document.getElementById("urlInput").value.trim();
         if (!query) return;
@@ -446,15 +351,16 @@
           alert("Ultraviolet proxy not loaded.");
           return;
         }
-        const rawUrl = generateSearchUrl(query);
-        const encoded = __uv$config.encodeUrl(rawUrl);
-        const proxyUrl = __uv$config.prefix + encoded;
-        createTab(proxyUrl, query);
+        try {
+          const url = new URL(query);
+          const encoded = __uv$config.encodeUrl(url.toString());
+          createTab(__uv$config.prefix + encoded, query);
+        } catch {
+          const encoded = __uv$config.encodeUrl(`https://startpage.com/search?q=${encodeURIComponent(query)}`);
+          createTab(__uv$config.prefix + encoded, query);
+        }
       });
-    }
-  };
-</script>
-<script src="/assets/js/index.js" defer></script>
-
+    };
+  </script>
 </body>
 </html>
