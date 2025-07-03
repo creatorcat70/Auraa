@@ -92,7 +92,6 @@
     const messageEl = document.getElementById('message');
     const retryBtn = document.getElementById('retryBtn');
     const forecastDaysEl = document.getElementById('forecastDays');
-
     const weatherCodes = {
       0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
       45: "Fog", 48: "Rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
@@ -104,22 +103,19 @@
       82: "Heavy rain showers", 85: "Light snow showers", 86: "Heavy snow showers",
       95: "Thunderstorm", 96: "Thunderstorm with slight hail", 99: "Thunderstorm with heavy hail"
     };
-
     function getIconForCode(code, isNight) {
-      if ([0, 1].includes(code)) return isNight ? '🌙' : '☀️';
-      if ([2, 3].includes(code)) return '⛅';
-      if ([45, 48].includes(code)) return '🌫️';
-      if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
-      if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌦️';
-      if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
-      if ([95, 96, 99].includes(code)) return '⛈️';
+      if ([0,1].includes(code)) return isNight ? '🌙' : '☀️';
+      if ([2,3].includes(code)) return '⛅';
+      if ([45,48].includes(code)) return '🌫️';
+      if ([51,53,55,56,57].includes(code)) return '🌧️';
+      if ([61,63,65,66,67,80,81,82].includes(code)) return '🌦️';
+      if ([71,73,75,77,85,86].includes(code)) return '❄️';
+      if ([95,96,99].includes(code)) return '⛈️';
       return '❓';
     }
-
     function celsiusToFahrenheit(c) {
       return (c * 9 / 5) + 32;
     }
-
     function getTimeMessage(hour) {
       if (hour === 0) return "It's midnight!";
       if (hour >= 1 && hour <= 4) return `It's ${hour} AM...`;
@@ -130,41 +126,29 @@
       if (hour >= 21 && hour <= 23) return "Good night!";
       return "";
     }
-
     function fetchWeather(lat, lon) {
       messageEl.textContent = 'Fetching weather data...';
       locationNameEl.textContent = '';
       forecastDaysEl.innerHTML = '';
-
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&windspeed_unit=ms`;
-
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&wind_speed_unit=ms`;
       fetch(weatherUrl)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
           const current = data.current_weather;
           const daily = data.daily;
-
-          if (!current || typeof current.temperature !== "number") {
-            throw new Error("Missing temperature data");
-          }
-
+          if (!current || typeof current.temperature !== "number") throw new Error("Missing temperature data");
           const celsius = current.temperature;
           const fahrenheit = celsiusToFahrenheit(celsius).toFixed(1);
           const wind = typeof current.windspeed === "number" ? current.windspeed.toFixed(1) : "?";
           const currentTime = new Date(current.time);
           const hour = currentTime.getHours();
           const isNight = hour >= 19 || hour < 6;
-
           weatherIcon.textContent = getIconForCode(current.weathercode, isNight);
           temperatureEl.textContent = `🌡️ ${celsius.toFixed(1)}°C / ${fahrenheit}°F`;
           feelsLikeEl.textContent = `Feels like: ${celsius.toFixed(1)}°C (approx)`;
           windSpeedEl.textContent = `Wind: ${wind} m/s`;
           descriptionEl.textContent = getTimeMessage(hour);
           messageEl.textContent = 'Fetching location name...';
-
           fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
             .then(resp => resp.json())
             .then(locData => {
@@ -175,7 +159,6 @@
               locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
               messageEl.textContent = 'Weather updated (location name unavailable)';
             });
-
           for (let i = 0; i < 7; i++) {
             const date = daily.time[i];
             const max = daily.temperature_2m_max[i];
@@ -185,7 +168,6 @@
             const label = i === 0 ? "Today" : new Date(date).toLocaleDateString(undefined, { weekday: 'short' });
             forecastDaysEl.innerHTML += `<div class="day">${label}: ${icon} ${min.toFixed(1)}°C - ${max.toFixed(1)}°C</div>`;
           }
-
           retryBtn.style.display = 'none';
         })
         .catch(err => {
@@ -193,24 +175,22 @@
           retryBtn.style.display = 'inline-block';
         });
     }
-
     function requestLocation() {
       if (!navigator.geolocation) {
         messageEl.textContent = 'Geolocation not supported.';
         return;
       }
-
       messageEl.textContent = 'Requesting location...';
       navigator.geolocation.getCurrentPosition(
         pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
         err => {
+          alert("You must enable location permissions for this module to work. We do not track, sell, or monitor your location; it is only used for determining weather.");
           messageEl.textContent = 'Location error: ' + err.message;
           retryBtn.style.display = 'inline-block';
         },
         { timeout: 15000 }
       );
     }
-
     retryBtn.addEventListener('click', () => {
       weatherIcon.textContent = '';
       temperatureEl.textContent = '';
@@ -222,7 +202,6 @@
       forecastDaysEl.innerHTML = '';
       requestLocation();
     });
-
     window.onload = requestLocation;
   </script>
 </body>
