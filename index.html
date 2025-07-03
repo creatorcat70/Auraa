@@ -192,14 +192,12 @@
   <script src="/active/uv/uv.config.js" defer></script>
   <script src="/assets/js/register.js" defer></script>
   <script src="/assets/js/index.js" defer></script>
-
   <script>
     const tabBar = document.getElementById('tabBar');
     const addTabBtn = document.getElementById('addTabBtn');
     const iframeContainer = document.getElementById('iframeContainer');
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
-
     const homeBtn = document.getElementById('homeBtn');
     const gamesBtn = document.getElementById('gamesBtn');
     const moviesBtn = document.getElementById('moviesBtn');
@@ -207,7 +205,6 @@
     const creditsBtn = document.getElementById('creditsBtn');
     const settingsBtn = document.getElementById('settingsBtn');
     const weatherBtn = document.getElementById('weatherBtn');
-
     let tabs = [];
     let activeTabId = null;
     let tabCounter = 0;
@@ -225,11 +222,9 @@
       return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
     }
 
-    function createTab(url, isHome = false) {
+    function createTab(url, isHome = false, skipEncoding = false) {
       tabCounter++;
       const id = 'tab-' + tabCounter;
-      const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
-
       const tabButton = document.createElement('button');
       tabButton.className = 'tab';
       tabButton.id = id;
@@ -254,11 +249,11 @@
       const iframe = document.createElement('iframe');
       iframe.className = 'tabIframe';
       iframe.id = 'iframe-' + id;
-      iframe.src = encodedUrl;
+      iframe.src = skipEncoding ? url : (__uv$config.prefix + __uv$config.encodeUrl(url));
 
       iframeContainer.appendChild(iframe);
 
-      tabs.push({id, url, tabButton, iframe, isHome});
+      tabs.push({ id, url, tabButton, iframe, isHome });
 
       tabButton.addEventListener('click', (e) => {
         if (e.target === closeBtn) {
@@ -293,7 +288,6 @@
       const tab = tabs[index];
       tab.tabButton.remove();
       tab.iframe.remove();
-
       tabs.splice(index, 1);
 
       if (tabs.length > 0) {
@@ -305,11 +299,6 @@
       }
     }
 
-    addTabBtn.addEventListener('click', () => {
-      const defaultUrl = 'https://auraa.vercel.app/';
-      createTab(defaultUrl);
-    });
-
     goBtn.addEventListener('click', () => {
       const query = urlInput.value.trim();
       if (!query) return;
@@ -319,23 +308,11 @@
         const tab = tabs.find(t => t.id === activeTabId);
         if (!tab) return;
         tab.url = generateSearchUrl(query);
-        if (tab.isHome) {
-          tab.tabButton.textContent = '';
-          const auraaTitle = document.createElement('span');
-          auraaTitle.className = 'auraa-title';
-          auraaTitle.innerHTML = 'Auraa<span class="dot">.</span>';
-          tab.tabButton.appendChild(auraaTitle);
-          const closeBtn = document.createElement('span');
-          closeBtn.className = 'closeBtn';
-          closeBtn.innerHTML = '&times;';
-          tab.tabButton.appendChild(closeBtn);
-        } else {
-          tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
-          const closeBtn = document.createElement('span');
-          closeBtn.className = 'closeBtn';
-          closeBtn.innerHTML = '&times;';
-          tab.tabButton.appendChild(closeBtn);
-        }
+        tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'closeBtn';
+        closeBtn.innerHTML = '&times;';
+        tab.tabButton.appendChild(closeBtn);
         tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
       }
     });
@@ -348,23 +325,19 @@
     });
 
     function openSidebarTab(url, isHome = false) {
-      createTab(url, isHome);
+      createTab(url, isHome, true);
     }
 
-    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/index.html', true));
-    gamesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/games.html'));
-    moviesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/movies.html'));
-    chatBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/tidechat.html'));
-    creditsBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/credits.html'));
-    settingsBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/settings.html'));
-    weatherBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/weather.html'));
+    homeBtn.addEventListener('click', () => openSidebarTab('index.html', true));
+    gamesBtn.addEventListener('click', () => openSidebarTab('games.html'));
+    moviesBtn.addEventListener('click', () => openSidebarTab('movies.html'));
+    chatBtn.addEventListener('click', () => openSidebarTab('tidechat.html'));
+    creditsBtn.addEventListener('click', () => openSidebarTab('credits.html'));
+    settingsBtn.addEventListener('click', () => openSidebarTab('settings.html'));
+    weatherBtn.addEventListener('click', () => openSidebarTab('weather.html'));
 
     window.onload = () => {
-      if (typeof __uv$config === "undefined") {
-        alert("Ultraviolet proxy not loaded.");
-        return;
-      }
-      createTab('https://auraa.vercel.app/', true);
+      createTab('index.html', true, true);
     };
 
     if (navigator.getBattery) {
