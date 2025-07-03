@@ -1,261 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Auraa Settings</title>
-  <link rel="icon" type="image/png" href="icon.png" id="dynamicFavicon" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-    body {
-      margin: 0;
-      padding: 40px;
-      background: linear-gradient(135deg, #2a003f, #000000);
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
-      animation: flickerBackground 6s infinite ease-in-out;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    @keyframes flickerBackground {
-      0%, 100% { background: linear-gradient(135deg, #2a003f, #000000); }
-      10% { background: linear-gradient(135deg, #3c096c, #111111); }
-      20% { background: linear-gradient(135deg, #7b2cbf, #000); }
-      25% { background: linear-gradient(135deg, #9d4edd, #1a0033); }
-      30%, 90% { background: linear-gradient(135deg, #2a003f, #000000); }
-    }
-
-    .title {
-      font-size: 4rem;
-      font-weight: 700;
-      text-shadow: 0 0 10px #9d4edd, 0 0 20px #7b2cbf, 0 0 30px #ffffff;
-      margin-bottom: 1rem;
-    }
-
-    .dot {
-      color: #9d4edd;
-    }
-
-    label {
-      font-size: 1.2rem;
-      margin-top: 30px;
-      display: block;
-      text-align: left;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    select, input[type=number], button {
-      margin-top: 15px;
-      padding: 12px 25px;
-      border-radius: 25px;
-      border: none;
-      font-size: 1rem;
-      background: #7b2cbf;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 0 8px #9d4edd;
-      transition: 0.3s ease;
-      outline: none;
-      width: 300px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    select:hover, input[type=number]:hover, button:hover {
-      background: #9d4edd;
-    }
-
-    input[type="checkbox"] {
-      margin-right: 10px;
-      transform: scale(1.2);
-    }
-
-    .footer {
-      margin-top: auto;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-      text-shadow: 0 0 5px #c77dff;
-      padding-bottom: 20px;
-      user-select: none;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Auraa Settings</title>
+<link rel="icon" type="image/png" href="icon.png" id="dynamicFavicon" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #2a003f, #000000);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    user-select: none;
+  }
+  h1 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #9d4edd, #7b2cbf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  label {
+    display: block;
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 600;
+  }
+  select, input[type="checkbox"], input[type="number"] {
+    width: 100%;
+    max-width: 360px;
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    border: none;
+    background: rgba(50, 0, 80, 0.9);
+    color: white;
+    box-shadow: 0 0 8px rgba(157, 78, 221, 0.4);
+    cursor: pointer;
+    outline: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+  }
+  select:hover, select:focus, input[type="number"]:hover, input[type="number"]:focus {
+    background: rgba(70, 0, 100, 0.95);
+    box-shadow: 0 0 12px rgba(233, 145, 255, 0.9);
+  }
+  input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+    cursor: pointer;
+    box-shadow: none;
+    background: none;
+    vertical-align: middle;
+  }
+  button {
+    margin-top: 3rem;
+    padding: 14px 40px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 25px;
+    background: #7b2cbf;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px #9d4edd;
+    align-self: center;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #9d4edd;
+  }
+  .footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 5px #c77dff;
+  }
+  .section {
+    max-width: 400px;
+    margin: 0 auto 1.5rem auto;
+  }
+  .favicon-preview {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-left: 10px;
+    border-radius: 6px;
+    border: 1.5px solid #9d4edd;
+  }
+  #snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
 </head>
 <body>
-  <h1 class="title">Auraa<span class="dot"> Settings.</span></h1>
 
-  <label for="cloakSelect">Cloak tab as:</label>
-  <select id="cloakSelect">
-    <option value="default">Default - Auraa</option>
-    <option value="https://www.khanacademy.org/favicon.ico|Khan Academy">Khan Academy</option>
-    <option value="https://www.google.com/favicon.ico|Google Classroom">Google Classroom</option>
-    <option value="https://www.wikipedia.org/static/favicon/wikipedia.ico|Wikipedia">Wikipedia</option>
-    <option value="https://www.edmodo.com/favicon.ico|Edmodo">Edmodo</option>
-    <option value="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6/svgs/solid/book.svg|Scholarly">Scholarly</option>
+<canvas id="snowCanvas"></canvas>
+
+<h1 id="pageTitle">Auraa Settings</h1>
+
+<div class="section">
+  <label for="faviconSelect">Tab Icon</label>
+  <select id="faviconSelect" aria-label="Select Tab Icon">
+    <option value="icon.png" selected>Default Auraa Icon</option>
+    <option value="favicon_education1.ico">Education Icon 1</option>
+    <option value="favicon_education2.ico">Education Icon 2</option>
+    <option value="favicon_education3.ico">Education Icon 3</option>
   </select>
+  <img id="faviconPreview" class="favicon-preview" src="icon.png" alt="Icon Preview" />
+</div>
 
-  <label for="particleCountInput" style="margin-top:40px;">Number of falling particles:</label>
-  <input
-    type="number"
-    id="particleCountInput"
-    min="0"
-    max="300"
-    step="1"
-    placeholder="Enter number (0-300)"
-  />
+<div class="section">
+  <label for="titleSelect">Tab Title</label>
+  <select id="titleSelect" aria-label="Select Tab Title">
+    <option value="Auraa" selected>Auraa</option>
+    <option value="Education Portal">Education Portal</option>
+    <option value="Student Dashboard">Student Dashboard</option>
+    <option value="Learning Hub">Learning Hub</option>
+  </select>
+</div>
 
-  <label for="particleToggle" style="margin-top:40px;">
-    <input type="checkbox" id="particleToggle" /> Enable falling particles effect
-  </label>
+<div class="section">
+  <label><input type="checkbox" id="confirmBeforeClose" /> Confirm before closing tab</label>
+</div>
 
-  <button id="saveBtn" style="margin-top:40px;">Save Settings</button>
-  <button onclick="window.location.href='index.html'" style="margin-top:20px;">Back to Homepage</button>
+<div class="section">
+  <label><input type="checkbox" id="particlesToggle" /> Enable Particle Snowfall</label>
+</div>
 
-  <p class="footer">Auraa Settings | Made by @thefakesydney</p>
+<div class="section">
+  <label for="particleCount">Particle Count (0-300)</label>
+  <input type="number" id="particleCount" min="0" max="300" step="1" />
+</div>
 
-  <script>
-    const cloakSelect = document.getElementById('cloakSelect');
-    const particleCountInput = document.getElementById('particleCountInput');
-    const particleToggle = document.getElementById('particleToggle');
-    const saveBtn = document.getElementById('saveBtn');
+<button id="saveSettings">Save Settings</button>
 
-    function loadSettings() {
-      const cloak = localStorage.getItem('auraaCloak') || 'default';
-      cloakSelect.value = cloak;
+<div class="footer">© 2025 Auraa | Made by @thefakesydney</div>
 
-      let count = localStorage.getItem('auraaParticleCount');
-      if (count === null) {
-        count = '100';
-        localStorage.setItem('auraaParticleCount', count);
-      }
-      particleCountInput.value = count;
+<script>
+  const faviconSelect = document.getElementById('faviconSelect');
+  const faviconPreview = document.getElementById('faviconPreview');
+  const titleSelect = document.getElementById('titleSelect');
+  const confirmBeforeClose = document.getElementById('confirmBeforeClose');
+  const particlesToggle = document.getElementById('particlesToggle');
+  const particleCountInput = document.getElementById('particleCount');
+  const saveBtn = document.getElementById('saveSettings');
+  const faviconTag = document.getElementById('dynamicFavicon') || createFaviconTag();
+  const pageTitle = document.getElementById('pageTitle');
+  const canvas = document.getElementById('snowCanvas');
+  const ctx = canvas.getContext('2d');
 
-      let enabled = localStorage.getItem('auraaParticlesEnabled');
-      if (enabled === null) {
-        enabled = 'true';
-        localStorage.setItem('auraaParticlesEnabled', enabled);
-      }
-      particleToggle.checked = enabled === 'true';
+  let flakes = [];
+  let width, height;
+  let animationId;
+
+  function createFaviconTag() {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/png';
+    document.head.appendChild(link);
+    return link;
+  }
+
+  function loadSettings() {
+    const icon = localStorage.getItem('auraaFavicon') || 'icon.png';
+    const title = localStorage.getItem('auraaTitle') || 'Auraa';
+    const confirmClose = localStorage.getItem('auraaConfirmBeforeClose') === 'true';
+    const particlesEnabled = localStorage.getItem('auraaParticlesEnabled') === 'true';
+    const particleCountStored = parseInt(localStorage.getItem('auraaParticleCount'), 10);
+
+    faviconSelect.value = icon;
+    titleSelect.value = title;
+    confirmBeforeClose.checked = confirmClose;
+    particlesToggle.checked = particlesEnabled;
+    particleCountInput.value = Number.isInteger(particleCountStored) ? particleCountStored : 100;
+
+    updateFavicon(icon);
+    updateFaviconPreview(icon);
+    updateTitle(title);
+
+    if (particlesEnabled) {
+      startParticles();
+    } else {
+      stopParticles();
     }
+  }
 
-    function saveSettings() {
-      localStorage.setItem('auraaCloak', cloakSelect.value);
-      localStorage.setItem('auraaParticleCount', particleCountInput.value);
-      localStorage.setItem('auraaParticlesEnabled', particleToggle.checked);
-      alert('Settings saved! Changes will apply when you reload the main page.');
-    }
+  function updateFavicon(icon) {
+    faviconTag.href = icon;
+  }
 
-    saveBtn.addEventListener('click', saveSettings);
+  function updateFaviconPreview(icon) {
+    faviconPreview.src = icon;
+  }
 
-    cloakSelect.addEventListener('change', () => {
-      if (cloakSelect.value === 'default') {
-        document.title = "Auraa Settings";
-        document.getElementById('dynamicFavicon').href = "icon.png";
-        return;
-      }
-      const [iconUrl, siteTitle] = cloakSelect.value.split('|');
-      document.title = siteTitle;
-      document.getElementById('dynamicFavicon').href = iconUrl;
-    });
+  function updateTitle(title) {
+    document.title = title;
+    pageTitle.textContent = `${title} Settings`;
+    pageTitle.style.background = 'linear-gradient(135deg, #9d4edd, #7b2cbf)';
+    pageTitle.style.webkitBackgroundClip = 'text';
+    pageTitle.style.webkitTextFillColor = 'transparent';
+  }
 
-    loadSettings();
-  </script>
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
 
-  <!-- Particle logic + live toggle -->
-  <script>
-    let animationFrameId = null;
-
-    function createParticles() {
-      if (document.getElementById('snowCanvas')) return;
-
-      const canvas = document.createElement('canvas');
-      canvas.id = 'snowCanvas';
-      Object.assign(canvas.style, {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100vw',
-        height: '100vh',
-        pointerEvents: 'none',
-        zIndex: '0'
-      });
-      document.body.prepend(canvas);
-
-      const ctx = canvas.getContext('2d');
-      let width = canvas.width = window.innerWidth;
-      let height = canvas.height = window.innerHeight;
-
-      window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      });
-
-      const flakesCount = parseInt(localStorage.getItem('auraaParticleCount'), 10) || 100;
-      const flakes = Array.from({ length: flakesCount }, () => ({
+  function createFlakes(count) {
+    flakes = [];
+    for (let i = 0; i < count; i++) {
+      flakes.push({
         x: Math.random() * width,
         y: Math.random() * height,
         radius: Math.random() * 1.5 + 0.5,
         speedY: Math.random() * 0.5 + 0.2,
         speedX: (Math.random() - 0.5) * 0.2
-      }));
-
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.beginPath();
-        flakes.forEach(flake => {
-          ctx.moveTo(flake.x, flake.y);
-          ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-        });
-        ctx.fill();
-
-        flakes.forEach(flake => {
-          flake.y += flake.speedY;
-          flake.x += flake.speedX;
-
-          if (flake.y > height) {
-            flake.y = 0;
-            flake.x = Math.random() * width;
-          }
-          if (flake.x > width) flake.x = 0;
-          if (flake.x < 0) flake.x = width;
-        });
-
-        animationFrameId = requestAnimationFrame(draw);
-      }
-
-      draw();
+      });
     }
+  }
 
-    function removeParticles() {
-      const canvas = document.getElementById('snowCanvas');
-      if (canvas) canvas.remove();
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
-
-    particleToggle.addEventListener('change', () => {
-      const enabled = particleToggle.checked;
-      localStorage.setItem('auraaParticlesEnabled', enabled);
-      if (enabled) {
-        createParticles();
-      } else {
-        removeParticles();
-      }
+  function drawParticles() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath();
+    flakes.forEach(flake => {
+      ctx.moveTo(flake.x, flake.y);
+      ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
     });
+    ctx.fill();
+    updateParticles();
+    animationId = requestAnimationFrame(drawParticles);
+  }
 
-    // On page load
-    if (particleToggle.checked) {
-      createParticles();
+  function updateParticles() {
+    flakes.forEach(flake => {
+      flake.y += flake.speedY;
+      flake.x += flake.speedX;
+      if (flake.y > height) {
+        flake.y = 0;
+        flake.x = Math.random() * width;
+      }
+      if (flake.x > width) flake.x = 0;
+      if (flake.x < 0) flake.x = width;
+    });
+  }
+
+  function startParticles() {
+    resizeCanvas();
+    createFlakes(parseInt(particleCountInput.value, 10) || 100);
+    if (!animationId) {
+      drawParticles();
     }
-  </script>
+  }
+
+  function stopParticles() {
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+      ctx.clearRect(0, 0, width, height);
+    }
+  }
+
+  faviconSelect.addEventListener('change', () => {
+    updateFaviconPreview(faviconSelect.value);
+  });
+
+  particlesToggle.addEventListener('change', () => {
+    if (particlesToggle.checked) {
+      startParticles();
+    } else {
+      stopParticles();
+    }
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const selectedIcon = faviconSelect.value;
+    const selectedTitle = titleSelect.value;
+    const confirmCloseChecked = confirmBeforeClose.checked;
+    const particlesEnabled = particlesToggle.checked;
+    let particleCount = parseInt(particleCountInput.value, 10);
+    if (!Number.isInteger(particleCount) || particleCount < 0) particleCount = 100;
+    if (particleCount > 300) particleCount = 300;
+
+    localStorage.setItem('auraaFavicon', selectedIcon);
+    localStorage.setItem('auraaTitle', selectedTitle);
+    localStorage.setItem('auraaConfirmBeforeClose', confirmCloseChecked);
+    localStorage.setItem('auraaParticlesEnabled', particlesEnabled);
+    localStorage.setItem('auraaParticleCount', particleCount);
+
+    updateFavicon(selectedIcon);
+    updateTitle(selectedTitle);
+    particleCountInput.value = particleCount;
+
+    alert('Settings saved!');
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (localStorage.getItem('auraaConfirmBeforeClose') === 'true') {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (particlesToggle.checked) {
+      resizeCanvas();
+      createFlakes(parseInt(particleCountInput.value, 10) || 100);
+    }
+  });
+
+  loadSettings();
+</script>
+
 </body>
 </html>
