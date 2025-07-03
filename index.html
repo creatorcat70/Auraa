@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -225,7 +225,7 @@
       return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
     }
 
-    function createTab(url, isHome = false) {
+    function createTab(url, options = {}) {
       tabCounter++;
       const id = 'tab-' + tabCounter;
       const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
@@ -235,7 +235,7 @@
       tabButton.id = id;
       tabButton.title = url;
 
-      if (isHome) {
+      if (options.isHome) {
         const auraaTitle = document.createElement('span');
         auraaTitle.className = 'auraa-title';
         auraaTitle.innerHTML = 'Auraa<span class="dot">.</span>';
@@ -258,7 +258,7 @@
 
       iframeContainer.appendChild(iframe);
 
-      tabs.push({id, url, tabButton, iframe, isHome});
+      tabs.push({id, url, tabButton, iframe, ...options});
 
       tabButton.addEventListener('click', (e) => {
         if (e.target === closeBtn) {
@@ -277,7 +277,7 @@
         if (tab.id === id) {
           tab.tabButton.classList.add('active');
           tab.iframe.classList.add('active');
-          urlInput.value = tab.url;
+          urlInput.value = tab.isHome ? 'Auraa.' : tab.url;
           activeTabId = id;
         } else {
           tab.tabButton.classList.remove('active');
@@ -306,8 +306,7 @@
     }
 
     addTabBtn.addEventListener('click', () => {
-      const defaultUrl = 'https://auraa.vercel.app/';
-      createTab(defaultUrl);
+      createTab('https://auraa.vercel.app/');
     });
 
     goBtn.addEventListener('click', () => {
@@ -318,25 +317,20 @@
       } else {
         const tab = tabs.find(t => t.id === activeTabId);
         if (!tab) return;
-        tab.url = generateSearchUrl(query);
+
         if (tab.isHome) {
-          tab.tabButton.textContent = '';
-          const auraaTitle = document.createElement('span');
-          auraaTitle.className = 'auraa-title';
-          auraaTitle.innerHTML = 'Auraa<span class="dot">.</span>';
-          tab.tabButton.appendChild(auraaTitle);
-          const closeBtn = document.createElement('span');
-          closeBtn.className = 'closeBtn';
-          closeBtn.innerHTML = '&times;';
-          tab.tabButton.appendChild(closeBtn);
+          // Home tab: ignore changing URL, just reload homepage inside iframe
+          tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl('https://auraa.vercel.app/');
+          urlInput.value = 'Auraa.';
         } else {
+          tab.url = generateSearchUrl(query);
+          tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
           tab.tabButton.textContent = query.length > 30 ? query.slice(0, 27) + '...' : query;
           const closeBtn = document.createElement('span');
           closeBtn.className = 'closeBtn';
           closeBtn.innerHTML = '&times;';
           tab.tabButton.appendChild(closeBtn);
         }
-        tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
       }
     });
 
@@ -347,11 +341,21 @@
       }
     });
 
-    function openSidebarTab(url, isHome = false) {
-      createTab(url, isHome);
+    function openSidebarTab(url, options = {}) {
+      // If home tab exists, just activate it instead of opening new one
+      if (options.isHome) {
+        const homeTab = tabs.find(t => t.isHome);
+        if (homeTab) {
+          activateTab(homeTab.id);
+          homeTab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+          urlInput.value = 'Auraa.';
+          return;
+        }
+      }
+      createTab(url, options);
     }
 
-    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/index.html', true));
+    homeBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/', {isHome: true}));
     gamesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/games.html'));
     moviesBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/movies.html'));
     chatBtn.addEventListener('click', () => openSidebarTab('https://auraa.vercel.app/tidechat.html'));
@@ -364,7 +368,7 @@
         alert("Ultraviolet proxy not loaded.");
         return;
       }
-      createTab('https://auraa.vercel.app/', true);
+      openSidebarTab('https://auraa.vercel.app/', {isHome: true});
     };
 
     if (navigator.getBattery) {
