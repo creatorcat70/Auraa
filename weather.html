@@ -34,15 +34,24 @@
   button:hover {
     background: #9d4edd;
   }
+  #temperature {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+  }
+  #locationName {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
-<h1>Current Weather (Free Open-Meteo)</h1>
+<h1>Current Weather</h1>
 <div id="weatherContent">
   <div id="weatherIcon"></div>
   <div id="temperature"></div>
   <div id="description"></div>
-  <div id="location"></div>
+  <div id="locationName"></div>
   <div id="weathertext"></div>
 </div>
 <div id="message">Waiting for location permission...</div>
@@ -52,7 +61,7 @@
   const weatherIcon = document.getElementById('weatherIcon');
   const temperatureEl = document.getElementById('temperature');
   const descriptionEl = document.getElementById('description');
-  const locationEl = document.getElementById('location');
+  const locationNameEl = document.getElementById('locationName');
   const messageEl = document.getElementById('message');
   const retryBtn = document.getElementById('retryBtn');
 
@@ -98,11 +107,24 @@
     return '❓';
   }
 
+  // Convert Celsius to Fahrenheit
+  function celsiusToFahrenheit(c) {
+    return (c * 9/5) + 32;
+  }
+
+  // Determine if it is night based on user's local time at their location (using timezone offset from geolocation API)
+  // We approximate night as between 7 PM and 6 AM local time
+  function isNight(date) {
+    const hour = date.getHours();
+    return (hour >= 19 || hour < 6);
+  }
+
   function fetchWeather(lat, lon) {
     messageEl.textContent = 'Fetching weather data...';
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+    locationNameEl.textContent = ''; // Clear previous location
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
 
-    fetch(url)
+    fetch(weatherUrl)
       .then(response => {
         if (!response.ok) throw new Error('Weather fetch failed: ' + response.status);
         return response.json();
@@ -111,11 +133,45 @@
         if (!data.current_weather) throw new Error('No current weather data received');
         const current = data.current_weather;
 
-        temperatureEl.textContent = `${current.temperature.toFixed(1)}°C`;
+        const celsius = current.temperature.toFixed(1);
+        const fahrenheit = celsiusToFahrenheit(current.temperature).toFixed(1);
+
+        // Determine if it's night based on current time in user's timezone (auto timezone from API)
+        // data.current_weather.time is in ISO string format like "2023-07-03T13:00"
+        const currentTime = new Date(current.time);
+        const night = isNight(currentTime);
+
+        const dayNightIcon = night ? '🌙' : '☀️';
+
+        temperatureEl.textContent = `${dayNightIcon} ${celsius}°C / ${fahrenheit}°F`;
         descriptionEl.textContent = weatherCodes[current.weathercode] || 'Unknown weather';
         weatherIcon.textContent = getIconForCode(current.weathercode);
-        locationEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
-        messageEl.textContent = 'Weather updated successfully!';
+
+        messageEl.textContent = 'Fetching location name...';
+
+        // Reverse geocode to get human-readable location name
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+          .then(resp => {
+            if (!resp.ok) throw new Error('Failed to get location name');
+            return resp.json();
+          })
+          .then(locData => {
+            let displayName = locData.address.city 
+              || locData.address.town 
+              || locData.address.village 
+              || locData.address.county 
+              || locData.address.state 
+              || locData.address.country 
+              || 'Unknown location';
+
+            locationNameEl.textContent = `Location: ${displayName}`;
+            messageEl.textContent = 'Weather updated successfully!';
+          })
+          .catch(() => {
+            locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+            messageEl.textContent = 'Weather updated (location name not available)';
+          });
+
         retryBtn.style.display = 'none';
       })
       .catch(err => {
@@ -168,7 +224,7 @@
     temperatureEl.textContent = '';
     descriptionEl.textContent = '';
     weatherIcon.textContent = '';
-    locationEl.textContent = '';
+    locationNameEl.textContent = '';
     messageEl.textContent = '';
     requestLocation();
   });
