@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
   body, html {
     margin: 0; padding: 0; height: 100%;
     background: linear-gradient(135deg, #2a003f, #000000);
@@ -18,7 +17,6 @@
     display: flex;
     flex-direction: column;
   }
-
   #tabBar {
     display: flex;
     background: rgba(35,0,55,0.9);
@@ -29,7 +27,6 @@
     user-select: none;
     gap: 4px;
   }
-
   #tabBar button.tab {
     background: transparent;
     border: none;
@@ -68,7 +65,6 @@
   #tabBar button#addTabBtn:hover {
     color: #e0aaff;
   }
-
   #contentArea {
     flex: 1;
     background: rgba(20,0,50,0.9);
@@ -77,7 +73,6 @@
     flex-direction: column;
     overflow: hidden;
   }
-
   .tabContent {
     display: none;
     height: 100%;
@@ -90,7 +85,6 @@
     display: flex;
     flex-direction: column;
   }
-
   #homeContent {
     padding: 40px 20px 20px 20px;
     text-align: center;
@@ -108,7 +102,6 @@
   #homeContent .dot {
     color: #9d4edd;
   }
-
   #searchForm {
     margin-top: 30px;
     display: inline-block;
@@ -174,7 +167,6 @@
     50% { transform: translateY(-5px); }
     100% { transform: translateY(0); }
   }
-
   iframe.proxyIframe {
     flex: 1;
     border: none;
@@ -182,7 +174,6 @@
     height: 100%;
     background: white;
   }
-
   .sidebar {
     position: fixed;
     left: 10px;
@@ -198,7 +189,6 @@
     align-items: center;
     z-index: 20;
   }
-
   .sidebar button {
     background: transparent;
     border: none;
@@ -208,18 +198,15 @@
     cursor: pointer;
     transition: 0.3s;
   }
-
   .sidebar button:hover {
     color: #e0aaff;
   }
-
   .sidebar-info {
     margin-top: 10px;
     font-size: 1rem;
     color: white;
     text-shadow: 0 0 5px #c77dff;
   }
-
   #battery, #time {
     user-select: none;
   }
@@ -248,25 +235,26 @@
 
   <div class="sidebar">
     <button title="Home" id="sidebarHomeBtn"><i class="bi bi-house"></i></button>
-    <button title="Games" data-url="games.html"><i class="bi bi-joystick"></i></button>
-    <button title="Movies" data-url="movies.html"><i class="bi bi-film"></i></button>
-    <button title="Chat" data-url="chat.html"><i class="bi bi-chat-dots"></i></button>
-    <button title="Credits" data-url="credits.html"><i class="bi bi-info-circle"></i></button>
-    <button title="Settings" data-url="settings.html"><i class="bi bi-gear"></i></button>
-    <button title="Weather" data-url="weather.html"><i class="bi bi-cloud-sun"></i></button>
+    <button title="Games" data-url="https://example.com/games"><i class="bi bi-joystick"></i></button>
+    <button title="Movies" data-url="https://example.com/movies"><i class="bi bi-film"></i></button>
+    <button title="Chat" data-url="https://example.com/chat"><i class="bi bi-chat-dots"></i></button>
+    <button title="Credits" data-url="https://example.com/credits"><i class="bi bi-info-circle"></i></button>
+    <button title="Settings" data-url="https://example.com/settings"><i class="bi bi-gear"></i></button>
+    <button title="Weather" data-url="https://example.com/weather"><i class="bi bi-cloud-sun"></i></button>
     <div class="sidebar-info">
       <span id="battery">⚡</span>
       <span id="time">⌚</span>
     </div>
   </div>
 
+<script src="/active/uv/uv.bundle.js" defer></script>
+<script src="/active/uv/uv.config.js" defer></script>
 <script>
   const tabBar = document.getElementById('tabBar');
   const contentArea = document.getElementById('contentArea');
+  const addTabBtn = document.getElementById('addTabBtn');
   const homeTabBtn = tabBar.querySelector('button[data-tab="home"]');
   const homeContent = document.getElementById('homeContent');
-  const addTabBtn = document.getElementById('addTabBtn');
-
   let tabCount = 1;
 
   function createTab(url, title) {
@@ -287,25 +275,22 @@
 
     activateTab(tabId);
 
-    tabBtn.querySelector('.closeBtn').addEventListener('click', (e) => {
+    tabBtn.querySelector('.closeBtn').addEventListener('click', e => {
       e.stopPropagation();
       closeTab(tabId);
     });
 
-    tabBtn.addEventListener('click', () => {
-      activateTab(tabId);
-    });
+    tabBtn.addEventListener('click', () => activateTab(tabId));
   }
 
   function activateTab(tabId) {
     [...tabBar.querySelectorAll('button.tab')].forEach(btn => btn.classList.remove('active'));
     [...contentArea.querySelectorAll('.tabContent')].forEach(div => div.classList.remove('active'));
-
     if (tabId === 'home') {
       homeTabBtn.classList.add('active');
       homeContent.classList.add('active');
-      document.getElementById('urlInput').value = '';
       document.getElementById('searchForm').style.display = 'inline-block';
+      document.getElementById('urlInput').value = '';
     } else {
       document.getElementById('searchForm').style.display = 'none';
       const btn = tabBar.querySelector(`button[data-tab="${tabId}"]`);
@@ -322,43 +307,38 @@
     const iframe = contentArea.querySelector(`iframe[data-tab="${tabId}"]`);
     if (btn) btn.remove();
     if (iframe) iframe.remove();
-
-    if (btn && btn.classList.contains('active')) {
-      activateTab('home');
-    }
+    if (btn && btn.classList.contains('active')) activateTab('home');
   }
 
-  addTabBtn.addEventListener('click', () => {
-    createTab('https://startpage.com', 'New Tab');
-  });
-
-  homeTabBtn.addEventListener('click', () => {
-    activateTab('home');
-  });
-
+  addTabBtn.addEventListener('click', () => createTab('https://startpage.com', 'New Tab'));
+  homeTabBtn.addEventListener('click', () => activateTab('home'));
   document.querySelectorAll('.sidebar button[data-url]').forEach(btn => {
     btn.addEventListener('click', () => {
-      createTab(btn.dataset.url, btn.title);
+      const url = btn.dataset.url;
+      const title = btn.title || url;
+      createTab(url, title);
     });
   });
-  document.getElementById('sidebarHomeBtn').addEventListener('click', () => {
-    activateTab('home');
-  });
+  document.getElementById('sidebarHomeBtn').addEventListener('click', () => activateTab('home'));
 
   function runStealthMode() {
-    const title = "Google";
-    const icon = "https://www.google.com/favicon.ico";
+    localStorage.setItem("stealthModeEnabled", "false");
+    const cloak = localStorage.getItem("auraaCloak") || "default";
+    let title = "Auraa";
+    let icon = "icon.png";
+    if (cloak !== "default") {
+      const parts = cloak.split("|");
+      if (parts.length === 2) {
+        icon = parts[0];
+        title = parts[1];
+      }
+    }
     const src = window.location.href;
-
     const popup = window.open("about:blank", "_blank");
-
     if (!popup || popup.closed) {
       alert("Popup blocked. Please allow popups for Cloaking to work.");
-      localStorage.setItem("stealthModeEnabled", "false");
-      document.getElementById("blankMode").checked = false;
       return;
     }
-
     popup.document.write(`
       <html>
         <head>
@@ -379,8 +359,6 @@
       </html>
     `);
     popup.document.close();
-
-    localStorage.setItem("stealthModeEnabled", "false");
     window.location.href = "https://www.google.com";
   }
 
@@ -397,18 +375,31 @@
     return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
   }
 
-  window.onload = () => {
-    const stealth = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
+  window.onload = function () {
     const checkbox = document.getElementById("blankMode");
-    checkbox.checked = stealth;
-    if (stealth) runStealthMode();
-
-    checkbox.addEventListener("change", function () {
-      const isChecked = checkbox.checked;
-      localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
-      if (isChecked) runStealthMode();
-    });
-
+    if (checkbox) {
+      const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
+      checkbox.checked = stealthEnabled;
+      let stealthModeOpened = JSON.parse(localStorage.getItem("stealthModeOpened")) || false;
+      if (stealthEnabled && !stealthModeOpened) {
+        runStealthMode();
+        localStorage.setItem("stealthModeOpened", "true");
+      }
+      checkbox.addEventListener("change", function () {
+        const isChecked = checkbox.checked;
+        localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
+        if (isChecked) {
+          if (!stealthModeOpened) {
+            runStealthMode();
+            localStorage.setItem("stealthModeOpened", "true");
+            stealthModeOpened = true;
+          }
+        } else {
+          localStorage.setItem("stealthModeOpened", "false");
+          stealthModeOpened = false;
+        }
+      });
+    }
     const messages = [
       "Sydney was here",
       "bebby was here",
@@ -419,47 +410,50 @@
       "Made using Tide",
       "Tide creds go to Mizzery"
     ];
-    document.getElementById("randomMessage").textContent = messages[Math.floor(Math.random() * messages.length)];
-  };
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    const msgEl = document.getElementById("randomMessage");
+    if (msgEl) msgEl.textContent = messages[randomIndex];
 
-  document.getElementById('searchForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const query = document.getElementById('urlInput').value.trim();
-    if (!query) return;
-
-    if (typeof __uv$config === "undefined") {
-      alert("Ultraviolet proxy not loaded.");
-      return;
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        function updateBattery() {
+          const batteryEl = document.getElementById("battery");
+          if (batteryEl) batteryEl.textContent = `${Math.round(battery.level * 100)}% ⚡`;
+        }
+        updateBattery();
+        battery.addEventListener("levelchange", updateBattery);
+      });
+    } else {
+      const batteryEl = document.getElementById("battery");
+      if (batteryEl) batteryEl.textContent = "⚡ N/A";
     }
-    const rawUrl = generateSearchUrl(query);
-    const encoded = __uv$config.encodeUrl(rawUrl);
-    const proxyUrl = __uv$config.prefix + encoded;
-    createTab(proxyUrl, query);
-  });
 
-  if (navigator.getBattery) {
-    navigator.getBattery().then(battery => {
-      function updateBattery() {
-        document.getElementById("battery").textContent = `${Math.round(battery.level * 100)}% ⚡`;
-      }
-      updateBattery();
-      battery.addEventListener("levelchange", updateBattery);
-    });
-  } else {
-    document.getElementById("battery").textContent = "⚡ N/A";
-  }
+    function updateTime() {
+      const now = new Date();
+      const timeEl = document.getElementById("time");
+      if (timeEl) timeEl.textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
 
-  function updateTime() {
-    const now = new Date();
-    document.getElementById("time").textContent = now.toLocaleTimeString();
-  }
-  setInterval(updateTime, 1000);
-  updateTime();
+    const searchForm = document.getElementById("searchForm");
+    if (searchForm) {
+      searchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const query = document.getElementById("urlInput").value.trim();
+        if (!query) return;
+        if (typeof __uv$config === "undefined") {
+          alert("Ultraviolet proxy not loaded.");
+          return;
+        }
+        const rawUrl = generateSearchUrl(query);
+        const encoded = __uv$config.encodeUrl(rawUrl);
+        const proxyUrl = __uv$config.prefix + encoded;
+        createTab(proxyUrl, query);
+      });
+    }
+  };
 </script>
-
-<script src="/active/uv/uv.bundle.js" defer></script>
-<script src="/active/uv/uv.config.js" defer></script>
-<script src="/assets/js/register.js" defer></script>
 <script src="/assets/js/index.js" defer></script>
 
 </body>
