@@ -43,6 +43,14 @@
       margin-top: 0.5rem;
       font-size: 1.1rem;
       font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    #locationFlag {
+      font-size: 1.8rem;
     }
     .top-bar {
       position: absolute;
@@ -72,7 +80,7 @@
     <div id="feelsLike"></div>
     <div id="windSpeed"></div>
     <div id="description"></div>
-    <div id="locationName"></div>
+    <div id="locationName"><span id="locationFlag"></span><span id="locationText"></span></div>
     <button id="unitToggle">Switch to Celsius</button>
   </div>
   <div id="message">Waiting for location permission...</div>
@@ -87,7 +95,8 @@
     const feelsLikeEl = document.getElementById('feelsLike');
     const windSpeedEl = document.getElementById('windSpeed');
     const descriptionEl = document.getElementById('description');
-    const locationNameEl = document.getElementById('locationName');
+    const locationFlagEl = document.getElementById('locationFlag');
+    const locationTextEl = document.getElementById('locationText');
     const messageEl = document.getElementById('message');
     const retryBtn = document.getElementById('retryBtn');
     const forecastDaysEl = document.getElementById('forecastDays');
@@ -135,6 +144,14 @@
       return "";
     }
 
+    function countryCodeToFlagEmoji(countryCode) {
+      if (!countryCode) return '';
+      return countryCode.toUpperCase()
+        .replace(/./g, char => 
+          String.fromCodePoint(127397 + char.charCodeAt())
+        );
+    }
+
     function renderWeather() {
       const temp = isFahrenheit ? `${cToF(currentWeather.temp).toFixed(1)}°F` : `${currentWeather.temp.toFixed(1)}°C`;
       const feels = isFahrenheit ? `${cToF(currentWeather.temp).toFixed(1)}°F` : `${currentWeather.temp.toFixed(1)}°C`;
@@ -161,7 +178,8 @@
 
     function fetchWeather(lat, lon) {
       messageEl.textContent = 'Fetching weather data...';
-      locationNameEl.textContent = '';
+      locationFlagEl.textContent = '';
+      locationTextEl.textContent = '';
       forecastDaysEl.innerHTML = '';
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&wind_speed_unit=ms`;
       fetch(url).then(res => res.json()).then(data => {
@@ -191,12 +209,19 @@
 
         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
           .then(res => res.json()).then(loc => {
-            const name = loc.address.city || loc.address.town || loc.address.village || loc.address.state || loc.address.country || 'Unknown';
-            locationNameEl.textContent = `📍 ${name}`;
+            const countryCode = loc.address.country_code || '';
+            const flag = countryCodeToFlagEmoji(countryCode);
+            locationFlagEl.textContent = flag;
+
+            // Show city/town/village or fallback to state/province or country
+            const place = loc.address.city || loc.address.town || loc.address.village || loc.address.state || loc.address.country || 'Unknown';
+            locationTextEl.textContent = place;
+
             messageEl.textContent = 'Weather updated!';
             renderWeather();
           }).catch(() => {
-            locationNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+            locationFlagEl.textContent = '';
+            locationTextEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
             messageEl.textContent = 'Weather updated (location name unavailable)';
             renderWeather();
           });
@@ -230,7 +255,8 @@
       feelsLikeEl.textContent = '';
       windSpeedEl.textContent = '';
       descriptionEl.textContent = '';
-      locationNameEl.textContent = '';
+      locationFlagEl.textContent = '';
+      locationTextEl.textContent = '';
       messageEl.textContent = '';
       forecastDaysEl.innerHTML = '';
       requestLocation();
