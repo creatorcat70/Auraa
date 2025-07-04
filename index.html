@@ -186,6 +186,7 @@
       max-width: 700px;
       padding: 0 20px;
       z-index: 5;
+      user-select: none;
     }
 
     .titleBar {
@@ -336,7 +337,7 @@
       tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
 
-      if (centerContainer) centerContainer.classList.add("hidden");
+      updateCenterVisibility();
 
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
@@ -355,6 +356,7 @@
       document.querySelectorAll('.tabIframe').forEach(iframe =>
         iframe.classList.toggle('active', iframe.dataset.tab === tabId)
       );
+      updateCenterVisibility();
     }
 
     function closeTab(tabId) {
@@ -362,13 +364,23 @@
       const iframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
       if (tabBtn) tabBtn.remove();
       if (iframe) iframe.remove();
+
       if (currentTabId === tabId) {
         const remaining = document.querySelectorAll('.tab');
         if (remaining.length > 0) setActiveTab(remaining[0].dataset.tab);
         else {
           currentTabId = null;
-          if (centerContainer) centerContainer.classList.remove("hidden");
+          updateCenterVisibility();
         }
+      }
+    }
+
+    function updateCenterVisibility() {
+      const tabs = document.querySelectorAll('.tab');
+      if (tabs.length === 0) {
+        centerContainer.classList.remove("hidden");
+      } else {
+        centerContainer.classList.add("hidden");
       }
     }
 
@@ -378,7 +390,7 @@
       else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-        if (centerContainer) centerContainer.classList.add("hidden");
+        updateCenterVisibility();
       }
     });
 
@@ -459,7 +471,9 @@
       }
     });
 
+    // Create one empty tab on page load so Auraa title is hidden
     createTab();
+
   </script>
 </body>
 </html>
