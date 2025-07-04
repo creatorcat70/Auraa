@@ -221,6 +221,10 @@
     iframe.tabIframe.active {
       display: block;
     }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -248,7 +252,7 @@
     <button id="addTabBtn">＋</button>
   </div>
 
-  <div class="centerContainer">
+  <div class="centerContainer" id="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
       <input type="text" id="miniSearch" placeholder="Ask something..." />
@@ -270,6 +274,7 @@
     const cloakBtn = document.getElementById('cloakToggle');
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
+    const centerContainer = document.getElementById('centerContainer');
 
     let tabCount = 0;
     let currentTabId = null;
@@ -306,6 +311,8 @@
       iframeContainer.appendChild(iframe);
       tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
+
+      if (centerContainer) centerContainer.classList.add("hidden");
 
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
@@ -344,6 +351,7 @@
       else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        if (centerContainer) centerContainer.classList.add("hidden");
       }
     });
 
@@ -358,6 +366,10 @@
     miniBtn.addEventListener("click", () => {
       const query = miniSearch.value.trim();
       if (query) window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
+    });
+
+    miniSearch.addEventListener("keydown", e => {
+      if (e.key === "Enter") miniBtn.click();
     });
 
     cloakBtn.addEventListener("click", () => {
