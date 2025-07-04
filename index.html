@@ -11,10 +11,12 @@
     * { box-sizing: border-box; }
 
     body, html {
-      margin: 0; padding: 0; height: 100%;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #2a003f, #000000);
       color: white;
-      font-family: 'Poppins', sans-serif;
       overflow: hidden;
     }
 
@@ -31,7 +33,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 20;
+      z-index: 10;
     }
 
     .sidebar button {
@@ -56,17 +58,16 @@
     }
 
     #searchContainer {
-      background: rgba(50, 0, 80, 0.9);
-      padding: 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
       display: flex;
       gap: 10px;
       align-items: center;
-      user-select: none;
-      position: fixed;
-      top: 0;
-      left: 70px;
-      right: 0;
-      z-index: 30;
+      padding: 10px 20px 10px 90px;
+      background: rgba(50, 0, 80, 0.95);
       box-shadow: 0 0 10px #9d4eddaa;
     }
 
@@ -90,7 +91,6 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
-      white-space: nowrap;
     }
 
     #goBtn:hover {
@@ -125,7 +125,6 @@
       align-items: center;
       gap: 6px;
       transition: background 0.3s;
-      position: relative;
       font-size: 1rem;
     }
 
@@ -139,7 +138,6 @@
       margin-left: 6px;
       color: #ccc;
       cursor: pointer;
-      user-select: none;
     }
 
     #tabBar button.tab:hover .closeBtn {
@@ -153,7 +151,6 @@
       border: none;
       color: #9d4edd;
       cursor: pointer;
-      user-select: none;
       margin-left: auto;
     }
 
@@ -166,32 +163,17 @@
       width: 100%;
       max-width: 700px;
       padding: 0 20px;
-      user-select: none;
-      pointer-events: auto;
+      z-index: 5;
     }
 
     .titleBar {
       font-size: 4rem;
       font-weight: 700;
-      background: linear-gradient(45deg, #a37aff, #b8a8ff);
+      background: linear-gradient(45deg, #b48aff, #dbc8ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: glow 4s infinite alternate;
-      text-shadow:
-        0 0 6px #a37aff,
-        0 0 12px #a37aff,
-        0 0 18px #b8a8ff,
-        0 0 24px #b8a8ff;
+      text-shadow: 0 0 2px #b48aff, 0 0 4px #caaaff;
       margin-bottom: 20px;
-    }
-
-    @keyframes glow {
-      0% {
-        filter: drop-shadow(0 0 6px #b8a8ff);
-      }
-      100% {
-        filter: drop-shadow(0 0 12px #a37aff);
-      }
     }
 
     #miniSearchContainer {
@@ -199,10 +181,11 @@
       justify-content: center;
       gap: 10px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    #miniSearch {
-      padding: 8px 12px;
+    #miniSearch, #cloakToggle, #miniBtn {
+      padding: 8px 16px;
       border-radius: 20px;
       border: none;
       font-size: 1rem;
@@ -210,24 +193,11 @@
       background: #2a003f;
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
-      width: 60%;
-      min-width: 200px;
-    }
-
-    #miniBtn, #cloakToggle {
-      padding: 8px 16px;
-      background: #7b2cbf;
-      border: none;
-      border-radius: 20px;
       cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s;
-      white-space: nowrap;
-      color: white;
-      user-select: none;
+      transition: 0.3s;
     }
 
-    #miniBtn:hover, #cloakToggle:hover {
+    #cloakToggle:hover, #miniBtn:hover {
       background: #9d4edd;
     }
 
@@ -237,7 +207,6 @@
       left: 70px;
       right: 0;
       bottom: 0;
-      overflow: hidden;
     }
 
     iframe.tabIframe {
@@ -271,20 +240,20 @@
   </div>
 
   <div id="searchContainer">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
     <button id="goBtn">Go</button>
   </div>
 
   <div id="tabBar">
-    <button id="addTabBtn" title="New Tab">＋</button>
+    <button id="addTabBtn">＋</button>
   </div>
 
   <div class="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
-      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off" />
+      <input type="text" id="miniSearch" placeholder="Ask something..." />
       <button id="miniBtn">Search</button>
-      <button id="cloakToggle" title="Open current page cloaked">Cloak Page</button>
+      <button id="cloakToggle">Cloak</button>
     </div>
   </div>
 
@@ -298,6 +267,9 @@
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
     const addTabBtn = document.getElementById('addTabBtn');
+    const cloakBtn = document.getElementById('cloakToggle');
+    const miniBtn = document.getElementById('miniBtn');
+    const miniSearch = document.getElementById('miniSearch');
 
     let tabCount = 0;
     let currentTabId = null;
@@ -326,7 +298,7 @@
       iframe.className = 'tabIframe';
       iframe.dataset.tab = tabId;
 
-      if (url) {
+      if (url && typeof __uv$config !== "undefined") {
         const encoded = __uv$config.encodeUrl(url);
         iframe.src = __uv$config.prefix + encoded;
       }
@@ -368,9 +340,8 @@
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
-      if (!currentTabId) {
-        createTab(url);
-      } else {
+      if (!currentTabId) createTab(url);
+      else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
       }
@@ -384,28 +355,24 @@
       createTab();
     });
 
-    document.getElementById("miniBtn").addEventListener("click", () => {
-      const query = document.getElementById("miniSearch").value.trim();
-      if (query) {
-        window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
-      }
+    miniBtn.addEventListener("click", () => {
+      const query = miniSearch.value.trim();
+      if (query) window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
     });
 
-    document.getElementById("cloakToggle").addEventListener("click", () => {
-      const src = window.location.href;
+    cloakBtn.addEventListener("click", () => {
       const popup = window.open("about:blank", "_blank");
       if (!popup || popup.closed) {
-        alert("Popup blocked. Please allow popups for cloaking to work.");
+        alert("Popup blocked. Please allow popups.");
         return;
       }
       popup.document.write(`
         <html><head><title>Auraa</title><link rel="icon" href="icon.png">
-        <style>html,body{margin:0;height:100%;overflow:hidden;}
-        iframe{width:100%;height:100%;border:none;}</style>
-        </head><body><iframe src="${src}"></iframe></body></html>
+        <style>html,body{margin:0;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style>
+        </head><body><iframe src="${location.href}"></iframe></body></html>
       `);
       popup.document.close();
-      window.location.href = "https://www.google.com";
+      location.href = "https://www.google.com";
     });
 
     const nav = {
@@ -438,7 +405,6 @@
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
 
-    // Initialize with one blank tab
     createTab();
   </script>
 </body>
