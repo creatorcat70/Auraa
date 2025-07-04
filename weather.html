@@ -126,8 +126,8 @@
   </div>
 
 <script>
-let isFahrenheit = false;  
-let forecast = [];  
+let isFahrenheit = false;
+let forecast = [];
 const weatherIcon = document.getElementById('weatherIcon');
 const tempNowEl = document.getElementById('tempNow');
 const feelsLikeEl = document.getElementById('feelsLike');
@@ -185,12 +185,14 @@ async function initWeather() {
       const data = await res.json();
       forecast = data.daily.time.map((time, i) => {
         const baseTime = new Date(time + 'T12:00:00');
-        const current = i===0 ? data.current_weather.temperature : (data.daily.temperature_2m_max[i] + data.daily.temperature_2m_min[i]) / 2;
+        const min = data.daily.temperature_2m_min[i];
+        const max = data.daily.temperature_2m_max[i];
+        const current = i===0 ? data.current_weather.temperature : (min + max) / 2;
         const codeCurrent = i===0 ? data.current_weather.weathercode : data.daily.weathercode[i];
         const wind = i===0 ? data.current_weather.windspeed.toFixed(1) : '';
         const label = i === 0 ? 'Today' : baseTime.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-        const desc = ''; // no detailed desc for daily
-        return { time: time + 'T12:00:00', current, codeCurrent, wind, label, desc };
+        const desc = '';
+        return { time: time + 'T12:00:00', current, codeCurrent, wind, label, desc, min, max };
       });
       const cal = document.getElementById('calendar');
       cal.innerHTML = '';
@@ -204,7 +206,6 @@ async function initWeather() {
         cal.appendChild(dayEl);
       });
       selectDay(0);
-      // reverse geocode
       const loc = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`).then(r=>r.json());
       const country = loc.address.country_code ? loc.address.country_code.toUpperCase() : '';
       locationFlagEl.textContent = country ? String.fromCodePoint(...country.split('').map(c=>127397+c.charCodeAt())) : '';
