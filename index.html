@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,7 +65,6 @@
       user-select: none;
     }
 
-    /* Push settingsBtn to bottom */
     #settingsBtn {
       margin-top: auto;
       margin-bottom: 5px;
@@ -248,6 +246,19 @@
     .hidden {
       display: none !important;
     }
+
+    /* Glowing footer */
+    #footer {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      color: white;
+      text-shadow: 0 0 6px #ffffffaa, 0 0 10px #ffffff88;
+      font-size: 0.95rem;
+      font-weight: bold;
+      z-index: 999;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -286,6 +297,9 @@
   </div>
 
   <div id="iframeContainer"></div>
+
+  <!-- Footer -->
+  <div id="footer">Auraa | v1.2 revised</div>
 
   <script src="/active/uv/uv.bundle.js"></script>
   <script src="/active/uv/uv.config.js"></script>
@@ -407,7 +421,10 @@
 
     miniBtn.addEventListener("click", () => {
       const query = miniSearch.value.trim();
-      if (query) window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
+      if (query) {
+        const proxied = __uv$config.prefix + __uv$config.encodeUrl(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`);
+        createTab(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`);
+      }
     });
 
     miniSearch.addEventListener("keydown", e => {
@@ -423,13 +440,10 @@
       popup.document.write(`
     <html>
       <head>
-        <title> IXL | Math, Language Arts, Science, Social Studies, Spanish </title>
+        <title>IXL | Math, Language Arts, Science, Social Studies, Spanish</title>
         <link rel="icon" href="icon.png">
         <link rel="icon" type="image/png" href="ixlicon.png">
-        <style>
-          html,body{margin:0;height:100%;overflow:hidden;}
-          iframe{width:100%;height:100%;border:none;}
-        </style>
+        <style>html,body{margin:0;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style>
       </head>
       <body>
         <iframe src="${location.href}"></iframe>
@@ -474,7 +488,6 @@
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
 
-    // NO automatic tab creation on load
     updateAuraVisibility();
   </script>
 </body>
