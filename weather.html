@@ -120,7 +120,7 @@
       <button id="retryBtn" class="weather-btn" style="display:none;">Retry</button>
     </div>
     <div class="right-panel">
-      <h2>7‑Day Calendar</h2>
+      <h2>16‑Day Calendar</h2>
       <div class="calendar" id="calendar"></div>
     </div>
   </div>
@@ -165,7 +165,7 @@ function selectDay(i) {
   feelsLikeEl.textContent = `Feels like: ${formatTemp(d.current)}`;
   windSpeedEl.textContent = d.wind ? `Wind: ${d.wind} m/s` : '';
   descriptionEl.textContent = d.desc;
-  messageEl.textContent = `Showing predicted forecast for ${d.label}`;
+  messageEl.textContent = `Showing Predicted Forecast for ${d.label}`;
 }
 
 unitToggle.onclick = () => {
@@ -181,7 +181,7 @@ async function initWeather() {
   navigator.geolocation.getCurrentPosition(async pos => {
     const lat = pos.coords.latitude, lon = pos.coords.longitude;
     try {
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_min,temperature_2m_max,weathercode&timezone=auto&wind_speed_unit=ms`);
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_min,temperature_2m_max,weathercode&timezone=auto&wind_speed_unit=ms&forecast_days=16`);
       const data = await res.json();
       forecast = data.daily.time.map((time, i) => {
         const baseTime = new Date(time + 'T12:00:00');
