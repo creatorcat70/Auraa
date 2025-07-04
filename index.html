@@ -10,14 +10,12 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
+    body, html {
+      margin: 0; padding: 0; height: 100%;
       background: linear-gradient(135deg, #2a003f, #000000);
       color: white;
       font-family: 'Poppins', sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      overflow: hidden;
     }
 
     .sidebar {
@@ -57,20 +55,48 @@
       text-shadow: 0 0 5px #c77dff;
     }
 
-    .titleBar {
-      text-align: center;
-      font-size: 3rem;
-      margin: 10px 0 0 0;
-      background: linear-gradient(45deg, #7b2cbf, #9d4edd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: glow 3s infinite alternate;
-      text-shadow: 0 0 10px #000;
+    #searchContainer {
+      background: rgba(50, 0, 80, 0.9);
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      user-select: none;
+      position: fixed;
+      top: 0;
+      left: 70px; /* sidebar width + margin */
+      right: 0;
+      z-index: 30;
+      box-shadow: 0 0 10px #9d4eddaa;
     }
 
-    @keyframes glow {
-      0% { filter: drop-shadow(0 0 5px #9d4edd); }
-      100% { filter: drop-shadow(0 0 15px #7b2cbf); }
+    #urlInput {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: #2a003f;
+      color: white;
+      box-shadow: 0 0 8px #9d4edd88;
+      min-width: 300px;
+      max-width: 600px;
+    }
+
+    #goBtn {
+      padding: 8px 20px;
+      background: #7b2cbf;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    #goBtn:hover {
+      background: #9d4edd;
     }
 
     #tabBar {
@@ -82,6 +108,11 @@
       height: 40px;
       align-items: center;
       gap: 5px;
+      position: fixed;
+      top: 50px; /* below search bar */
+      left: 70px;
+      right: 0;
+      z-index: 25;
     }
 
     #tabBar button.tab {
@@ -124,17 +155,43 @@
       margin-left: auto;
     }
 
-    #searchContainer {
-      padding: 10px;
-      background: rgba(50, 0, 80, 0.9);
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
+    .centerContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 100%;
+      max-width: 700px;
+      padding: 0 20px;
+      user-select: none;
+      pointer-events: auto;
     }
 
-    #urlInput, #miniSearch {
+    .titleBar {
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #7b2cbf, #9d4edd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
+      text-shadow: 0 0 10px #000;
+      margin-bottom: 20px;
+    }
+
+    @keyframes glow {
+      0% { filter: drop-shadow(0 0 5px #9d4edd); }
+      100% { filter: drop-shadow(0 0 15px #7b2cbf); }
+    }
+
+    #miniSearchContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    #miniSearch {
       padding: 8px 12px;
       border-radius: 20px;
       border: none;
@@ -143,51 +200,43 @@
       background: #2a003f;
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
+      width: 60%;
+      min-width: 200px;
     }
 
-    #urlInput {
-      flex-grow: 1;
-      min-width: 250px;
-      max-width: 500px;
-    }
-
-    #goBtn, #miniBtn {
-      padding: 8px 20px;
+    #miniBtn, #cloakToggle {
+      padding: 8px 16px;
       background: #7b2cbf;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
+      white-space: nowrap;
+      color: white;
+      user-select: none;
     }
 
-    #goBtn:hover, #miniBtn:hover {
+    #miniBtn:hover, #cloakToggle:hover {
       background: #9d4edd;
     }
 
-    #cloakToggle {
-      background: transparent;
-      color: white;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      text-decoration: underline;
-      margin-left: 10px;
-    }
-
     #iframeContainer {
-      flex-grow: 1;
-      position: relative;
-      height: 100%;
+      position: fixed;
+      top: 90px; /* below tabBar */
+      left: 70px;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
     }
 
     iframe.tabIframe {
-      position: absolute;
-      top: 0; left: 0;
       width: 100%;
       height: 100%;
       border: none;
       display: none;
+      border-radius: 0 0 10px 10px;
+      box-shadow: inset 0 0 20px #7b2cbf88;
     }
 
     iframe.tabIframe.active {
@@ -211,21 +260,24 @@
     </div>
   </div>
 
+  <div id="searchContainer">
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
+    <button id="goBtn">Go</button>
+  </div>
+
   <div id="tabBar">
     <button id="addTabBtn" title="New Tab">＋</button>
   </div>
 
-  <div id="searchContainer">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
-    <button id="goBtn">Go</button>
-
-    <input type="text" id="miniSearch" placeholder="Ask something..." />
-    <button id="miniBtn">Search</button>
-
-    <button id="cloakToggle">Cloak Page</button>
+  <div class="centerContainer">
+    <div class="titleBar">Auraa</div>
+    <div id="miniSearchContainer">
+      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off" />
+      <button id="miniBtn">Search</button>
+      <button id="cloakToggle" title="Open current page cloaked">Cloak Page</button>
+    </div>
   </div>
 
-  <div class="titleBar">Auraa</div>
   <div id="iframeContainer"></div>
 
   <script src="/active/uv/uv.bundle.js"></script>
