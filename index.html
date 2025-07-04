@@ -22,8 +22,8 @@
     }
     #tabBar {
       display: flex;
-      background: rgba(35,0,55,0.9);
-      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      background: rgba(35, 0, 55, 0.9);
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       padding: 0 10px;
       user-select: none;
       height: 40px;
@@ -106,7 +106,8 @@
     }
     iframe.tabIframe {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       border: none;
@@ -188,15 +189,15 @@
     let currentTabId = null;
 
     function createTab(url = 'https://example.com') {
-      const tabId = `tab${tabCount++}`;
+      const tabId = `tab${tabCount}`;
+      const tabLabel = `Tab ${tabCount + 1}`;
+      tabCount++;
 
-      // Create tab button
       const tabButton = document.createElement('button');
       tabButton.className = 'tab';
-      tabButton.innerHTML = `Tab ${tabCount} <span class="closeBtn">&times;</span>`;
+      tabButton.innerHTML = `${tabLabel} <span class="closeBtn">&times;</span>`;
       tabButton.dataset.tab = tabId;
 
-      // Create iframe
       const iframe = document.createElement('iframe');
       iframe.className = 'tabIframe';
       iframe.dataset.tab = tabId;
@@ -207,7 +208,6 @@
 
       setActiveTab(tabId);
 
-      // Event: Switch tab
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
           closeTab(tabId);
@@ -252,6 +252,7 @@
 
     goBtn.addEventListener('click', () => {
       const url = urlInput.value.trim();
+      if (!url) return;
       if (!currentTabId) {
         createTab(url);
       } else {
@@ -264,7 +265,6 @@
       createTab();
     });
 
-    // Init with one default tab
     createTab('https://example.com');
   </script>
 </body>
