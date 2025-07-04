@@ -119,13 +119,13 @@
     };
 
     function getIconForCode(code, isNight) {
-      if ([0,1].includes(code)) return isNight ? '🌙' : '☀️';
-      if ([2,3].includes(code)) return '⛅';
-      if ([45,48].includes(code)) return '🌫️';
-      if ([51,53,55,56,57].includes(code)) return '🌧️';
-      if ([61,63,65,66,67,80,81,82].includes(code)) return '🌦️';
-      if ([71,73,75,77,85,86].includes(code)) return '❄️';
-      if ([95,96,99].includes(code)) return '⛈️';
+      if ([0, 1].includes(code)) return isNight ? '🌙' : '☀️';
+      if ([2, 3].includes(code)) return '⛅';
+      if ([45, 48].includes(code)) return '🌫️';
+      if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
+      if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌦️';
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
+      if ([95, 96, 99].includes(code)) return '⛈️';
       return '❓';
     }
 
@@ -181,7 +181,9 @@
       locationFlagEl.textContent = '';
       locationTextEl.textContent = '';
       forecastDaysEl.innerHTML = '';
+
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&wind_speed_unit=ms`;
+
       fetch(url).then(res => res.json()).then(data => {
         const current = data.current_weather;
         const daily = data.daily;
@@ -213,14 +215,12 @@
             const flag = countryCodeToFlagEmoji(countryCode);
             locationFlagEl.textContent = flag;
 
-            // Show city/town/village or fallback to state/province or country
             const place = loc.address.city || loc.address.town || loc.address.village || loc.address.state || loc.address.country || 'Unknown';
             locationTextEl.textContent = place;
 
             messageEl.textContent = 'Weather updated!';
             renderWeather();
           }).catch(() => {
-            locationFlagEl.textContent = '';
             locationTextEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
             messageEl.textContent = 'Weather updated (location name unavailable)';
             renderWeather();
@@ -250,15 +250,6 @@
     }
 
     retryBtn.addEventListener('click', () => {
-      weatherIcon.textContent = '';
-      temperatureEl.textContent = '';
-      feelsLikeEl.textContent = '';
-      windSpeedEl.textContent = '';
-      descriptionEl.textContent = '';
-      locationFlagEl.textContent = '';
-      locationTextEl.textContent = '';
-      messageEl.textContent = '';
-      forecastDaysEl.innerHTML = '';
       requestLocation();
     });
 
