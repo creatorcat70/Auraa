@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +21,6 @@
       overflow: hidden;
     }
 
-    /* --- Sidebar --- */
     .sidebar {
       position: fixed;
       left: 10px;
@@ -50,6 +50,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
+      user-select: none;
     }
 
     .sidebar button:hover {
@@ -61,14 +63,15 @@
       font-size: 0.9rem;
       color: white;
       text-shadow: 0 0 5px #c77dff;
+      user-select: none;
     }
 
+    /* Push settingsBtn to bottom */
     #settingsBtn {
       margin-top: auto;
       margin-bottom: 5px;
     }
 
-    /* --- Search Bar --- */
     #searchContainer {
       position: fixed;
       top: 0;
@@ -93,6 +96,7 @@
       background: #2a003f;
       color: white;
       box-shadow: 0 0 6px #9d4edd88;
+      user-select: text;
     }
 
     #goBtn {
@@ -103,18 +107,19 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
+      user-select: none;
     }
 
     #goBtn:hover {
       background: #9d4edd;
     }
 
-    /* --- Tab Bar --- */
     #tabBar {
       display: flex;
       background: rgba(35,0,55,0.9);
       box-shadow: 0 0 8px rgba(157,78,221,0.9);
       padding: 0 10px;
+      user-select: none;
       height: 36px;
       align-items: center;
       gap: 5px;
@@ -136,7 +141,9 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: background 0.3s;
       font-size: 0.9rem;
+      user-select: none;
     }
 
     #tabBar button.tab.active {
@@ -149,13 +156,14 @@
       margin-left: 6px;
       color: #ccc;
       cursor: pointer;
+      user-select: none;
     }
 
     #tabBar button.tab:hover .closeBtn {
       color: white;
     }
 
-    #addTabBtn {
+    #tabBar button#addTabBtn {
       font-size: 1.4rem;
       font-weight: bold;
       background: transparent;
@@ -163,9 +171,9 @@
       color: #9d4edd;
       cursor: pointer;
       margin-left: auto;
+      user-select: none;
     }
 
-    /* --- Center Auraa UI --- */
     .centerContainer {
       position: absolute;
       top: 50%;
@@ -176,6 +184,7 @@
       max-width: 700px;
       padding: 0 20px;
       z-index: 5;
+      user-select: none;
     }
 
     .titleBar {
@@ -201,17 +210,19 @@
       border-radius: 20px;
       border: none;
       font-size: 1rem;
+      outline: none;
       background: #2a003f;
       color: white;
       box-shadow: 0 0 6px #9d4edd88;
       cursor: pointer;
+      transition: 0.3s;
+      user-select: text;
     }
 
     #cloakToggle:hover, #miniBtn:hover {
       background: #9d4edd;
     }
 
-    /* --- Iframe Container --- */
     #iframeContainer {
       position: fixed;
       top: 80px;
@@ -240,7 +251,7 @@
   </style>
 </head>
 <body>
-  <!-- SIDEBAR -->
+
   <div class="sidebar">
     <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
     <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
@@ -248,9 +259,7 @@
     <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
     <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
     <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
-    <button id="tideaiBtn" title="Tide AI ChatGPT">
-      <img src="chatgpt-icon.png" alt="ChatGPT" style="width:20px;height:20px;filter: invert(1);">
-    </button>
+    <button id="tideaiBtn" title="Tide AI ChatGPT"><img src="chatgpt-icon.png" alt="ChatGPT" style="width:20px;height:20px;filter: invert(1);"></button>
     <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
     <div class="sidebar-info">
       <span id="battery">⚡</span>
@@ -258,18 +267,15 @@
     </div>
   </div>
 
-  <!-- SEARCH -->
   <div id="searchContainer">
     <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
     <button id="goBtn">Go</button>
   </div>
 
-  <!-- TABS -->
   <div id="tabBar">
     <button id="addTabBtn">＋</button>
   </div>
 
-  <!-- CENTER UI -->
   <div class="centerContainer" id="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
@@ -279,10 +285,8 @@
     </div>
   </div>
 
-  <!-- IFRAMES -->
   <div id="iframeContainer"></div>
 
-  <!-- SCRIPTS -->
   <script src="/active/uv/uv.bundle.js"></script>
   <script src="/active/uv/uv.config.js"></script>
   <script>
@@ -302,7 +306,8 @@
 
     function formatUrl(input) {
       try {
-        return new URL(input).toString();
+        const url = new URL(input);
+        return url.toString();
       } catch {
         try {
           const url = new URL("https://" + input);
@@ -314,99 +319,130 @@
 
     function createTab(url = "") {
       const tabId = `tab${tabCount++}`;
-      const tabBtn = document.createElement("button");
-      tabBtn.className = "tab";
-      tabBtn.dataset.tab = tabId;
-      tabBtn.innerHTML = `Tab ${tabCount} <span class="closeBtn">&times;</span>`;
+      const tabButton = document.createElement('button');
+      tabButton.className = 'tab';
+      tabButton.innerHTML = `Tab ${tabCount} <span class="closeBtn">&times;</span>`;
+      tabButton.dataset.tab = tabId;
 
-      const iframe = document.createElement("iframe");
-      iframe.className = "tabIframe";
+      const iframe = document.createElement('iframe');
+      iframe.className = 'tabIframe';
       iframe.dataset.tab = tabId;
+
       if (url && typeof __uv$config !== "undefined") {
-        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        const encoded = __uv$config.encodeUrl(url);
+        iframe.src = __uv$config.prefix + encoded;
       }
 
-      tabBtn.onclick = (e) => {
-        if (e.target.classList.contains("closeBtn")) closeTab(tabId);
-        else setActiveTab(tabId);
-      };
-
-      tabBar.insertBefore(tabBtn, addTabBtn);
       iframeContainer.appendChild(iframe);
+      tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
       updateAuraVisibility();
+
+      tabButton.addEventListener('click', (e) => {
+        if (e.target.classList.contains('closeBtn')) {
+          closeTab(tabId);
+        } else {
+          setActiveTab(tabId);
+        }
+      });
     }
 
     function setActiveTab(tabId) {
       currentTabId = tabId;
-      document.querySelectorAll(".tab").forEach(btn =>
-        btn.classList.toggle("active", btn.dataset.tab === tabId));
-      document.querySelectorAll(".tabIframe").forEach(iframe =>
-        iframe.classList.toggle("active", iframe.dataset.tab === tabId));
+      document.querySelectorAll('.tab').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tab === tabId)
+      );
+      document.querySelectorAll('.tabIframe').forEach(iframe =>
+        iframe.classList.toggle('active', iframe.dataset.tab === tabId)
+      );
       updateAuraVisibility();
     }
 
     function closeTab(tabId) {
-      const btn = document.querySelector(`.tab[data-tab="${tabId}"]`);
+      const tabBtn = document.querySelector(`.tab[data-tab="${tabId}"]`);
       const iframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
-      btn?.remove();
-      iframe?.remove();
+      if (tabBtn) tabBtn.remove();
+      if (iframe) iframe.remove();
       if (currentTabId === tabId) {
-        const remaining = document.querySelector(".tab");
-        if (remaining) setActiveTab(remaining.dataset.tab);
+        const remaining = document.querySelectorAll('.tab');
+        if (remaining.length > 0) setActiveTab(remaining[0].dataset.tab);
         else {
           currentTabId = null;
           updateAuraVisibility();
         }
+      } else {
+        updateAuraVisibility();
       }
     }
 
     function updateAuraVisibility() {
-      const tabs = document.querySelectorAll(".tab");
-      centerContainer.classList.toggle("hidden", tabs.length > 0);
+      const tabs = document.querySelectorAll('.tab');
+      if (tabs.length === 0) {
+        centerContainer.classList.remove('hidden');
+      } else {
+        centerContainer.classList.add('hidden');
+      }
     }
 
-    goBtn.onclick = () => {
+    goBtn.addEventListener("click", () => {
       const input = urlInput.value.trim();
       if (!input) return;
       const url = formatUrl(input);
-      if (!currentTabId) createTab(url);
-      else {
+      if (!currentTabId) {
+        createTab(url);
+      } else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        centerContainer.classList.add("hidden");
       }
-      centerContainer.classList.add("hidden");
-    };
+    });
 
-    urlInput.onkeydown = (e) => {
+    urlInput.addEventListener("keydown", e => {
       if (e.key === "Enter") goBtn.click();
-    };
+    });
 
-    addTabBtn.onclick = () => createTab();
+    addTabBtn.addEventListener("click", () => {
+      createTab();
+    });
 
-    miniBtn.onclick = () => {
-      const q = miniSearch.value.trim();
-      if (q) window.open("https://www.startpage.com/search?q=" + encodeURIComponent(q), "_blank");
-    };
+    miniBtn.addEventListener("click", () => {
+      const query = miniSearch.value.trim();
+      if (query) window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
+    });
 
-    miniSearch.onkeydown = (e) => {
+    miniSearch.addEventListener("keydown", e => {
       if (e.key === "Enter") miniBtn.click();
-    };
+    });
 
-    cloakBtn.onclick = () => {
+    cloakBtn.addEventListener("click", () => {
       const popup = window.open("about:blank", "_blank");
-      if (!popup || popup.closed) return alert("Popup blocked.");
+      if (!popup || popup.closed) {
+        alert("Popup blocked. Please allow popups.");
+        return;
+      }
       popup.document.write(`
-        <title>IXL | Math</title>
-        <link rel="icon" href="ixlicon.png" />
-        <style>html, body { margin: 0; height: 100%; overflow: hidden; }</style>
-        <iframe src="${location.href}" style="width:100%;height:100%;border:none;"></iframe>
-      `);
+    <html>
+      <head>
+        <title> IXL | Math, Language Arts, Science, Social Studies, Spanish </title>
+        <link rel="icon" href="icon.png">
+        <link rel="icon" type="image/png" href="ixlicon.png">
+        <style>
+          html,body{margin:0;height:100%;overflow:hidden;}
+          iframe{width:100%;height:100%;border:none;}
+        </style>
+      </head>
+      <body>
+        <iframe src="${location.href}"></iframe>
+      </body>
+    </html>
+  `);
       popup.document.close();
       location.href = "https://www.google.com";
-    };
+    });
 
-    tideaiBtn.onclick = () => window.location.href = "tideai.html";
+    tideaiBtn.addEventListener('click', () => {
+      window.location.href = 'tideai.html';
+    });
 
     const nav = {
       homeBtn: "index.html",
@@ -417,15 +453,17 @@
       settingsBtn: "settings.html",
       weatherBtn: "weather.html"
     };
-    Object.entries(nav).forEach(([id, link]) => {
+    for (const id in nav) {
       const btn = document.getElementById(id);
-      if (btn) btn.onclick = () => (window.location.href = link);
-    });
+      if (btn) btn.onclick = () => window.location.href = nav[id];
+    }
 
     if (navigator.getBattery) {
       navigator.getBattery().then(battery => {
         const el = document.getElementById("battery");
-        const update = () => el.textContent = `⚡ ${Math.round(battery.level * 100)}%`;
+        function update() {
+          el.textContent = `⚡ ${Math.round(battery.level * 100)}%`;
+        }
         update();
         battery.addEventListener("levelchange", update);
       });
@@ -436,6 +474,7 @@
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
 
+    // NO automatic tab creation on load
     updateAuraVisibility();
   </script>
 </body>
