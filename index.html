@@ -8,9 +8,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: linear-gradient(135deg, #2a003f, #000000);
@@ -20,10 +19,11 @@
       display: flex;
       flex-direction: column;
     }
+
     .sidebar {
       position: fixed;
       left: 10px;
-      top: 50%;
+      top: 60%;
       transform: translateY(-50%);
       background: rgba(35, 0, 55, 0.9);
       padding: 10px;
@@ -35,6 +35,7 @@
       align-items: center;
       z-index: 20;
     }
+
     .sidebar button {
       background: transparent;
       border: none;
@@ -44,29 +45,34 @@
       cursor: pointer;
       transition: 0.3s;
     }
+
     .sidebar button:hover {
       color: #e0aaff;
     }
+
     .sidebar-info {
       margin-top: 10px;
       font-size: 1rem;
       color: white;
       text-shadow: 0 0 5px #c77dff;
     }
+
     .titleBar {
       text-align: center;
-      font-size: 2.5rem;
-      padding: 10px;
+      font-size: 3rem;
+      margin: 10px 0 0 0;
       background: linear-gradient(45deg, #7b2cbf, #9d4edd);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: glow 3s infinite alternate;
       text-shadow: 0 0 10px #000;
     }
+
     @keyframes glow {
       0% { filter: drop-shadow(0 0 5px #9d4edd); }
       100% { filter: drop-shadow(0 0 15px #7b2cbf); }
     }
+
     #tabBar {
       display: flex;
       background: rgba(35,0,55,0.9);
@@ -77,6 +83,7 @@
       align-items: center;
       gap: 5px;
     }
+
     #tabBar button.tab {
       background: transparent;
       border: none;
@@ -92,10 +99,12 @@
       position: relative;
       font-size: 1rem;
     }
+
     #tabBar button.tab.active {
       background: #7b2cbf;
       box-shadow: 0 -2px 5px #9d4edd;
     }
+
     #tabBar button.tab .closeBtn {
       font-size: 0.8rem;
       margin-left: 6px;
@@ -103,9 +112,7 @@
       cursor: pointer;
       user-select: none;
     }
-    #tabBar button.tab:hover .closeBtn {
-      color: white;
-    }
+
     #tabBar button#addTabBtn {
       font-size: 1.4rem;
       font-weight: bold;
@@ -116,15 +123,18 @@
       user-select: none;
       margin-left: auto;
     }
+
     #searchContainer {
       padding: 10px;
       background: rgba(50, 0, 80, 0.9);
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    #urlInput {
-      flex-grow: 1;
+
+    #urlInput, #miniSearch {
       padding: 8px 12px;
       border-radius: 20px;
       border: none;
@@ -134,7 +144,14 @@
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
     }
-    #goBtn {
+
+    #urlInput {
+      flex-grow: 1;
+      min-width: 250px;
+      max-width: 500px;
+    }
+
+    #goBtn, #miniBtn {
       padding: 8px 20px;
       background: #7b2cbf;
       border: none;
@@ -143,14 +160,27 @@
       font-weight: 600;
       transition: background 0.3s;
     }
-    #goBtn:hover {
+
+    #goBtn:hover, #miniBtn:hover {
       background: #9d4edd;
     }
+
+    #cloakToggle {
+      background: transparent;
+      color: white;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-left: 10px;
+    }
+
     #iframeContainer {
       flex-grow: 1;
       position: relative;
       height: 100%;
     }
+
     iframe.tabIframe {
       position: absolute;
       top: 0; left: 0;
@@ -159,6 +189,7 @@
       border: none;
       display: none;
     }
+
     iframe.tabIframe.active {
       display: block;
     }
@@ -180,22 +211,25 @@
     </div>
   </div>
 
-  <div class="titleBar">Auraa</div>
-
   <div id="tabBar">
     <button id="addTabBtn" title="New Tab">＋</button>
   </div>
 
   <div id="searchContainer">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
     <button id="goBtn">Go</button>
+
+    <input type="text" id="miniSearch" placeholder="Ask something..." />
+    <button id="miniBtn">Search</button>
+
+    <button id="cloakToggle">Cloak Page</button>
   </div>
 
+  <div class="titleBar">Auraa</div>
   <div id="iframeContainer"></div>
 
   <script src="/active/uv/uv.bundle.js"></script>
   <script src="/active/uv/uv.config.js"></script>
-
   <script>
     const tabBar = document.getElementById('tabBar');
     const iframeContainer = document.getElementById('iframeContainer');
@@ -216,7 +250,7 @@
           if (url.hostname.includes(".")) return url.toString();
         } catch {}
       }
-      return "https://www.google.com/search?q=" + encodeURIComponent(input);
+      return "https://www.startpage.com/search?q=" + encodeURIComponent(input);
     }
 
     function createTab(url = "") {
@@ -288,7 +322,30 @@
       createTab();
     });
 
-    // Sidebar navigation
+    document.getElementById("miniBtn").addEventListener("click", () => {
+      const query = document.getElementById("miniSearch").value.trim();
+      if (query) {
+        window.open(`https://www.startpage.com/search?q=${encodeURIComponent(query)}`, "_blank");
+      }
+    });
+
+    document.getElementById("cloakToggle").addEventListener("click", () => {
+      const src = window.location.href;
+      const popup = window.open("about:blank", "_blank");
+      if (!popup || popup.closed) {
+        alert("Popup blocked. Please allow popups for cloaking to work.");
+        return;
+      }
+      popup.document.write(`
+        <html><head><title>Auraa</title><link rel="icon" href="icon.png">
+        <style>html,body{margin:0;height:100%;overflow:hidden;}
+        iframe{width:100%;height:100%;border:none;}</style>
+        </head><body><iframe src="${src}"></iframe></body></html>
+      `);
+      popup.document.close();
+      window.location.href = "https://www.google.com";
+    });
+
     const nav = {
       homeBtn: "index.html",
       gamesBtn: "games.html",
@@ -298,13 +355,11 @@
       settingsBtn: "settings.html",
       weatherBtn: "weather.html"
     };
-
     for (const id in nav) {
       const btn = document.getElementById(id);
       if (btn) btn.onclick = () => window.location.href = nav[id];
     }
 
-    // Battery + Time
     if (navigator.getBattery) {
       navigator.getBattery().then(battery => {
         const el = document.getElementById("battery");
@@ -315,6 +370,7 @@
         battery.addEventListener("levelchange", update);
       });
     }
+
     setInterval(() => {
       const el = document.getElementById("time");
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
