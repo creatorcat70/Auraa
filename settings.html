@@ -113,7 +113,7 @@
   />
 
   <label for="particleToggle" style="margin-top:40px;">
-    <input type="checkbox" id="particleToggle" /> Enable falling particles effect
+    <input type="checkbox" id="particleToggle" checked /> Enable falling particles effect
   </label>
 
   <button id="saveBtn" style="margin-top:40px;">Save Settings</button>
@@ -121,7 +121,6 @@
 
   <p class="footer">Auraa Settings | Made by @thefakesydney</p>
 
-  <!-- Main Settings Logic -->
   <script>
     const cloakSelect = document.getElementById('cloakSelect');
     const particleCountInput = document.getElementById('particleCountInput');
@@ -132,26 +131,19 @@
       const cloak = localStorage.getItem('auraaCloak') || 'default';
       cloakSelect.value = cloak;
 
-      let count = localStorage.getItem('auraaParticleCount');
-      if (count === null) {
-        count = '100';
-        localStorage.setItem('auraaParticleCount', count);
-      }
+      const count = localStorage.getItem('auraaParticleCount') || '100';
       particleCountInput.value = count;
 
-      let enabled = localStorage.getItem('auraaParticlesEnabled');
-      if (enabled === null) {
-        enabled = 'true';
-        localStorage.setItem('auraaParticlesEnabled', enabled);
-      }
-      particleToggle.checked = enabled === 'true';
+      // Particle toggle always starts enabled visually, but still saved
+      const enabled = localStorage.getItem('auraaParticlesEnabled');
+      particleToggle.checked = enabled !== 'false';
     }
 
     function saveSettings() {
       localStorage.setItem('auraaCloak', cloakSelect.value);
       localStorage.setItem('auraaParticleCount', particleCountInput.value);
       localStorage.setItem('auraaParticlesEnabled', particleToggle.checked);
-      alert('Settings saved! Changes will apply when you reload the main page.');
+      alert('Settings saved!');
     }
 
     saveBtn.addEventListener('click', saveSettings);
@@ -170,7 +162,6 @@
     loadSettings();
   </script>
 
-  <!-- Particle Logic -->
   <script>
     let animationFrameId = null;
 
@@ -253,18 +244,8 @@
       }
     });
 
-    // On page load
-    if (particleToggle.checked) {
-      createParticles();
-    }
-  </script>
-
-  <!-- Prevent Accidental Tab Closing -->
-  <script>
-    window.addEventListener("beforeunload", function (e) {
-      e.preventDefault();
-      e.returnValue = '';
-    });
+    // ✅ Always start particles by default
+    createParticles();
   </script>
 </body>
 </html>
