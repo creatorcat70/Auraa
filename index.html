@@ -51,7 +51,7 @@
     .sidebar button {
       background: transparent;
       border: none;
-      font-size: 1.4rem; /* smaller icons */
+      font-size: 1.2rem; /* smaller icons */
       color: #fff;
       cursor: pointer;
       transition: 0.3s;
@@ -74,13 +74,13 @@
     #searchContainer {
       position: fixed;
       top: 0;
-      left: 70px; /* increased left to avoid sidebar */
-      right: 0;
+      left: 70px; /* after sidebar */
+      right: 70px; /* leave space for nav arrows on right */
       z-index: 30;
       display: flex;
       gap: 10px;
       align-items: center;
-      padding: 10px 20px 10px 20px;
+      padding: 10px 20px;
       background: rgba(50, 0, 80, 0.95);
       box-shadow: 0 0 10px #9d4eddaa;
     }
@@ -229,22 +229,29 @@
     #navArrows {
       position: fixed;
       top: 10px;
-      left: 10px; /* moved left to sidebar edge so no overlap */
+      right: 10px; /* moved to right side of search bar */
       z-index: 35;
       display: flex;
-      gap: 10px;
+      gap: 6px;
       background: rgba(35, 0, 55, 0.85);
-      padding: 5px 8px;
+      padding: 4px 6px;
       border-radius: 10px;
+      user-select: none;
+      align-items: center;
     }
     #navArrows button {
       background: #7b2cbf;
       border: none;
       border-radius: 6px;
       color: white;
-      font-size: 1.5rem;
-      padding: 6px 12px;
+      font-size: 1.1rem;
+      width: 30px;
+      height: 30px;
+      padding: 0;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transition: background 0.3s;
     }
     #navArrows button:hover {
