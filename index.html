@@ -384,10 +384,12 @@
     }
 
     goBtn.addEventListener("click", () => {
-      const url = formatUrl(urlInput.value.trim());
-      if (!url) return;
-      if (!currentTabId) createTab(url);
-      else {
+      const input = urlInput.value.trim();
+      if (!input) return;
+      const url = formatUrl(input);
+      if (!currentTabId) {
+        createTab(url);
+      } else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
         centerContainer.classList.add("hidden");
@@ -460,7 +462,8 @@
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
 
-    createTab();
+    // NO automatic tab creation on load
+    updateAuraVisibility();
   </script>
 </body>
 </html>
