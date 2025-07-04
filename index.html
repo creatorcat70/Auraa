@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Auraa</title>
   <link rel="icon" href="icon.png" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-    * { box-sizing: border-box; }
-    body, html {
+    * {
+      box-sizing: border-box;
+    }
+    body,
+    html {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -21,46 +27,60 @@
     .sidebar {
       position: fixed;
       left: 10px;
-      top: 60%;
+      top: 50%;
       transform: translateY(-50%);
       background: rgba(35, 0, 55, 0.9);
-      padding: 10px;
-      width: 60px;
+      padding: 10px 6px;
+      width: 52px;
       border-radius: 10px;
       box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 10;
+      height: 85%;
+      justify-content: space-between;
+    }
+    .sidebar-top,
+    .sidebar-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
     }
     .sidebar button {
       background: transparent;
       border: none;
-      font-size: 2rem;
+      font-size: 1.6rem;
       color: #fff;
-      margin: 10px 0;
       cursor: pointer;
       transition: 0.3s;
+      padding: 5px 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .sidebar button:hover {
       color: #e0aaff;
     }
     .sidebar-info {
-      margin-top: 10px;
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: white;
       text-shadow: 0 0 5px #c77dff;
+      user-select: none;
+      margin-top: 10px;
+      text-align: center;
     }
     #searchContainer {
       position: fixed;
       top: 0;
-      left: 0;
+      left: 60px;
       right: 0;
       z-index: 30;
       display: flex;
       gap: 10px;
       align-items: center;
-      padding: 10px 20px 10px 90px;
+      padding: 10px 20px 10px 20px;
       background: rgba(50, 0, 80, 0.95);
       box-shadow: 0 0 10px #9d4eddaa;
     }
@@ -75,23 +95,22 @@
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
     }
-    #goBtn, #backBtn, #forwardBtn {
-      padding: 8px 12px;
+    #goBtn {
+      padding: 8px 20px;
       background: #7b2cbf;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
-      color: white;
     }
-    #goBtn:hover, #backBtn:hover, #forwardBtn:hover {
+    #goBtn:hover {
       background: #9d4edd;
     }
     #tabBar {
       display: flex;
-      background: rgba(35,0,55,0.9);
-      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      background: rgba(35, 0, 55, 0.9);
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       padding: 0 10px;
       user-select: none;
       height: 40px;
@@ -116,6 +135,7 @@
       gap: 6px;
       transition: background 0.3s;
       font-size: 1rem;
+      white-space: nowrap;
     }
     #tabBar button.tab.active {
       background: #7b2cbf;
@@ -166,7 +186,9 @@
       margin-bottom: 10px;
       flex-wrap: wrap;
     }
-    #miniSearch, #cloakToggle, #miniBtn {
+    #miniSearch,
+    #cloakToggle,
+    #miniBtn {
       padding: 8px 16px;
       border-radius: 20px;
       border: none;
@@ -178,7 +200,8 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    #cloakToggle:hover, #miniBtn:hover {
+    #cloakToggle:hover,
+    #miniBtn:hover {
       background: #9d4edd;
     }
     #iframeContainer {
@@ -199,32 +222,56 @@
     iframe.tabIframe.active {
       display: block;
     }
-    .hidden {
-      display: none !important;
+    #navArrows {
+      position: fixed;
+      top: 10px;
+      left: 70px;
+      z-index: 35;
+      display: flex;
+      gap: 10px;
+    }
+    #navArrows button {
+      background: #7b2cbf;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1.5rem;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #navArrows button:hover {
+      background: #9d4edd;
     }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
-    <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
-    <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
-    <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
-    <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
-    <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
-    <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
-    <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
-    <div class="sidebar-info">
-      <span id="battery">⚡</span>
-      <span id="time">⌚</span>
+    <div class="sidebar-top">
+      <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
+      <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
+      <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
+      <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
+      <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
+      <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    </div>
+    <div class="sidebar-bottom">
+      <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
+      <div class="sidebar-info">
+        <div id="battery">⚡</div>
+        <div id="time">⌚</div>
+      </div>
     </div>
   </div>
 
   <div id="searchContainer">
-    <button id="backBtn"><i class="bi bi-arrow-left"></i></button>
-    <button id="forwardBtn"><i class="bi bi-arrow-right"></i></button>
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
     <button id="goBtn">Go</button>
+  </div>
+
+  <div id="navArrows">
+    <button id="backBtn" title="Back"><i class="bi bi-arrow-left"></i></button>
+    <button id="forwardBtn" title="Forward"><i class="bi bi-arrow-right"></i></button>
   </div>
 
   <div id="tabBar">
@@ -234,7 +281,7 @@
   <div class="centerContainer" id="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
-      <input type="text" id="miniSearch" placeholder="Ask something..." />
+      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off" />
       <button id="miniBtn">Search</button>
       <button id="cloakToggle">Cloak</button>
     </div>
@@ -292,7 +339,8 @@
       iframeContainer.appendChild(iframe);
       tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
-      centerContainer.classList.add("hidden");
+
+      if (centerContainer) centerContainer.classList.add("hidden");
 
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
@@ -321,33 +369,29 @@
       if (currentTabId === tabId) {
         const remaining = document.querySelectorAll('.tab');
         if (remaining.length > 0) setActiveTab(remaining[0].dataset.tab);
-        else currentTabId = null;
+        else {
+          currentTabId = null;
+          if (centerContainer) centerContainer.classList.remove("hidden");
+        }
       }
     }
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
       if (!url) return;
-      if (!currentTabId) createTab(url);
-      else {
+      if (!currentTabId) {
+        createTab(url);
+      } else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        if (iframe && typeof __uv$config !== "undefined") {
+          iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+          if (centerContainer) centerContainer.classList.add("hidden");
+        }
       }
-      centerContainer.classList.add("hidden");
     });
 
     urlInput.addEventListener("keydown", e => {
       if (e.key === "Enter") goBtn.click();
-    });
-
-    backBtn.addEventListener("click", () => {
-      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-      if (iframe && iframe.contentWindow?.history) iframe.contentWindow.history.back();
-    });
-
-    forwardBtn.addEventListener("click", () => {
-      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-      if (iframe && iframe.contentWindow?.history) iframe.contentWindow.history.forward();
     });
 
     addTabBtn.addEventListener("click", () => {
@@ -407,6 +451,22 @@
       const el = document.getElementById("time");
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
+
+    backBtn.addEventListener("click", () => {
+      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+      if (iframe && iframe.contentWindow && iframe.contentWindow.history && iframe.contentWindow.history.length > 1) {
+        iframe.contentWindow.history.back();
+      }
+    });
+
+    forwardBtn.addEventListener("click", () => {
+      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+      if (iframe && iframe.contentWindow && iframe.contentWindow.history) {
+        iframe.contentWindow.history.forward();
+      }
+    });
+
+    createTab();
   </script>
 </body>
 </html>
