@@ -173,17 +173,26 @@
     .titleBar {
       font-size: 4rem;
       font-weight: 700;
-      background: linear-gradient(45deg, #7b2cbf, #9d4edd);
+      background: linear-gradient(45deg, #b37aff, #d6b8ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: glow 3s infinite alternate;
-      text-shadow: 0 0 10px #000;
+      text-shadow:
+        0 0 10px #b37aff,
+        0 0 20px #b37aff,
+        0 0 30px #d6b8ff,
+        0 0 40px #d6b8ff,
+        0 0 50px #b37aff;
       margin-bottom: 20px;
     }
 
     @keyframes glow {
-      0% { filter: drop-shadow(0 0 5px #9d4edd); }
-      100% { filter: drop-shadow(0 0 15px #7b2cbf); }
+      0% {
+        filter: drop-shadow(0 0 10px #d6b8ff);
+      }
+      100% {
+        filter: drop-shadow(0 0 25px #b37aff);
+      }
     }
 
     #miniSearchContainer {
