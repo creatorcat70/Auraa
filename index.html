@@ -10,7 +10,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     * { box-sizing: border-box; }
 
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -18,6 +18,16 @@
       background: linear-gradient(135deg, #2a003f, #000000);
       color: white;
       overflow: hidden;
+    }
+
+    canvas#snowCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .sidebar {
@@ -28,7 +38,7 @@
       background: rgba(35, 0, 55, 0.9);
       padding: 10px 0;
       width: 60px;
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       display: flex;
       flex-direction: column;
@@ -39,9 +49,9 @@
     .sidebar button {
       background: transparent;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: #fff;
-      margin: 8px 0;
+      margin: 10px 0;
       cursor: pointer;
       transition: 0.3s;
     }
@@ -51,11 +61,14 @@
     }
 
     .sidebar-info {
-      margin-top: auto;
+      margin-top: 15px;
       font-size: 0.9rem;
-      color: white;
-      text-shadow: 0 0 5px #c77dff;
-      padding: 10px 0;
+      text-align: center;
+    }
+
+    #settingsBtn {
+      margin-top: auto;
+      margin-bottom: 10px;
     }
 
     #searchContainer {
@@ -100,8 +113,8 @@
 
     #tabBar {
       display: flex;
-      background: rgba(35,0,55,0.9);
-      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      background: rgba(35, 0, 55, 0.9);
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       padding: 0 10px;
       height: 40px;
       align-items: center;
@@ -124,8 +137,6 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.3s;
-      font-size: 1rem;
     }
 
     #tabBar button.tab.active {
@@ -133,18 +144,18 @@
       box-shadow: 0 -2px 5px #9d4edd;
     }
 
-    #tabBar button.tab .closeBtn {
+    .closeBtn {
       font-size: 0.8rem;
       margin-left: 6px;
       color: #ccc;
       cursor: pointer;
     }
 
-    #tabBar button.tab:hover .closeBtn {
+    .closeBtn:hover {
       color: white;
     }
 
-    #tabBar button#addTabBtn {
+    #addTabBtn {
       font-size: 1.4rem;
       font-weight: bold;
       background: transparent;
@@ -160,7 +171,6 @@
       left: 50%;
       transform: translate(-50%, -30%);
       text-align: center;
-      width: 100%;
       max-width: 700px;
       padding: 0 20px;
       z-index: 5;
@@ -180,11 +190,10 @@
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
-    #miniSearch, #cloakToggle, #miniBtn {
+    #miniSearch, #miniBtn, #cloakToggle {
       padding: 8px 16px;
       border-radius: 20px;
       border: none;
@@ -194,7 +203,6 @@
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
       cursor: pointer;
-      transition: 0.3s;
     }
 
     #cloakToggle:hover, #miniBtn:hover {
@@ -226,17 +234,20 @@
   </style>
 </head>
 <body>
+  <canvas id="snowCanvas"></canvas>
+
   <div class="sidebar">
     <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
     <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
     <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
     <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
+    <button id="aiBtn" title="Tide AI"><i class="bi bi-robot"></i></button>
     <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
     <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
     <div class="sidebar-info">
-      <span id="battery">⚡</span>
-      <span id="time">⌚</span>
-      <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
+      <div id="battery">⚡</div>
+      <div id="time">⌚</div>
     </div>
   </div>
 
@@ -272,6 +283,7 @@
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
     const centerContainer = document.getElementById('centerContainer');
+
     let tabCount = 0;
     let currentTabId = null;
 
@@ -308,7 +320,7 @@
       tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
 
-      if (centerContainer) centerContainer.classList.add("hidden");
+      centerContainer.classList.add("hidden");
 
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
@@ -346,8 +358,12 @@
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
-      createTab(url);
-      if (centerContainer) centerContainer.classList.add("hidden");
+      if (!currentTabId) createTab(url);
+      else {
+        const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+      }
+      centerContainer.classList.add("hidden");
     });
 
     urlInput.addEventListener("keydown", e => {
@@ -387,10 +403,12 @@
       gamesBtn: "games.html",
       moviesBtn: "movies.html",
       chatBtn: "auraachat.html",
+      aiBtn: "tideai.html",
       creditsBtn: "credits.html",
       settingsBtn: "settings.html",
       weatherBtn: "weather.html"
     };
+
     for (const id in nav) {
       const btn = document.getElementById(id);
       if (btn) btn.onclick = () => window.location.href = nav[id];
@@ -411,6 +429,8 @@
       const el = document.getElementById("time");
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
+
+    createTab();
   </script>
 </body>
 </html>
