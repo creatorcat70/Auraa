@@ -10,7 +10,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     * { box-sizing: border-box; }
 
-    html, body {
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -20,25 +20,15 @@
       overflow: hidden;
     }
 
-    canvas#snowCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-    }
-
     .sidebar {
       position: fixed;
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
       background: rgba(35, 0, 55, 0.9);
-      padding: 10px 0;
-      width: 60px;
-      border-radius: 12px;
+      padding: 10px 6px;
+      width: 50px;
+      border-radius: 10px;
       box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       display: flex;
       flex-direction: column;
@@ -51,9 +41,16 @@
       border: none;
       font-size: 1.6rem;
       color: #fff;
-      margin: 10px 0;
+      margin: 8px 0;
       cursor: pointer;
       transition: 0.3s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      user-select: none;
     }
 
     .sidebar button:hover {
@@ -61,14 +58,17 @@
     }
 
     .sidebar-info {
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 0.9rem;
-      text-align: center;
+      color: white;
+      text-shadow: 0 0 5px #c77dff;
+      user-select: none;
     }
 
+    /* Push settingsBtn to bottom */
     #settingsBtn {
       margin-top: auto;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     #searchContainer {
@@ -80,31 +80,33 @@
       display: flex;
       gap: 10px;
       align-items: center;
-      padding: 10px 20px 10px 90px;
+      padding: 10px 20px 10px 70px;
       background: rgba(50, 0, 80, 0.95);
       box-shadow: 0 0 10px #9d4eddaa;
     }
 
     #urlInput {
       flex-grow: 1;
-      padding: 8px 12px;
+      padding: 6px 12px;
       border-radius: 20px;
       border: none;
       font-size: 1rem;
       outline: none;
       background: #2a003f;
       color: white;
-      box-shadow: 0 0 8px #9d4edd88;
+      box-shadow: 0 0 6px #9d4edd88;
+      user-select: text;
     }
 
     #goBtn {
-      padding: 8px 20px;
+      padding: 6px 20px;
       background: #7b2cbf;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
+      user-select: none;
     }
 
     #goBtn:hover {
@@ -113,15 +115,16 @@
 
     #tabBar {
       display: flex;
-      background: rgba(35, 0, 55, 0.9);
-      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
+      background: rgba(35,0,55,0.9);
+      box-shadow: 0 0 8px rgba(157,78,221,0.9);
       padding: 0 10px;
-      height: 40px;
+      user-select: none;
+      height: 36px;
       align-items: center;
       gap: 5px;
       position: fixed;
-      top: 50px;
-      left: 70px;
+      top: 45px;
+      left: 60px;
       right: 0;
       z-index: 25;
     }
@@ -130,13 +133,16 @@
       background: transparent;
       border: none;
       color: white;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 5px 5px 0 0;
       cursor: pointer;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: background 0.3s;
+      font-size: 0.9rem;
+      user-select: none;
     }
 
     #tabBar button.tab.active {
@@ -144,18 +150,19 @@
       box-shadow: 0 -2px 5px #9d4edd;
     }
 
-    .closeBtn {
-      font-size: 0.8rem;
+    #tabBar button.tab .closeBtn {
+      font-size: 0.7rem;
       margin-left: 6px;
       color: #ccc;
       cursor: pointer;
+      user-select: none;
     }
 
-    .closeBtn:hover {
+    #tabBar button.tab:hover .closeBtn {
       color: white;
     }
 
-    #addTabBtn {
+    #tabBar button#addTabBtn {
       font-size: 1.4rem;
       font-weight: bold;
       background: transparent;
@@ -163,6 +170,7 @@
       color: #9d4edd;
       cursor: pointer;
       margin-left: auto;
+      user-select: none;
     }
 
     .centerContainer {
@@ -171,9 +179,11 @@
       left: 50%;
       transform: translate(-50%, -30%);
       text-align: center;
+      width: 100%;
       max-width: 700px;
       padding: 0 20px;
       z-index: 5;
+      user-select: none;
     }
 
     .titleBar {
@@ -190,19 +200,22 @@
       display: flex;
       justify-content: center;
       gap: 10px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
-    #miniSearch, #miniBtn, #cloakToggle {
-      padding: 8px 16px;
+    #miniSearch, #cloakToggle, #miniBtn {
+      padding: 6px 16px;
       border-radius: 20px;
       border: none;
       font-size: 1rem;
       outline: none;
       background: #2a003f;
       color: white;
-      box-shadow: 0 0 8px #9d4edd88;
+      box-shadow: 0 0 6px #9d4edd88;
       cursor: pointer;
+      transition: 0.3s;
+      user-select: text;
     }
 
     #cloakToggle:hover, #miniBtn:hover {
@@ -211,10 +224,11 @@
 
     #iframeContainer {
       position: fixed;
-      top: 90px;
-      left: 70px;
+      top: 80px;
+      left: 60px;
       right: 0;
       bottom: 0;
+      z-index: 1;
     }
 
     iframe.tabIframe {
@@ -222,6 +236,8 @@
       height: 100%;
       border: none;
       display: none;
+      border-radius: 0 0 10px 10px;
+      box-shadow: inset 0 0 20px #7b2cbf88;
     }
 
     iframe.tabIframe.active {
@@ -234,25 +250,24 @@
   </style>
 </head>
 <body>
-  <canvas id="snowCanvas"></canvas>
 
   <div class="sidebar">
     <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
     <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
     <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
     <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
-    <button id="aiBtn" title="Tide AI"><i class="bi bi-robot"></i></button>
     <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
     <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    <button id="tideaiBtn" title="Tide AI ChatGPT"><img src="chatgpt-icon.png" alt="ChatGPT" style="width:20px;height:20px;filter: invert(1);"></button>
     <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
     <div class="sidebar-info">
-      <div id="battery">⚡</div>
-      <div id="time">⌚</div>
+      <span id="battery">⚡</span>
+      <span id="time">⌚</span>
     </div>
   </div>
 
   <div id="searchContainer">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
     <button id="goBtn">Go</button>
   </div>
 
@@ -263,7 +278,7 @@
   <div class="centerContainer" id="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
-      <input type="text" id="miniSearch" placeholder="Ask something..." />
+      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off" />
       <button id="miniBtn">Search</button>
       <button id="cloakToggle">Cloak</button>
     </div>
@@ -283,6 +298,7 @@
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
     const centerContainer = document.getElementById('centerContainer');
+    const tideaiBtn = document.getElementById('tideaiBtn');
 
     let tabCount = 0;
     let currentTabId = null;
@@ -319,8 +335,7 @@
       iframeContainer.appendChild(iframe);
       tabBar.insertBefore(tabButton, addTabBtn);
       setActiveTab(tabId);
-
-      centerContainer.classList.add("hidden");
+      updateAuraVisibility();
 
       tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
@@ -339,6 +354,7 @@
       document.querySelectorAll('.tabIframe').forEach(iframe =>
         iframe.classList.toggle('active', iframe.dataset.tab === tabId)
       );
+      updateAuraVisibility();
     }
 
     function closeTab(tabId) {
@@ -351,19 +367,31 @@
         if (remaining.length > 0) setActiveTab(remaining[0].dataset.tab);
         else {
           currentTabId = null;
-          centerContainer.classList.remove("hidden");
+          updateAuraVisibility();
         }
+      } else {
+        updateAuraVisibility();
+      }
+    }
+
+    function updateAuraVisibility() {
+      const tabs = document.querySelectorAll('.tab');
+      if (tabs.length === 0) {
+        centerContainer.classList.remove('hidden');
+      } else {
+        centerContainer.classList.add('hidden');
       }
     }
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
+      if (!url) return;
       if (!currentTabId) createTab(url);
       else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
         iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        centerContainer.classList.add("hidden");
       }
-      centerContainer.classList.add("hidden");
     });
 
     urlInput.addEventListener("keydown", e => {
@@ -390,7 +418,7 @@
         return;
       }
       popup.document.write(`
-        <html><head><title>Auraa</title><link rel="icon" href="icon.png">
+        <html><head><title>Auraa Cloak</title><link rel="icon" href="icon.png">
         <style>html,body{margin:0;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style>
         </head><body><iframe src="${location.href}"></iframe></body></html>
       `);
@@ -398,17 +426,19 @@
       location.href = "https://www.google.com";
     });
 
+    tideaiBtn.addEventListener('click', () => {
+      window.location.href = 'tideai.html';
+    });
+
     const nav = {
       homeBtn: "index.html",
       gamesBtn: "games.html",
       moviesBtn: "movies.html",
       chatBtn: "auraachat.html",
-      aiBtn: "tideai.html",
       creditsBtn: "credits.html",
       settingsBtn: "settings.html",
       weatherBtn: "weather.html"
     };
-
     for (const id in nav) {
       const btn = document.getElementById(id);
       if (btn) btn.onclick = () => window.location.href = nav[id];
