@@ -121,6 +121,7 @@
 
   <p class="footer">Auraa Settings | Made by @thefakesydney</p>
 
+  <!-- Main Settings Logic -->
   <script>
     const cloakSelect = document.getElementById('cloakSelect');
     const particleCountInput = document.getElementById('particleCountInput');
@@ -169,7 +170,7 @@
     loadSettings();
   </script>
 
-  <!-- Particle logic + live toggle -->
+  <!-- Particle Logic -->
   <script>
     let animationFrameId = null;
 
@@ -256,6 +257,14 @@
     if (particleToggle.checked) {
       createParticles();
     }
+  </script>
+
+  <!-- Prevent Accidental Tab Closing -->
+  <script>
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = '';
+    });
   </script>
 </body>
 </html>
