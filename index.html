@@ -5,17 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Auraa</title>
   <link rel="icon" href="icon.png" />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-    * {
-      box-sizing: border-box;
-    }
-    body,
-    html {
+    * { box-sizing: border-box; }
+
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -24,66 +19,80 @@
       color: white;
       overflow: hidden;
     }
+
     .sidebar {
       position: fixed;
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
       background: rgba(35, 0, 55, 0.9);
-      padding: 10px 6px;
-      width: 52px;
+      padding: 10px 8px;
+      width: 50px;
       border-radius: 10px;
       box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 10;
-      height: 85%;
       justify-content: space-between;
+      height: 70%;
+      z-index: 10;
     }
-    .sidebar-top,
-    .sidebar-bottom {
+
+    .sidebar .top-buttons {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
+
     .sidebar button {
       background: transparent;
       border: none;
-      font-size: 1.2rem; /* smaller icons */
+      font-size: 1.5rem;
       color: #fff;
       cursor: pointer;
       transition: 0.3s;
-      padding: 5px 0;
-      width: 100%;
+      padding: 6px;
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
       display: flex;
+      align-items: center;
       justify-content: center;
     }
+
     .sidebar button:hover {
       color: #e0aaff;
+      background: rgba(157, 78, 221, 0.3);
     }
+
     .sidebar-info {
-      font-size: 0.85rem;
+      margin-top: 10px;
+      font-size: 1rem;
       color: white;
       text-shadow: 0 0 5px #c77dff;
       user-select: none;
-      margin-top: 10px;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
     }
+
     #searchContainer {
       position: fixed;
       top: 0;
-      left: 70px; /* after sidebar */
-      right: 70px; /* leave space for nav arrows on right */
+      left: 0;
+      right: 0;
       z-index: 30;
       display: flex;
       gap: 10px;
       align-items: center;
-      padding: 10px 20px;
+      padding: 10px 20px 10px 90px;
       background: rgba(50, 0, 80, 0.95);
       box-shadow: 0 0 10px #9d4eddaa;
     }
+
     #urlInput {
       flex-grow: 1;
       padding: 8px 12px;
@@ -94,9 +103,8 @@
       background: #2a003f;
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
-      position: relative;
-      z-index: 40;
     }
+
     #goBtn {
       padding: 8px 20px;
       background: #7b2cbf;
@@ -105,16 +113,16 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
-      position: relative;
-      z-index: 40;
     }
+
     #goBtn:hover {
       background: #9d4edd;
     }
+
     #tabBar {
       display: flex;
-      background: rgba(35, 0, 55, 0.9);
-      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
+      background: rgba(35,0,55,0.9);
+      box-shadow: 0 0 8px rgba(157,78,221,0.9);
       padding: 0 10px;
       user-select: none;
       height: 40px;
@@ -126,6 +134,7 @@
       right: 0;
       z-index: 25;
     }
+
     #tabBar button.tab {
       background: transparent;
       border: none;
@@ -139,21 +148,24 @@
       gap: 6px;
       transition: background 0.3s;
       font-size: 1rem;
-      white-space: nowrap;
     }
+
     #tabBar button.tab.active {
       background: #7b2cbf;
       box-shadow: 0 -2px 5px #9d4edd;
     }
+
     #tabBar button.tab .closeBtn {
       font-size: 0.8rem;
       margin-left: 6px;
       color: #ccc;
       cursor: pointer;
     }
+
     #tabBar button.tab:hover .closeBtn {
       color: white;
     }
+
     #tabBar button#addTabBtn {
       font-size: 1.4rem;
       font-weight: bold;
@@ -163,6 +175,7 @@
       cursor: pointer;
       margin-left: auto;
     }
+
     .centerContainer {
       position: absolute;
       top: 50%;
@@ -174,6 +187,7 @@
       padding: 0 20px;
       z-index: 5;
     }
+
     .titleBar {
       font-size: 4rem;
       font-weight: 700;
@@ -183,6 +197,7 @@
       text-shadow: 0 0 2px #b48aff, 0 0 4px #caaaff;
       margin-bottom: 20px;
     }
+
     #miniSearchContainer {
       display: flex;
       justify-content: center;
@@ -190,9 +205,8 @@
       margin-bottom: 10px;
       flex-wrap: wrap;
     }
-    #miniSearch,
-    #cloakToggle,
-    #miniBtn {
+
+    #miniSearch, #cloakToggle, #miniBtn {
       padding: 8px 16px;
       border-radius: 20px;
       border: none;
@@ -204,10 +218,11 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    #cloakToggle:hover,
-    #miniBtn:hover {
+
+    #cloakToggle:hover, #miniBtn:hover {
       background: #9d4edd;
     }
+
     #iframeContainer {
       position: fixed;
       top: 90px;
@@ -215,6 +230,7 @@
       right: 0;
       bottom: 0;
     }
+
     iframe.tabIframe {
       width: 100%;
       height: 100%;
@@ -223,45 +239,20 @@
       border-radius: 0 0 10px 10px;
       box-shadow: inset 0 0 20px #7b2cbf88;
     }
+
     iframe.tabIframe.active {
       display: block;
     }
-    #navArrows {
-      position: fixed;
-      top: 10px;
-      right: 10px; /* moved to right side of search bar */
-      z-index: 35;
-      display: flex;
-      gap: 6px;
-      background: rgba(35, 0, 55, 0.85);
-      padding: 4px 6px;
-      border-radius: 10px;
-      user-select: none;
-      align-items: center;
-    }
-    #navArrows button {
-      background: #7b2cbf;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 1.1rem;
-      width: 30px;
-      height: 30px;
-      padding: 0;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background 0.3s;
-    }
-    #navArrows button:hover {
-      background: #9d4edd;
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
+
   <div class="sidebar">
-    <div class="sidebar-top">
+    <div class="top-buttons">
       <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
       <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
       <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
@@ -269,18 +260,11 @@
       <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
       <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
     </div>
-    <div class="sidebar-bottom">
-      <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
-      <div class="sidebar-info">
-        <div id="battery">⚡</div>
-        <div id="time">⌚</div>
-      </div>
+    <button id="settingsBtn" title="Settings" style="margin-top: auto;"><i class="bi bi-gear"></i></button>
+    <div class="sidebar-info">
+      <span id="battery">⚡</span>
+      <span id="time">⌚</span>
     </div>
-  </div>
-
-  <div id="navArrows">
-    <button id="backBtn" title="Back"><i class="bi bi-arrow-left"></i></button>
-    <button id="forwardBtn" title="Forward"><i class="bi bi-arrow-right"></i></button>
   </div>
 
   <div id="searchContainer">
@@ -315,8 +299,6 @@
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
     const centerContainer = document.getElementById('centerContainer');
-    const backBtn = document.getElementById('backBtn');
-    const forwardBtn = document.getElementById('forwardBtn');
 
     let tabCount = 0;
     let currentTabId = null;
@@ -392,15 +374,11 @@
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
-      if (!url) return;
-      if (!currentTabId) {
-        createTab(url);
-      } else {
+      if (!currentTabId) createTab(url);
+      else {
         const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-        if (iframe && typeof __uv$config !== "undefined") {
-          iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-          if (centerContainer) centerContainer.classList.add("hidden");
-        }
+        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        if (centerContainer) centerContainer.classList.add("hidden");
       }
     });
 
@@ -466,17 +444,18 @@
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
 
-    backBtn.addEventListener("click", () => {
-      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-      if (iframe && iframe.contentWindow && iframe.contentWindow.history && iframe.contentWindow.history.length > 1) {
-        iframe.contentWindow.history.back();
-      }
-    });
-
-    forwardBtn.addEventListener("click", () => {
-      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-      if (iframe && iframe.contentWindow && iframe.contentWindow.history) {
-        iframe.contentWindow.history.forward();
+    window.addEventListener("keydown", e => {
+      if (!currentTabId) return;
+      if (e.key === "ArrowLeft") {
+        const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+        if (iframe && iframe.contentWindow.history.length > 1) {
+          iframe.contentWindow.history.back();
+        }
+      } else if (e.key === "ArrowRight") {
+        const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+        if (iframe) {
+          iframe.contentWindow.history.forward();
+        }
       }
     });
 
