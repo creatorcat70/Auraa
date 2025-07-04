@@ -64,7 +64,7 @@
       user-select: none;
       position: fixed;
       top: 0;
-      left: 70px; /* sidebar width + margin */
+      left: 70px;
       right: 0;
       z-index: 30;
       box-shadow: 0 0 10px #9d4eddaa;
@@ -107,7 +107,7 @@
       align-items: center;
       gap: 5px;
       position: fixed;
-      top: 50px; /* below search bar */
+      top: 50px;
       left: 70px;
       right: 0;
       z-index: 25;
@@ -173,25 +173,24 @@
     .titleBar {
       font-size: 4rem;
       font-weight: 700;
-      background: linear-gradient(45deg, #b37aff, #d6b8ff);
+      background: linear-gradient(45deg, #a37aff, #b8a8ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: glow 3s infinite alternate;
+      animation: glow 4s infinite alternate;
       text-shadow:
-        0 0 10px #b37aff,
-        0 0 20px #b37aff,
-        0 0 30px #d6b8ff,
-        0 0 40px #d6b8ff,
-        0 0 50px #b37aff;
+        0 0 6px #a37aff,
+        0 0 12px #a37aff,
+        0 0 18px #b8a8ff,
+        0 0 24px #b8a8ff;
       margin-bottom: 20px;
     }
 
     @keyframes glow {
       0% {
-        filter: drop-shadow(0 0 10px #d6b8ff);
+        filter: drop-shadow(0 0 6px #b8a8ff);
       }
       100% {
-        filter: drop-shadow(0 0 25px #b37aff);
+        filter: drop-shadow(0 0 12px #a37aff);
       }
     }
 
@@ -234,7 +233,7 @@
 
     #iframeContainer {
       position: fixed;
-      top: 90px; /* below tabBar */
+      top: 90px;
       left: 70px;
       right: 0;
       bottom: 0;
@@ -438,6 +437,9 @@
       const el = document.getElementById("time");
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
+
+    // Initialize with one blank tab
+    createTab();
   </script>
 </body>
 </html>
