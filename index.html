@@ -75,16 +75,17 @@
       color: white;
       box-shadow: 0 0 8px #9d4edd88;
     }
-    #goBtn {
-      padding: 8px 20px;
+    #goBtn, #backBtn, #forwardBtn {
+      padding: 8px 12px;
       background: #7b2cbf;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
+      color: white;
     }
-    #goBtn:hover {
+    #goBtn:hover, #backBtn:hover, #forwardBtn:hover {
       background: #9d4edd;
     }
     #tabBar {
@@ -220,6 +221,8 @@
   </div>
 
   <div id="searchContainer">
+    <button id="backBtn"><i class="bi bi-arrow-left"></i></button>
+    <button id="forwardBtn"><i class="bi bi-arrow-right"></i></button>
     <input type="text" id="urlInput" placeholder="Enter URL or search term..." />
     <button id="goBtn">Go</button>
   </div>
@@ -251,6 +254,8 @@
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
     const centerContainer = document.getElementById('centerContainer');
+    const backBtn = document.getElementById('backBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
 
     let tabCount = 0;
     let currentTabId = null;
@@ -333,6 +338,16 @@
 
     urlInput.addEventListener("keydown", e => {
       if (e.key === "Enter") goBtn.click();
+    });
+
+    backBtn.addEventListener("click", () => {
+      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+      if (iframe && iframe.contentWindow?.history) iframe.contentWindow.history.back();
+    });
+
+    forwardBtn.addEventListener("click", () => {
+      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+      if (iframe && iframe.contentWindow?.history) iframe.contentWindow.history.forward();
     });
 
     addTabBtn.addEventListener("click", () => {
