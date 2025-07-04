@@ -20,6 +20,32 @@
     display: flex;
     flex-direction: column;
   }
+  /* Glowing Auraa Title at top */
+  #titleBar {
+    margin-left: 80px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 2rem;
+    background: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(45deg, #7b2cbf, #9d4edd, #7b2cbf);
+    animation: glow 3s ease-in-out infinite alternate;
+    user-select: none;
+    padding-left: 15px;
+  }
+  @keyframes glow {
+    0% {
+      filter: drop-shadow(0 0 5px #9d4edd);
+      background-position: 0% 50%;
+    }
+    100% {
+      filter: drop-shadow(0 0 15px #7b2cbf);
+      background-position: 100% 50%;
+    }
+  }
   .sidebar {
     position: fixed;
     left: 10px;
@@ -157,6 +183,7 @@
 </style>
 </head>
 <body>
+
   <div class="sidebar">
     <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
     <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
@@ -170,6 +197,8 @@
       <span id="time">⌚</span>
     </div>
   </div>
+
+  <div id="titleBar">Auraa</div>
 
   <div id="tabBar">
     <button id="addTabBtn" title="New Tab">＋</button>
@@ -185,15 +214,37 @@
   <div id="iframeContainer"></div>
 
   <script>
+    // URLs for sidebar buttons, proxy will be used to load them
+    const sidebarLinks = {
+      homeBtn: "https://startpage.com",
+      gamesBtn: "https://www.coolmathgames.com",
+      moviesBtn: "https://www.netflix.com",
+      chatBtn: "https://web.telegram.org",
+      creditsBtn: "https://creatorcat70.github.io",
+      settingsBtn: "https://creatorcat70.github.io/settings.html",
+      weatherBtn: "https://weather.com"
+    };
+
     function formatUrl(input) {
       input = input.trim();
-      if (!input) return "https://google.com";
+      if (!input) return "https://startpage.com";
       if (typeof __uv$config !== "undefined") {
-        const urlToEncode = input.startsWith("http") ? input : "https://" + input;
+        let urlToEncode;
+        if (input.startsWith("http") || input.startsWith("https")) {
+          urlToEncode = input;
+        } else if (input.includes(".") && !input.includes(" ")) {
+          urlToEncode = "https://" + input;
+        } else {
+          // treat as search query on startpage
+          urlToEncode = `https://startpage.com/do/search?q=${encodeURIComponent(input)}`;
+        }
         const encoded = __uv$config.encodeUrl(urlToEncode);
         return __uv$config.prefix + encoded;
       }
-      return input.startsWith("http") ? input : "https://" + input;
+      // fallback, no proxy config
+      if (input.startsWith("http")) return input;
+      if (input.includes(".") && !input.includes(" ")) return "https://" + input;
+      return `https://startpage.com/do/search?q=${encodeURIComponent(input)}`;
     }
 
     const tabBar = document.getElementById("tabBar");
@@ -205,7 +256,7 @@
     let tabCount = 0;
     let currentTabId = null;
 
-    function createTab(url = "https://google.com") {
+    function createTab(url = sidebarLinks.homeBtn) {
       const tabId = "tab" + tabCount++;
       const tabName = "Tab " + tabCount;
 
@@ -243,11 +294,9 @@
         if (__uv$config && displayUrl.startsWith(__uv$config.prefix)) {
           try {
             const encodedPart = displayUrl.slice(__uv$config.prefix.length);
-            // UV usually encodes URLs base64 + url encoding, so decode accordingly:
             const decoded = decodeURIComponent(atob(encodedPart));
             displayUrl = decoded;
           } catch {
-            // fallback
             displayUrl = decodeURIComponent(displayUrl.slice(__uv$config.prefix.length));
           }
         }
@@ -287,8 +336,23 @@
       });
     }
 
+    // Sidebar buttons event handlers
+    Object.entries(sidebarLinks).forEach(([btnId, url]) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.addEventListener("click", () => {
+          if (!currentTabId) {
+            createTab(url);
+          } else {
+            const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+            if (iframe) iframe.src = formatUrl(url);
+          }
+        });
+      }
+    });
+
     window.onload = () => {
-      if (tabCount === 0) createTab("https://google.com");
+      if (tabCount === 0) createTab();
 
       // Battery display update
       if (navigator.getBattery) {
@@ -312,5 +376,6 @@
       updateTime();
     };
   </script>
+
 </body>
 </html>
