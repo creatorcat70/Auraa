@@ -165,7 +165,7 @@ function selectDay(i) {
   feelsLikeEl.textContent = `Feels like: ${formatTemp(d.current)}`;
   windSpeedEl.textContent = d.wind ? `Wind: ${d.wind} m/s` : '';
   descriptionEl.textContent = d.desc;
-  messageEl.textContent = `Showing forecast for ${d.label}`;
+  messageEl.textContent = `Showing predicted forecast for ${d.label}`;
 }
 
 unitToggle.onclick = () => {
