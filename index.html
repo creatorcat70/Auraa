@@ -10,7 +10,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     * { box-sizing: border-box; }
 
-    html, body {
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -33,9 +33,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 100;
-      justify-content: space-between;
-      height: 70vh;
+      z-index: 10;
     }
 
     .sidebar button {
@@ -43,7 +41,7 @@
       border: none;
       font-size: 1.5rem;
       color: #fff;
-      margin: 6px 0;
+      margin: 8px 0;
       cursor: pointer;
       transition: 0.3s;
     }
@@ -53,10 +51,11 @@
     }
 
     .sidebar-info {
-      font-size: 0.8rem;
+      margin-top: auto;
+      font-size: 0.9rem;
       color: white;
       text-shadow: 0 0 5px #c77dff;
-      margin-bottom: 10px;
+      padding: 10px 0;
     }
 
     #searchContainer {
@@ -64,7 +63,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 90;
+      z-index: 30;
       display: flex;
       gap: 10px;
       align-items: center;
@@ -104,7 +103,6 @@
       background: rgba(35,0,55,0.9);
       box-shadow: 0 0 8px rgba(157,78,221,0.9);
       padding: 0 10px;
-      user-select: none;
       height: 40px;
       align-items: center;
       gap: 5px;
@@ -112,7 +110,7 @@
       top: 50px;
       left: 70px;
       right: 0;
-      z-index: 80;
+      z-index: 25;
     }
 
     #tabBar button.tab {
@@ -165,13 +163,7 @@
       width: 100%;
       max-width: 700px;
       padding: 0 20px;
-      z-index: 1;
-    }
-
-    .centerContainer.hidden {
-      display: none !important;
-      pointer-events: none;
-      z-index: -1;
+      z-index: 5;
     }
 
     .titleBar {
@@ -222,32 +214,29 @@
       height: 100%;
       border: none;
       display: none;
-      border-radius: 0 0 10px 10px;
-      box-shadow: inset 0 0 20px #7b2cbf88;
     }
 
     iframe.tabIframe.active {
       display: block;
     }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
-    <div>
-      <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
-      <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
-      <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
-      <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
-      <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
-      <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
-    </div>
-    <div>
+    <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
+    <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
+    <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
+    <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
+    <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
+    <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    <div class="sidebar-info">
+      <span id="battery">⚡</span>
+      <span id="time">⌚</span>
       <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
-      <div class="sidebar-info">
-        <div id="battery">⚡</div>
-        <div id="time">⌚</div>
-      </div>
     </div>
   </div>
 
@@ -283,17 +272,19 @@
     const miniBtn = document.getElementById('miniBtn');
     const miniSearch = document.getElementById('miniSearch');
     const centerContainer = document.getElementById('centerContainer');
-
     let tabCount = 0;
     let currentTabId = null;
-    const tabs = [];
 
     function formatUrl(input) {
-      try { return new URL(input).toString(); } catch {}
       try {
-        const url = new URL("https://" + input);
-        if (url.hostname.includes(".")) return url.toString();
-      } catch {}
+        const url = new URL(input);
+        return url.toString();
+      } catch {
+        try {
+          const url = new URL("https://" + input);
+          if (url.hostname.includes(".")) return url.toString();
+        } catch {}
+      }
       return "https://www.startpage.com/search?q=" + encodeURIComponent(input);
     }
 
@@ -319,15 +310,13 @@
 
       if (centerContainer) centerContainer.classList.add("hidden");
 
-      tabButton.addEventListener('click', e => {
+      tabButton.addEventListener('click', (e) => {
         if (e.target.classList.contains('closeBtn')) {
           closeTab(tabId);
         } else {
           setActiveTab(tabId);
         }
       });
-
-      tabs.push(tabId);
     }
 
     function setActiveTab(tabId) {
@@ -345,23 +334,20 @@
       const iframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
       if (tabBtn) tabBtn.remove();
       if (iframe) iframe.remove();
-      const index = tabs.indexOf(tabId);
-      if (index > -1) tabs.splice(index, 1);
       if (currentTabId === tabId) {
-        const nextTab = tabs[index] || tabs[index - 1];
-        if (nextTab) setActiveTab(nextTab);
-        else currentTabId = null;
+        const remaining = document.querySelectorAll('.tab');
+        if (remaining.length > 0) setActiveTab(remaining[0].dataset.tab);
+        else {
+          currentTabId = null;
+          centerContainer.classList.remove("hidden");
+        }
       }
     }
 
     goBtn.addEventListener("click", () => {
       const url = formatUrl(urlInput.value.trim());
-      if (!currentTabId) createTab(url);
-      else {
-        const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-        if (centerContainer) centerContainer.classList.add("hidden");
-      }
+      createTab(url);
+      if (centerContainer) centerContainer.classList.add("hidden");
     });
 
     urlInput.addEventListener("keydown", e => {
@@ -425,24 +411,6 @@
       const el = document.getElementById("time");
       el.textContent = "⌚ " + new Date().toLocaleTimeString();
     }, 1000);
-
-    document.addEventListener("keydown", e => {
-      if (e.target.tagName.toLowerCase() === "input") return;
-      if (e.key === "ArrowRight") {
-        const index = tabs.indexOf(currentTabId);
-        if (index !== -1 && index < tabs.length - 1) {
-          setActiveTab(tabs[index + 1]);
-        }
-      }
-      if (e.key === "ArrowLeft") {
-        const index = tabs.indexOf(currentTabId);
-        if (index > 0) {
-          setActiveTab(tabs[index - 1]);
-        }
-      }
-    });
-
-    createTab();
   </script>
 </body>
 </html>
