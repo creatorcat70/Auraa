@@ -1,12 +1,8 @@
 function runStealthMode() {
-  // Clear flag immediately to avoid reload loop
   localStorage.setItem("stealthModeEnabled", "false");
-
-  // Get cloak setting from localStorage or default
   const cloak = localStorage.getItem("auraaCloak") || "default";
   let title = "Auraa";
   let icon = "icon.png";
-
   if (cloak !== "default") {
     const parts = cloak.split("|");
     if (parts.length === 2) {
@@ -14,16 +10,12 @@ function runStealthMode() {
       title = parts[1];
     }
   }
-
   const src = window.location.href;
-
   const popup = window.open("about:blank", "_blank");
-
   if (!popup || popup.closed) {
     alert("Popup blocked. Please allow popups for Cloaking to work.");
     return;
   }
-
   popup.document.write(`
     <html>
       <head>
@@ -49,8 +41,6 @@ function runStealthMode() {
     </html>
   `);
   popup.document.close();
-
-  // Redirect main window to Google after opening popup
   window.location.href = "https://www.google.com";
 }
 
@@ -65,6 +55,100 @@ function generateSearchUrl(query) {
     } catch {}
   }
   return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
+}
+
+function formatUrl(input) {
+  input = input.trim();
+  if (!input) return "https://google.com";
+  if (typeof __uv$config !== "undefined") {
+    const encoded = __uv$config.encodeUrl(input.startsWith("http") ? input : "https://" + input);
+    return __uv$config.prefix + encoded;
+  } else {
+    return input.startsWith("http") ? input : "https://" + input;
+  }
+}
+
+const tabBar = document.getElementById('tabBar');
+const iframeContainer = document.getElementById('iframeContainer');
+const urlInput = document.getElementById('urlInput');
+const addTabBtn = document.getElementById('addTabBtn');
+
+let tabCount = 0;
+let currentTabId = null;
+
+function createTab(url = "https://google.com") {
+  const tabId = "tab" + tabCount++;
+  const tabName = "Tab " + tabCount;
+
+  const tabBtn = document.createElement("button");
+  tabBtn.className = "tab";
+  tabBtn.dataset.tab = tabId;
+  tabBtn.innerHTML = `${tabName} <span class="closeBtn">&times;</span>`;
+  tabBar.insertBefore(tabBtn, addTabBtn);
+
+  const iframe = document.createElement("iframe");
+  iframe.className = "tabIframe";
+  iframe.dataset.tab = tabId;
+  iframe.src = formatUrl(url);
+  iframeContainer.appendChild(iframe);
+
+  tabBtn.addEventListener("click", (e) => {
+    if (e.target.classList.contains("closeBtn")) {
+      closeTab(tabId);
+    } else {
+      setActiveTab(tabId);
+    }
+  });
+
+  setActiveTab(tabId);
+}
+
+function setActiveTab(tabId) {
+  currentTabId = tabId;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
+  document.querySelectorAll(".tabIframe").forEach(i => i.classList.toggle("active", i.dataset.tab === tabId));
+  const activeIframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
+  if (activeIframe) {
+    const url = activeIframe.src;
+    if (urlInput) urlInput.value = decodeURIComponent(url.replace(__uv$config?.prefix || "", ""));
+  }
+}
+
+function closeTab(tabId) {
+  const btn = document.querySelector(`.tab[data-tab="${tabId}"]`);
+  const iframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
+  if (btn) btn.remove();
+  if (iframe) iframe.remove();
+  if (currentTabId === tabId) {
+    const remainingTabs = document.querySelectorAll('.tab');
+    if (remainingTabs.length > 0) {
+      setActiveTab(remainingTabs[0].dataset.tab);
+    } else {
+      currentTabId = null;
+      if (urlInput) urlInput.value = "";
+    }
+  }
+}
+
+if (addTabBtn) {
+  addTabBtn.addEventListener("click", () => {
+    createTab();
+  });
+}
+
+const searchForm = document.getElementById("searchForm");
+if (searchForm) {
+  searchForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const input = urlInput.value.trim();
+    if (!input) return;
+    if (!currentTabId) {
+      createTab(input);
+    } else {
+      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+      if (iframe) iframe.src = formatUrl(input);
+    }
+  });
 }
 
 window.onload = function () {
@@ -94,23 +178,16 @@ window.onload = function () {
 
   const checkbox = document.getElementById("blankMode");
   if (checkbox) {
-    // Initialize checkbox state from localStorage
     const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
     checkbox.checked = stealthEnabled;
-
-    // Flag to track if stealth mode popup was already opened
     let stealthModeOpened = JSON.parse(localStorage.getItem("stealthModeOpened")) || false;
-
-    // Only run stealth mode on load if previously toggled on AND not opened before
     if (stealthEnabled && !stealthModeOpened) {
       runStealthMode();
       localStorage.setItem("stealthModeOpened", "true");
     }
-
     checkbox.addEventListener("change", function () {
       const isChecked = checkbox.checked;
       localStorage.setItem("stealthModeEnabled", JSON.stringify(isChecked));
-
       if (isChecked) {
         if (!stealthModeOpened) {
           runStealthMode();
@@ -118,7 +195,6 @@ window.onload = function () {
           stealthModeOpened = true;
         }
       } else {
-        // User turned stealth off, clear the "opened" flag
         localStorage.setItem("stealthModeOpened", "false");
         stealthModeOpened = false;
       }
@@ -139,46 +215,35 @@ window.onload = function () {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
-
       fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`)
         .then(res => res.json())
         .then(data => {
           const current = data.current_weather;
           if (!current) throw new Error("No weather data");
-
           const temp = current.temperature;
           const code = current.weathercode;
-
           const icon = getWeatherEmoji(code);
           const desc = getWeatherDescription(code);
-
           const iconEl = document.getElementById("weatherIcon");
           const tempEl = document.getElementById("temperature");
           const textEl = document.getElementById("weatherText");
-
           if (iconEl) iconEl.textContent = icon;
           if (tempEl) tempEl.textContent = `${temp}°C`;
           if (textEl) textEl.textContent = desc;
         })
-        .catch(err => {
-          console.warn("Weather fetch failed:", err);
-        });
-    }, err => {
-      console.warn("Location denied or unavailable:", err);
-    }, {
-      timeout: 10000
-    });
+        .catch(() => {});
+    }, () => {}, {timeout: 10000});
   }
 
   function getWeatherEmoji(code) {
-    if ([0, 1].includes(code)) return '☀️';
-    if ([2, 3].includes(code)) return '⛅';
-    if ([45, 48].includes(code)) return '🌫️';
-    if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
-    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌦️';
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
-    if ([95, 96, 99].includes(code)) return '⛈️';
-    return '❓';
+    if ([0,1].includes(code)) return "☀️";
+    if ([2,3].includes(code)) return "⛅";
+    if ([45,48].includes(code)) return "🌫️";
+    if ([51,53,55,56,57].includes(code)) return "🌧️";
+    if ([61,63,65,66,67,80,81,82].includes(code)) return "🌦️";
+    if ([71,73,75,77,85,86].includes(code)) return "❄️";
+    if ([95,96,99].includes(code)) return "⛈️";
+    return "❓";
   }
 
   function getWeatherDescription(code) {
@@ -215,49 +280,3 @@ window.onload = function () {
     return map[code] || "Unknown";
   }
 };
-
-// Optional game loader (if you have links and iframe)
-document.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    const gameName = link.textContent;
-    console.log("Loading " + gameName + "...");
-    const loader = document.getElementById("loader");
-    const content = document.getElementById("content");
-    if (loader) loader.style.display = "block";
-    if (content) content.style.display = "none";
-
-    const iframe = document.getElementById("gameFrame");
-    if (iframe) {
-      iframe.onload = function () {
-        if (loader) loader.style.display = "none";
-        if (content) content.style.display = "block";
-      };
-    }
-  });
-});
-
-// Proxy search handling
-const searchForm = document.getElementById("searchForm");
-if (searchForm) {
-  searchForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const query = document.getElementById("urlInput").value.trim();
-    if (!query) return;
-
-    if (typeof __uv$config === "undefined") {
-      alert("Ultraviolet proxy not loaded.");
-      return;
-    }
-
-    const rawUrl = generateSearchUrl(query);
-    const encoded = __uv$config.encodeUrl(rawUrl);
-    const proxyUrl = __uv$config.prefix + encoded;
-
-    const loader = document.getElementById("loader");
-    const content = document.getElementById("content");
-    if (loader) loader.style.display = "block";
-    if (content) content.style.display = "none";
-
-    window.location.href = proxyUrl;
-  });
-}
