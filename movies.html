@@ -9,6 +9,10 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -20,7 +24,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      overflow: hidden;
     }
 
     .gradient-text {
@@ -36,7 +39,7 @@
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 700;
       margin-top: 40px;
       text-align: center;
@@ -45,11 +48,12 @@
 
     .iframe-container {
       width: 90%;
-      height: 80%;
+      height: 75%;
       margin-top: 20px;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 0 20px rgba(157, 78, 221, 0.6);
+      position: relative;
     }
 
     iframe {
@@ -76,9 +80,23 @@
     .back-button:hover {
       background: #9d4edd;
     }
+
+    #loadingMsg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.3rem;
+      color: #c77dff;
+      z-index: 5;
+      pointer-events: none;
+      text-align: center;
+    }
   </style>
-  <script src="/active/uv/uv.bundle.js" defer></script>
+
+  <!-- Load UV scripts (correct order) -->
   <script src="/active/uv/uv.config.js" defer></script>
+  <script src="/active/uv/uv.bundle.js" defer></script>
 </head>
 <body>
   <button class="back-button" onclick="window.location.href='index.html'">← Back</button>
@@ -86,6 +104,7 @@
   <h1 class="gradient-text">Auraa<span class="dot">Movies</span></h1>
 
   <div class="iframe-container">
+    <div id="loadingMsg">Loading movies...</div>
     <iframe id="movieFrame" allowfullscreen></iframe>
   </div>
 
@@ -93,7 +112,20 @@
     window.onload = () => {
       const url = "https://movies.waves.lat/";
       const encoded = __uv$config.encodeUrl(url);
-      document.getElementById("movieFrame").src = __uv$config.prefix + encoded;
+      const frame = document.getElementById("movieFrame");
+      const loadingMsg = document.getElementById("loadingMsg");
+
+      frame.src = __uv$config.prefix + encoded;
+
+      // Hide loading text when iframe is ready
+      frame.onload = () => {
+        loadingMsg.style.display = 'none';
+      };
+
+      // Fallback: hide loading after 10s if iframe never loads
+      setTimeout(() => {
+        loadingMsg.style.display = 'none';
+      }, 10000);
     };
   </script>
 </body>
