@@ -12,28 +12,65 @@
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #2a003f, #000000);
-      color: #fff;
+      background: linear-gradient(135deg, #1a001f, #000000);
+      color: #e0d6ff;
       font-family: 'Poppins', sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       overflow-x: hidden;
     }
 
+    .container {
+      padding: 40px 20px;
+      max-width: 800px;
+    }
+
     .gradient-text {
-      background: linear-gradient(90deg, #9d4edd, #7b2cbf, #c77dff);
+      background: linear-gradient(90deg, #b388ff, #9d4edd, #c77dff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       color: transparent;
+      font-size: 2.5rem;
+      font-weight: 700;
     }
 
     .dot {
-      color: #9d4edd;
+      color: #c77dff;
+    }
+
+    .credits-text {
+      font-size: 1.2rem;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    .contributors {
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+
+    .contributors h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .contributors ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .contributors li {
+      margin-bottom: 10px;
+    }
+
+    .contributors li::before {
+      content: "• ";
+      color: #ffcc70;
     }
 
     .button-link {
@@ -46,47 +83,26 @@
       border-radius: 25px;
       background: #ffcc70;
       color: black;
-      transition: 0.3s;
-      animation: wave 3s infinite;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 204, 112, 0.5);
     }
 
     .button-link:hover {
       background: #feb47b;
-    }
-
-    .credits-text {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      animation: fadeIn 2s ease forwards;
-    }
-
-    .contributors {
-      margin-top: 20px;
-      font-size: 1rem;
-      color: #fff;
-    }
-
-    .contributors ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .contributors li::before {
-      content: "• ";
-      color: #ffcc70;
+      box-shadow: 0 0 12px rgba(255, 204, 112, 0.8);
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px 30px;
+      margin-top: 30px;
+      padding: 12px 30px;
       font-size: 1rem;
       border: none;
       border-radius: 25px;
       background: #7b2cbf;
       color: white;
       cursor: pointer;
-      transition: 0.3s;
-      animation: wave 3s infinite;
+      transition: background 0.3s ease;
+      box-shadow: 0 0 12px rgba(155, 89, 182, 0.6);
     }
 
     button:hover {
@@ -94,26 +110,15 @@
     }
 
     .footer {
-      margin-top: 40px;
+      margin-top: 50px;
       font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.7);
       text-shadow: 0 0 5px #c77dff;
     }
 
-    @keyframes wave {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-      100% { transform: translateY(0); }
-    }
-
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .container {
-      padding: 40px 20px;
-      max-width: 800px;
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -129,15 +134,15 @@
     <div class="contributors">
       <h2 class="gradient-text">Contributors</h2>
       <ul>
-        <li><strong>xXmizzeryXx</strong> – Ownership and for coding the original website - Tide</li>
-        <li><strong>Me, thefakesydney, for creating Auraa</strong></li>
-        <li>Chatgpt (for help and generating stuff that idk) </li>
+        <li><strong>xXmizzeryXx</strong> – Ownership and original Tide site development</li>
+        <li><strong>Me, thefakesydney</strong> – Creator of Auraa</li>
+        <li>ChatGPT – Support & assistance</li>
         <li>SEA SALT (PyroTF2) – Research and Development</li>
-        <li>EdwardAI – GitHub repository for select game integrations</li>
-        <li><strong>l4uy (')</strong> – UV Static Integration, Inspiration</li>
-        <li>Raldi (robloxdev_lucy) – Link Creation</li>
+        <li>EdwardAI – GitHub repo for select game integrations</li>
+        <li><strong>l4uy (')</strong> – UV Static Integration & inspiration</li>
+        <li>Raldi (robloxdev_lucy) – Link creation</li>
         <li>Tide Supporters and Partners – For continued feedback and motivation</li>
-        <li>All Tide testers that graciously helped with this project</li>
+        <li>All Tide testers who helped bring it to life</li>
       </ul>
     </div>
 
