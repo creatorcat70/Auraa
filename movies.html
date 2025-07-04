@@ -94,9 +94,9 @@
     }
   </style>
 
-  <!-- Correct order of UV scripts -->
-  <script src="/uv/uv.config.js" defer></script>
-  <script src="/uv/uv.bundle.js" defer></script>
+  <!-- UV scripts -->
+  <script src="/uv/uv.config.js"></script>
+  <script src="/uv/uv.bundle.js"></script>
 </head>
 <body>
   <button class="back-button" onclick="window.location.href='index.html'">← Back</button>
@@ -109,27 +109,21 @@
   </div>
 
   <script>
-    window.addEventListener('load', () => {
-      const url = "https://movies.waves.lat/";
-      const frame = document.getElementById("movieFrame");
-      const loadingMsg = document.getElementById("loadingMsg");
-
-      if (typeof __uv$config === "undefined") {
-        loadingMsg.innerText = "Proxy failed to load. Please check UV setup.";
-        return;
+    function waitForUV(retries = 20) {
+      if (typeof __uv$config !== 'undefined' && typeof __uv$config.encodeUrl === 'function') {
+        const url = "https://movies.waves.lat/";
+        const encoded = __uv$config.encodeUrl(url);
+        document.getElementById("movieFrame").src = __uv$config.prefix + encoded;
+        document.getElementById("loadingMsg").style.display = 'none';
+      } else if (retries > 0) {
+        setTimeout(() => waitForUV(retries - 1), 200);
+      } else {
+        document.getElementById("loadingMsg").innerText = "⚠️ Failed to load proxy. Check UV setup.";
       }
+    }
 
-      const encoded = __uv$config.encodeUrl(url);
-      frame.src = __uv$config.prefix + encoded;
-
-      frame.onload = () => {
-        loadingMsg.style.display = 'none';
-      };
-
-      // Optional: hide loading after 10 seconds just in case
-      setTimeout(() => {
-        loadingMsg.style.display = 'none';
-      }, 10000);
+    window.addEventListener('DOMContentLoaded', () => {
+      waitForUV();
     });
   </script>
 </body>
