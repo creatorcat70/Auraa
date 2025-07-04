@@ -305,7 +305,7 @@
   </div>
 
   <script>
-    const API_KEY = "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"; // Replace with your real key
+    const API_KEY = "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"; // Replace with your real key
 
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
@@ -363,14 +363,14 @@
       const typingIndicator = showTypingIndicator();
 
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${API_KEY}`
           },
           body: JSON.stringify({
-            model: "gpt-4.1-mini",
+            model: "llama3-8b-8192",
             messages: [{ role: "user", content: text }]
           })
         });
