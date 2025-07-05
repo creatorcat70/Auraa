@@ -10,6 +10,11 @@ function runStealthMode() {
       title = parts[1];
     }
   }
+
+  const escapeHTML = (str) => str.replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  }[c]));
+
   const src = window.location.href;
   const popup = window.open("about:blank", "_blank");
   if (!popup || popup.closed) {
@@ -19,20 +24,11 @@ function runStealthMode() {
   popup.document.write(`
     <html>
       <head>
-        <title>${title}</title>
-        <link rel="icon" href="${icon}">
+        <title>${escapeHTML(title)}</title>
+        <link rel="icon" href="${escapeHTML(icon)}">
         <style>
-          html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-          }
-          iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-          }
+          html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+          iframe { width: 100%; height: 100%; border: none; }
         </style>
       </head>
       <body>
@@ -45,27 +41,29 @@ function runStealthMode() {
 }
 
 function generateSearchUrl(query) {
-  try {
-    const url = new URL(query);
-    return url.toString();
-  } catch {
-    try {
-      const url = new URL(`https://${query}`);
-      if (url.hostname.includes('.')) return url.toString();
-    } catch {}
-  }
   return `https://startpage.com/search?q=${encodeURIComponent(query)}&source=web`;
 }
 
 function formatUrl(input) {
   input = input.trim();
   if (!input) return "https://google.com";
-  if (typeof __uv$config !== "undefined") {
-    const encoded = __uv$config.encodeUrl(input.startsWith("http") ? input : "https://" + input);
-    return __uv$config.prefix + encoded;
-  } else {
-    return input.startsWith("http") ? input : "https://" + input;
+
+  let url;
+  try {
+    url = new URL(input);
+  } catch {
+    try {
+      url = new URL("https://" + input);
+    } catch {
+      url = new URL(generateSearchUrl(input));
+    }
   }
+
+  if (typeof __uv$config !== "undefined" && __uv$config.encodeUrl) {
+    return __uv$config.prefix + __uv$config.encodeUrl(url.toString());
+  }
+
+  return url.toString();
 }
 
 const tabBar = document.getElementById('tabBar');
@@ -77,8 +75,9 @@ let tabCount = 0;
 let currentTabId = null;
 
 function createTab(url = "https://google.com") {
-  const tabId = "tab" + tabCount++;
-  const tabName = "Tab " + tabCount;
+  const tabId = "tab" + tabCount;
+  const tabName = "Tab " + (tabCount + 1);
+  tabCount++;
 
   const tabBtn = document.createElement("button");
   tabBtn.className = "tab";
@@ -107,6 +106,7 @@ function setActiveTab(tabId) {
   currentTabId = tabId;
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
   document.querySelectorAll(".tabIframe").forEach(i => i.classList.toggle("active", i.dataset.tab === tabId));
+
   const activeIframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
   if (activeIframe) {
     const url = activeIframe.src;
@@ -119,6 +119,7 @@ function closeTab(tabId) {
   const iframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
   if (btn) btn.remove();
   if (iframe) iframe.remove();
+
   if (currentTabId === tabId) {
     const remainingTabs = document.querySelectorAll('.tab');
     if (remainingTabs.length > 0) {
@@ -157,6 +158,7 @@ window.onload = function () {
   if (loaderEl) loaderEl.style.display = "none";
   if (contentEl) contentEl.style.display = "block";
 
+  // Battery
   if (navigator.getBattery) {
     navigator.getBattery().then(battery => {
       function updateBattery() {
@@ -168,6 +170,7 @@ window.onload = function () {
     });
   }
 
+  // Time
   function updateTime() {
     const now = new Date();
     const timeEl = document.getElementById("time");
@@ -176,6 +179,7 @@ window.onload = function () {
   setInterval(updateTime, 1000);
   updateTime();
 
+  // Stealth mode toggle
   const checkbox = document.getElementById("blankMode");
   if (checkbox) {
     const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
@@ -201,16 +205,17 @@ window.onload = function () {
     });
   }
 
+  // Random message
   const messages = [
     "Sydney was here",
     "bebby was here",
     "Unlimited Aura.",
     "aura level 10000"
   ];
-  const randomIndex = Math.floor(Math.random() * messages.length);
   const msgEl = document.getElementById("randomMessage");
-  if (msgEl) msgEl.textContent = messages[randomIndex];
+  if (msgEl) msgEl.textContent = messages[Math.floor(Math.random() * messages.length)];
 
+  // Weather
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = pos.coords.latitude;
@@ -232,7 +237,7 @@ window.onload = function () {
           if (textEl) textEl.textContent = desc;
         })
         .catch(() => {});
-    }, () => {}, {timeout: 10000});
+    }, () => {}, { timeout: 10000 });
   }
 
   function getWeatherEmoji(code) {
@@ -248,33 +253,13 @@ window.onload = function () {
 
   function getWeatherDescription(code) {
     const map = {
-      0: "Clear sky",
-      1: "Mostly clear",
-      2: "Partly cloudy",
-      3: "Overcast",
-      45: "Fog",
-      48: "Rime fog",
-      51: "Light drizzle",
-      53: "Moderate drizzle",
-      55: "Dense drizzle",
-      56: "Light freezing drizzle",
-      57: "Dense freezing drizzle",
-      61: "Slight rain",
-      63: "Moderate rain",
-      65: "Heavy rain",
-      66: "Light freezing rain",
-      67: "Heavy freezing rain",
-      71: "Slight snowfall",
-      73: "Moderate snowfall",
-      75: "Heavy snowfall",
-      77: "Snow grains",
-      80: "Light rain showers",
-      81: "Moderate rain showers",
-      82: "Heavy rain showers",
-      85: "Light snow showers",
-      86: "Heavy snow showers",
-      95: "Thunderstorm",
-      96: "Thunderstorm with light hail",
+      0: "Clear sky", 1: "Mostly clear", 2: "Partly cloudy", 3: "Overcast",
+      45: "Fog", 48: "Rime fog", 51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
+      56: "Light freezing drizzle", 57: "Dense freezing drizzle", 61: "Slight rain", 63: "Moderate rain",
+      65: "Heavy rain", 66: "Light freezing rain", 67: "Heavy freezing rain", 71: "Slight snowfall",
+      73: "Moderate snowfall", 75: "Heavy snowfall", 77: "Snow grains", 80: "Light rain showers",
+      81: "Moderate rain showers", 82: "Heavy rain showers", 85: "Light snow showers",
+      86: "Heavy snow showers", 95: "Thunderstorm", 96: "Thunderstorm with light hail",
       99: "Thunderstorm with heavy hail"
     };
     return map[code] || "Unknown";
