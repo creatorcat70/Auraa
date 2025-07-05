@@ -1,243 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Auraa</title>
-  <link rel="icon" href="icon.png"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="icon" href="icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
+    /* Import font and reset */
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     * { box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #2a003f, #000); color: white; overflow: hidden; }
-    .sidebar { position: fixed; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(35,0,55,0.9); padding: 10px 6px; width: 50px; border-radius: 10px; box-shadow: 0 0 8px rgba(157,78,221,0.9); display: flex; flex-direction: column; align-items: center; z-index:10; }
-    .sidebar button { background: transparent; border: none; font-size:1.6rem; color:#fff; margin:8px 0; cursor:pointer; transition:0.3s; width:36px; height:36px; display:flex; align-items:center; justify-content:center; padding:0; }
-    .sidebar button:hover { color:#e0aaff; }
-    .sidebar-info { margin-top:10px; font-size:0.9rem; text-shadow:0 0 5px #c77dff; }
-    #searchContainer { position:fixed; top:0; left:0; right:0; z-index:30; display:flex; gap:10px; align-items:center; padding:10px 20px 10px 70px; background:rgba(50,0,80,0.95); box-shadow:0 0 10px #9d4eddaa; }
-    #urlInput { flex-grow:1; padding:6px 12px; border-radius:20px; border:none; font-size:1rem; outline:none; background:#2a003f; color:white; box-shadow:0 0 6px #9d4edd88; }
-    #goBtn { padding:6px 20px; background:#7b2cbf; border:none; border-radius:20px; cursor:pointer; font-weight:600; transition:0.3s; }
-    #goBtn:hover { background:#9d4edd; }
-    #tabBar { display:flex; background:rgba(35,0,55,0.9); box-shadow:0 0 8px rgba(157,78,221,0.9); padding:0 10px; height:36px; align-items:center; gap:5px; position:fixed; top:45px; left:60px; right:0; z-index:25; }
-    #tabBar button.tab { background:transparent; border:none; color:white; padding:4px 10px; border-radius:5px 5px 0 0; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; font-size:0.9rem; }
-    #tabBar button.tab.active { background:#7b2cbf; box-shadow:0 -2px 5px #9d4edd; }
-    #tabBar button.tab .closeBtn { font-size:0.7rem; margin-left:6px; color:#ccc; cursor:pointer; }
-    #tabBar button#addTabBtn { font-size:1.4rem; font-weight:bold; background:transparent; border:none; color:#9d4edd; cursor:pointer; margin-left:auto; }
-    .centerContainer { position:absolute; top:50%; left:50%; transform:translate(-50%, -30%); text-align:center; width:100%; max-width:700px; padding:0 20px; z-index:5; }
-    .titleBar { font-size:4rem; font-weight:700; background:linear-gradient(45deg, #b48aff, #dbc8ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 2px #b48aff,0 0 4px #caaaff; margin-bottom:20px; }
-    #miniSearchContainer { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-    #miniSearch, #cloakToggle, #miniBtn { padding:6px 16px; border-radius:20px; border:none; font-size:1rem; background:#2a003f; color:white; box-shadow:0 0 6px #9d4edd88; cursor:pointer; transition:0.3s; }
-    #miniSearch:hover, #cloakToggle:hover, #miniBtn:hover { background:#9d4edd; }
-    #iframeContainer { position:fixed; top:80px; left:60px; right:0; bottom:0; z-index:1; }
-    iframe.tabIframe { width:100%; height:100%; border:none; display:none; border-radius:0 0 10px 10px; box-shadow:inset 0 0 20px #7b2cbf88; }
-    iframe.tabIframe.active { display:block; }
-    .hidden { display:none!important; }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #2a003f, #000000);
+      color: white;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(35, 0, 55, 0.9);
+      padding: 10px 6px;
+      width: 50px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(157, 78, 221, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+    .sidebar button {
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      color: #fff;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      user-select: none;
+    }
+    .sidebar button:hover {
+      color: #e0aaff;
+    }
+    .sidebar-info {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: white;
+      text-shadow: 0 0 5px #c77dff;
+      user-select: none;
+    }
+
+    /* Meteor particles */
+    .meteor {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, #fff, #00d4ff);
+      border-radius: 50%;
+      box-shadow: 0 0 6px #00d4ff, 0 0 12px #00d4ff;
+      animation: meteor-fall linear infinite;
+    }
+    @keyframes meteor-fall {
+      from { transform: translate(0, -100vh); }
+      to { transform: translate(100vw, 100vh); }
+    }
+
+    /* Search Container */
+    #searchContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 20px 10px 70px;
+      background: rgba(50, 0, 80, 0.95);
+      box-shadow: 0 0 10px #9d4eddaa;
+    }
+    #urlInput {
+      flex-grow: 1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: #2a003f;
+      color: white;
+      box-shadow: 0 0 6px #9d4edd88;
+      user-select: text;
+    }
+    #goBtn {
+      padding: 6px 20px;
+      background: #7b2cbf;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      user-select: none;
+    }
+    #goBtn:hover {
+      background: #9d4edd;
+    }
+
+    /* Tab Bar */
+    #tabBar {
+      display: flex;
+      background: rgba(35,0,55,0.9);
+      box-shadow: 0 0 8px rgba(157,78,221,0.9);
+      padding: 0 10px;
+      user-select: none;
+      height: 36px;
+      align-items: center;
+      gap: 5px;
+      position: fixed;
+      top: 45px;
+      left: 60px;
+      right: 0;
+      z-index: 25;
+    }
+    #tabBar button.tab {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+    #tabBar button.tab.active {
+      background: #7b2cbf;
+      box-shadow: 0 -2px 5px #9d4edd;
+    }
+    #tabBar button.tab .closeBtn {
+      font-size: 0.7rem;
+      margin-left: 6px;
+      color: #ccc;
+      cursor: pointer;
+      user-select: none;
+    }
+    #tabBar button.tab:hover .closeBtn {
+      color: white;
+    }
+    #tabBar button#addTabBtn {
+      font-size: 1.4rem;
+      font-weight: bold;
+      background: transparent;
+      border: none;
+      color: #9d4edd;
+      cursor: pointer;
+      margin-left: auto;
+      user-select: none;
+    }
+
+    /* Center Intro */
+    .centerContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      text-align: center;
+      width: 100%;
+      max-width: 700px;
+      padding: 0 20px;
+      z-index: 5;
+      user-select: none;
+    }
+    .titleBar {
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #b48aff, #dbc8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 2px #b48aff, 0 0 4px #caaaff;
+      margin-bottom: 20px;
+    }
+    #miniSearchContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    #miniSearch, #cloakToggle, #miniBtn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: #2a003f;
+      color: white;
+      box-shadow: 0 0 6px #9d4edd88;
+      cursor: pointer;
+      transition: 0.3s;
+      user-select: text;
+    }
+    #cloakToggle:hover, #miniBtn:hover {
+      background: #9d4edd;
+    }
+
+    /* Iframe + Footer */
+    #iframeContainer {
+      position: fixed;
+      top: 80px;
+      left: 60px;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+    iframe.tabIframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      border-radius: 0 0 10px 10px;
+      box-shadow: inset 0 0 20px #7b2cbf88;
+    }
+    iframe.tabIframe.active {
+      display: block;
+    }
+    #footer {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      color: white;
+      text-shadow: 0 0 6px #ffffffaa, 0 0 10px #ffffff88;
+      font-size: 0.95rem;
+      font-weight: bold;
+      z-index: 999;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Sidebar -->
   <div class="sidebar">
-    <button id="homeBtn"><i class="bi bi-house"></i></button>
-    <button id="gamesBtn"><i class="bi bi-joystick"></i></button>
-    <button id="moviesBtn"><i class="bi bi-film"></i></button>
-    <button id="chatBtn"><i class="bi bi-chat-dots"></i></button>
-    <button id="creditsBtn"><i class="bi bi-info-circle"></i></button>
-    <button id="weatherBtn"><i class="bi bi-cloud-sun"></i></button>
-    <button id="tideaiBtn"><img src="chatgpt-icon.png" alt="ChatGPT" style="width:20px;filter:invert(1)"></button>
-    <button id="settingsBtn"><i class="bi bi-gear"></i></button>
+    <button id="homeBtn" title="Home"><i class="bi bi-house"></i></button>
+    <button id="gamesBtn" title="Games"><i class="bi bi-joystick"></i></button>
+    <button id="moviesBtn" title="Movies"><i class="bi bi-film"></i></button>
+    <button id="chatBtn" title="Chat"><i class="bi bi-chat-dots"></i></button>
+    <button id="creditsBtn" title="Credits"><i class="bi bi-info-circle"></i></button>
+    <button id="weatherBtn" title="Weather"><i class="bi bi-cloud-sun"></i></button>
+    <button id="tideaiBtn" title="Tide AI ChatGPT">
+      <img src="chatgpt-icon.png" alt="ChatGPT" style="width:20px;height:20px;filter: invert(1);">
+    </button>
+    <button id="settingsBtn" title="Settings"><i class="bi bi-gear"></i></button>
     <div class="sidebar-info">
-      <span id="battery">⚡</span> <span id="time">⌚</span>
+      <span id="battery">⚡</span>
+      <span id="time">⌚</span>
     </div>
   </div>
 
+  <!-- URL/Search Bar -->
   <div id="searchContainer">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off"/>
+    <input type="text" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off" />
     <button id="goBtn">Go</button>
   </div>
 
+  <!-- Tab Bar -->
   <div id="tabBar">
     <button id="addTabBtn">＋</button>
   </div>
 
-  <div id="centerContainer" class="centerContainer">
+  <!-- Center Content -->
+  <div class="centerContainer" id="centerContainer">
     <div class="titleBar">Auraa</div>
     <div id="miniSearchContainer">
-      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off"/>
+      <input type="text" id="miniSearch" placeholder="Ask something..." autocomplete="off" />
       <button id="miniBtn">Search</button>
       <button id="cloakToggle">Cloak</button>
-      <label><input type="checkbox" id="blankMode"/> Stealth Mode</label>
     </div>
-    <div id="randomMessage"></div>
   </div>
 
+  <!-- Iframes -->
   <div id="iframeContainer"></div>
 
-  <!-- UV Proxy -->
+  <!-- Footer -->
+  <div id="footer">Auraa | v1.2 revised</div>
+
+  <!-- Scripts -->
+  <script src="/active/uv/uv.bundle.js"></script>
+  <script src="/active/uv/uv.config.js"></script>
   <script>
-    self.__uv$config = {
-      prefix: '/active/go/',
-      bare: 'https://math.cinevez.lol/bare/',
-      encodeUrl: Ultraviolet.codec.xor.encode,
-      decodeUrl: Ultraviolet.codec.xor.decode,
-      handler: '/active/uv/uv.handler.js',
-      bundle: '/active/uv/uv.bundle.js',
-      config: '/active/uv/uv.config.js',
-      sw: '/active/uv/uv.sw.js'
-    };
-  </script>
-  <script src="/active/uv/uv.bundle.js" defer></script>
-  <script src="/active/uv/uv.config.js" defer></script>
-
-  <script defer>
-  (() => {
-    function formatUrl(str) {
-      const raw = str.trim().startsWith('http') ? str.trim() : 'https://' + str.trim();
-      return self.__uv$config ? __uv$config.prefix + __uv$config.encodeUrl(raw) : raw;
-    }
-
-    function runStealthMode() {
-      localStorage.setItem('stealthModeEnabled', JSON.stringify(false));
-      const cloak = localStorage.getItem('auraaCloak') || 'default';
-      let [icon, title = 'Auraa'] = cloak.split('|'), src = location.href;
-      const popup = window.open('about:blank', '_blank');
-      if (!popup || popup.closed) return alert('Allow popups to Cloak!');
-      popup.document.write(`
-        <html><head><title>${title}</title><link rel="icon" href="${icon}">
-        <style>body,iframe{margin:0;height:100%;width:100%;border:none;overflow:hidden;}</style></head>
-        <body><iframe src="${src}"></iframe></body></html>`);
-      popup.document.close();
-      window.location.href = 'https://www.google.com';
-    }
-
-    const urlInput = document.getElementById('urlInput'),
-          goBtn = document.getElementById('goBtn'),
-          tabBar = document.getElementById('tabBar'),
-          addTabBtn = document.getElementById('addTabBtn'),
+    const tabBar = document.getElementById('tabBar'),
           iframeContainer = document.getElementById('iframeContainer'),
-          miniSearch = document.getElementById('miniSearch'),
+          urlInput = document.getElementById('urlInput'),
+          goBtn = document.getElementById('goBtn'),
+          addTabBtn = document.getElementById('addTabBtn'),
           miniBtn = document.getElementById('miniBtn'),
-          cloakToggle = document.getElementById('cloakToggle'),
-          centerC = document.getElementById('centerContainer'),
-          blankMode = document.getElementById('blankMode');
+          miniSearch = document.getElementById('miniSearch'),
+          cloakBtn = document.getElementById('cloakToggle'),
+          tideaiBtn = document.getElementById('tideaiBtn'),
+          centerContainer = document.getElementById('centerContainer');
 
-    let tabCount = 0, currentTab = null;
-    function createTab(start='https://google.com') {
-      const id = 'tab'+tabCount++;
-      const btn = document.createElement('button');
-      btn.className='tab'; btn.dataset.tab=id;
-      btn.innerHTML=`Tab ${tabCount}<span class="closeBtn">&times;</span>`;
-      const iframe = document.createElement('iframe');
-      iframe.className='tabIframe'; iframe.dataset.tab=id;
-      iframe.src = formatUrl(start);
-      tabBar.insertBefore(btn, addTabBtn);
-      iframeContainer.appendChild(iframe);
-      btn.onclick = e => e.target.classList.contains('closeBtn') ? closeTab(id) : setActiveTab(id);
-      setActiveTab(id);
-    }
+    let tabCount = 0, currentTabId = null;
 
-    function setActiveTab(id) {
-      currentTab = id;
-      document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
-      document.querySelectorAll('.tabIframe').forEach(f => f.classList.toggle('active', f.dataset.tab === id));
-      centerC.classList.toggle('hidden', !!currentTab);
-      const f = document.querySelector(`iframe[data-tab="${id}"]`);
-      if (f && urlInput) urlInput.value = decodeURIComponent(f.src.replace(__uv$config?.prefix || '', ''));
-    }
-
-    function closeTab(id) {
-      document.querySelector(`[data-tab="${id}"]`).remove();
-      document.querySelector(`iframe[data-tab="${id}"]`).remove();
-      if (currentTab === id) {
-        const rem = document.querySelector('.tab');
-        if (rem) setActiveTab(rem.dataset.tab);
-        else { currentTab = null; urlInput.value = ''; centerC.classList.remove('hidden'); }
+    function formatUrl(input) {
+      try {
+        const url = new URL(input);
+        return url.toString();
+      } catch {
+        try {
+          const url = new URL("https://" + input);
+          if (url.hostname.includes(".")) return url.toString();
+        } catch {}
       }
+      return "https://www.startpage.com/search?q=" + encodeURIComponent(input);
     }
 
-    goBtn.onclick = () => {
-      const q = urlInput.value.trim();
-      if (!q) return;
-      if (currentTab) document.querySelector(`iframe[data-tab="${currentTab}"]`).src = formatUrl(q);
-      else createTab(q);
-    };
-    urlInput.addEventListener('keydown', e => e.key === 'Enter' && goBtn.click());
-    addTabBtn.onclick = () => createTab();
+    function createTab(rawUrl = "") {
+      const tabId = `tab${tabCount++}`,
+            tabBtn = document.createElement('button'),
+            iframe = document.createElement('iframe');
 
-    miniBtn.onclick = () => {
-      const q = miniSearch.value.trim();
-      if (!q) return;
-      createTab('https://www.startpage.com/search?q=' + encodeURIComponent(q));
-    };
-    miniSearch.addEventListener('keydown', e => e.key === 'Enter' && miniBtn.click());
+      tabBtn.className = 'tab';
+      tabBtn.dataset.tab = tabId;
+      tabBtn.innerHTML = `Tab ${tabCount} <span class="closeBtn">&times;</span>`;
 
-    cloakToggle.onclick = runStealthMode;
+      iframe.className = 'tabIframe';
+      iframe.dataset.tab = tabId;
 
-    // Sidebar nav buttons
-    const nav = { homeBtn:'index.html', gamesBtn:'games.html', moviesBtn:'movies.html', chatBtn:'auraachat.html', creditsBtn:'credits.html', settingsBtn:'settings.html', weatherBtn:'weather.html', tideaiBtn:'tideai.html' };
-    Object.keys(nav).forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.onclick = () => window.location.href = nav[id];
-    });
+      if (rawUrl && typeof __uv$config !== "undefined") {
+        const enc = __uv$config.encodeUrl(rawUrl);
+        iframe.src = __uv$config.prefix + enc;
+      } else {
+        iframe.src = rawUrl;
+      }
 
-    // Battery/time
-    if (navigator.getBattery) {
-      navigator.getBattery().then(b => {
-        const el = document.getElementById('battery');
-        const upd = () => el.textContent = `⚡ ${Math.round(b.level * 100)}%`;
-        b.addEventListener('levelchange', upd);
-        upd();
+      iframeContainer.appendChild(iframe);
+      tabBar.insertBefore(tabBtn, addTabBtn);
+      setActiveTab(tabId);
+
+      tabBtn.addEventListener('click', e => {
+        if (e.target.classList.contains('closeBtn')) closeTab(tabId);
+        else setActiveTab(tabId);
       });
     }
+
+    function setActiveTab(tabId) {
+      currentTabId = tabId;
+      document.querySelectorAll('.tab').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tab === tabId)
+      );
+      document.querySelectorAll('.tabIframe').forEach(ifr =>
+        ifr.classList.toggle('active', ifr.dataset.tab === tabId)
+      );
+      updateAuraVisibility();
+    }
+
+    function closeTab(tabId) {
+      const btn = document.querySelector(`.tab[data-tab="${tabId}"]`),
+            ifr = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
+      btn?.remove(); ifr?.remove();
+      if (currentTabId === tabId) {
+        const remaining = [...document.querySelectorAll('.tab')];
+        if (remaining.length) setActiveTab(remaining[0].dataset.tab);
+        else { currentTabId = null; updateAuraVisibility(); }
+      }
+    }
+
+    function updateAuraVisibility() {
+      const showCenter = document.querySelectorAll('.tab').length === 0;
+      centerContainer.classList.toggle('hidden', !showCenter);
+    }
+
+    goBtn.addEventListener("click", () => {
+      const input = urlInput.value.trim();
+      if (!input) return;
+      const url = formatUrl(input);
+
+      if (!currentTabId) createTab(url);
+      else {
+        const ifr = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
+        if (ifr) {
+          if (typeof __uv$config !== "undefined") {
+            const enc = __uv$config.encodeUrl(url);
+            ifr.src = __uv$config.prefix + enc;
+          } else {
+            ifr.src = url;
+          }
+        }
+        centerContainer.classList.add("hidden");
+      }
+    });
+
+    urlInput.addEventListener("keydown", e => e.key === "Enter" && goBtn.click());
+    addTabBtn.addEventListener("click", () => createTab());
+    miniBtn.addEventListener("click", () => {
+      const q = miniSearch.value.trim();
+      if (!q) return;
+      const url = "https://www.startpage.com/search?q=" + encodeURIComponent(q);
+      createTab(url);
+    });
+    miniSearch.addEventListener("keydown", e => e.key === "Enter" && miniBtn.click());
+
+    cloakBtn.addEventListener("click", () => {
+      const popup = window.open("about:blank", "_blank");
+      if (!popup || popup.closed) {
+        alert("Popup blocked. Please allow popups.");
+        return;
+      }
+      popup.document.write(`
+        <html>
+        <head><title>Cloned Auraa</title></head>
+        <body><iframe src="${location.href}" frameborder="0"
+        style="width:100%;height:100vh;"></iframe></body>
+        </html>
+      `);
+      popup.document.close();
+      location.href = "https://www.google.com";
+    });
+
+    tideaiBtn.addEventListener('click', () => window.location.href = 'tideai.html');
+
+    {
+      const nav = {
+        homeBtn: "index.html", gamesBtn: "games.html",
+        moviesBtn: "movies.html", chatBtn: "auraachat.html",
+        creditsBtn: "credits.html", weatherBtn: "weather.html",
+        settingsBtn: "settings.html"
+      };
+      Object.entries(nav).forEach(([id, href]) => {
+        document.getElementById(id).onclick = () => window.location.href = href;
+      });
+    }
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        const el = document.getElementById("battery");
+        function update() {
+          el.textContent = `⚡ ${Math.round(battery.level * 100)}%`;
+        }
+        update();
+        battery.addEventListener("levelchange", update);
+      });
+    }
+
     setInterval(() => {
-      const el = document.getElementById('time');
-      el.textContent = '⌚ ' + new Date().toLocaleTimeString();
+      document.getElementById("time").textContent = "⌚ " +
+        new Date().toLocaleTimeString();
     }, 1000);
 
-    // Random message
-    const msgs = ["Sydney was here","bebby was here","Unlimited Aura.","aura level 10000"];
-    document.getElementById('randomMessage').textContent = msgs[Math.floor(Math.random() * msgs.length)];
-
-    // Weather
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&timezone=auto`)
-          .then(r => r.json()).then(d => {
-            const c = d.current_weather;
-            const icons = {0:'☀️',1:'☀️',2:'⛅',3:'⛅',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌦️',63:'🌦️',65:'🌦️',71:'❄️',73:'❄️',75:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',95:'⛈️',96:'⛈️',99:'⛈️'};
-            const elI = document.getElementById('weatherIcon');
-            const elT = document.getElementById('temperature');
-            const elD = document.getElementById('weatherText');
-            if (c && elI && elT && elD) {
-              elI.textContent = icons[c.weathercode] || '❓';
-              elT.textContent = `${c.temperature}°C`;
-              elD.textContent = 'Current weather';
-            }
-          });
-      }, () => {}, {timeout: 10000});
-    }
-
-    // Stealth mode
-    if (blankMode) {
-      let opened = JSON.parse(localStorage.getItem('stealthModeOpened')) || false;
-      blankMode.checked = JSON.parse(localStorage.getItem('stealthModeEnabled')) || false;
-      if (blankMode.checked && !opened) {
-        runStealthMode();
-        localStorage.setItem('stealthModeOpened', 'true');
-        opened = true;
-      }
-      blankMode.onchange = () => {
-        localStorage.setItem('stealthModeEnabled', JSON.stringify(blankMode.checked));
-        if (blankMode.checked && !opened) {
-          runStealthMode();
-          localStorage.setItem('stealthModeOpened', 'true');
-          opened = true;
-        }
-        if (!blankMode.checked) {
-          localStorage.setItem('stealthModeOpened', 'false');
-          opened = false;
-        }
-      };
-    }
-  })();
+    updateAuraVisibility();
   </script>
 </body>
 </html>
