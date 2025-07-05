@@ -61,19 +61,17 @@ function formatUrl(input) {
   input = input.trim();
   if (!input) return "https://google.com";
   if (typeof __uv$config !== "undefined") {
-    const encoded = __uv$config.encodeUrl(
-      input.startsWith("http") ? input : "https://" + input
-    );
+    const encoded = __uv$config.encodeUrl(input.startsWith("http") ? input : "https://" + input);
     return __uv$config.prefix + encoded;
   } else {
     return input.startsWith("http") ? input : "https://" + input;
   }
 }
 
-const tabBar = document.getElementById("tabBar");
-const iframeContainer = document.getElementById("iframeContainer");
-const urlInput = document.getElementById("urlInput");
-const addTabBtn = document.getElementById("addTabBtn");
+const tabBar = document.getElementById('tabBar');
+const iframeContainer = document.getElementById('iframeContainer');
+const urlInput = document.getElementById('urlInput');
+const addTabBtn = document.getElementById('addTabBtn');
 
 let tabCount = 0;
 let currentTabId = null;
@@ -107,12 +105,8 @@ function createTab(url = "https://google.com") {
 
 function setActiveTab(tabId) {
   currentTabId = tabId;
-  document.querySelectorAll(".tab").forEach(t =>
-    t.classList.toggle("active", t.dataset.tab === tabId)
-  );
-  document.querySelectorAll(".tabIframe").forEach(i =>
-    i.classList.toggle("active", i.dataset.tab === tabId)
-  );
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
+  document.querySelectorAll(".tabIframe").forEach(i => i.classList.toggle("active", i.dataset.tab === tabId));
   const activeIframe = document.querySelector(`.tabIframe[data-tab="${tabId}"]`);
   if (activeIframe) {
     const url = activeIframe.src;
@@ -157,31 +151,12 @@ if (searchForm) {
   });
 }
 
-// Mini search
-const miniSearch = document.getElementById("miniSearchForm");
-const miniInput = document.getElementById("miniSearchInput");
-if (miniSearch && miniInput) {
-  miniSearch.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const query = miniInput.value.trim();
-    if (!query) return;
-    const url = formatUrl(query);
-    if (!currentTabId) {
-      createTab(query);
-    } else {
-      const iframe = document.querySelector(`.tabIframe[data-tab="${currentTabId}"]`);
-      if (iframe) iframe.src = url;
-    }
-  });
-}
-
 window.onload = function () {
   const loaderEl = document.getElementById("loader");
   const contentEl = document.getElementById("content");
   if (loaderEl) loaderEl.style.display = "none";
   if (contentEl) contentEl.style.display = "block";
 
-  // Battery
   if (navigator.getBattery) {
     navigator.getBattery().then(battery => {
       function updateBattery() {
@@ -193,7 +168,6 @@ window.onload = function () {
     });
   }
 
-  // Time
   function updateTime() {
     const now = new Date();
     const timeEl = document.getElementById("time");
@@ -202,7 +176,6 @@ window.onload = function () {
   setInterval(updateTime, 1000);
   updateTime();
 
-  // Stealth Mode
   const checkbox = document.getElementById("blankMode");
   if (checkbox) {
     const stealthEnabled = JSON.parse(localStorage.getItem("stealthModeEnabled")) || false;
@@ -228,7 +201,6 @@ window.onload = function () {
     });
   }
 
-  // Random message
   const messages = [
     "Sydney was here",
     "bebby was here",
@@ -239,7 +211,6 @@ window.onload = function () {
   const msgEl = document.getElementById("randomMessage");
   if (msgEl) msgEl.textContent = messages[randomIndex];
 
-  // Weather
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = pos.coords.latitude;
@@ -261,17 +232,17 @@ window.onload = function () {
           if (textEl) textEl.textContent = desc;
         })
         .catch(() => {});
-    }, () => {}, { timeout: 10000 });
+    }, () => {}, {timeout: 10000});
   }
 
   function getWeatherEmoji(code) {
-    if ([0, 1].includes(code)) return "☀️";
-    if ([2, 3].includes(code)) return "⛅";
-    if ([45, 48].includes(code)) return "🌫️";
-    if ([51, 53, 55, 56, 57].includes(code)) return "🌧️";
-    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "🌦️";
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return "❄️";
-    if ([95, 96, 99].includes(code)) return "⛈️";
+    if ([0,1].includes(code)) return "☀️";
+    if ([2,3].includes(code)) return "⛅";
+    if ([45,48].includes(code)) return "🌫️";
+    if ([51,53,55,56,57].includes(code)) return "🌧️";
+    if ([61,63,65,66,67,80,81,82].includes(code)) return "🌦️";
+    if ([71,73,75,77,85,86].includes(code)) return "❄️";
+    if ([95,96,99].includes(code)) return "⛈️";
     return "❓";
   }
 
